@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">FoodMe</string>
+
+    <!-- BOTTOM NAVIGATION -->
+
+    <string name="title_find">Find</string>
+    <string name="title_restaurants">My Restaurants</string>
+    <string name="title_account">Account</string>
+
+
+    <!-- LOG IN ACTIVITY -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="prompt_phone">Phone Number</string>
+    <string name="prompt_name">Username</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="action_register">Register</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_invalid_phone">The phone number is invalid</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+
+    <string name="text_no_account">I don\'t want an account</string>
+
+
+    <string name="title_activity_main">MainActivity</string>
+
+
+</resources>

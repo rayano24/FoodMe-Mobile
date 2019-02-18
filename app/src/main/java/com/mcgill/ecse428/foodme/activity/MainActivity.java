@@ -6,7 +6,7 @@ import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.mcgill.ecse428.foodme.R;
-import com.mcgill.ecse428.foodme.fragment.AccountFragment;
+import com.mcgill.ecse428.foodme.fragment.SettingsFragment;
 import com.mcgill.ecse428.foodme.fragment.FindFragment;
 import com.mcgill.ecse428.foodme.fragment.RestaurantFragment;
 
@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG_FRAGMENT_FIND = "tag_frag_find";
     private static final String TAG_FRAGMENT_RESTAURANTS = "tag_frag_restaurants";
-    private static final String TAG_FRAGMENT_ACCOUNT = "tag_frag_account";
+    private static final String TAG_FRAGMENT_SETTINGS = "TAG_FRAGMENT_SETTINGS";
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -43,8 +43,8 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_restaurants:
                     switchFragment(1, TAG_FRAGMENT_RESTAURANTS);
                     return true;
-                case R.id.navigation_account:
-                    switchFragment(2, TAG_FRAGMENT_ACCOUNT);
+                case R.id.navigation_settings:
+                    switchFragment(2, TAG_FRAGMENT_SETTINGS);
                     return true;
             }
             return false;
@@ -78,11 +78,11 @@ public class MainActivity extends AppCompatActivity {
     private void buildFragmentsList() {
         FindFragment searchFragment = buildFindFragment();
         RestaurantFragment tripsFragment = buildRestaurantFragment();
-        AccountFragment accountFragment = buildAccountFragment();
+        SettingsFragment settingsFragment = buildSettingsFragment();
 
         fragments.add(searchFragment);
         fragments.add(tripsFragment);
-        fragments.add(accountFragment);
+        fragments.add(settingsFragment);
     }
 
     private FindFragment buildFindFragment() {
@@ -101,8 +101,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private AccountFragment buildAccountFragment() {
-        AccountFragment fragment = new AccountFragment();
+    private SettingsFragment buildSettingsFragment() {
+        SettingsFragment fragment = new SettingsFragment();
         Bundle bundle = new Bundle();
         fragment.setArguments(bundle);
         return fragment;

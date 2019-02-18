@@ -12,8 +12,8 @@
         android:title="@string/title_restaurants" />
 
     <item
-        android:id="@+id/navigation_account"
-        android:icon="@drawable/ic_account"
-        android:title="@string/title_account" />
+        android:id="@+id/navigation_settings"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/title_settings" />
 
 </menu>

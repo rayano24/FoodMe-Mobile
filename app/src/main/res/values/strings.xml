@@ -36,6 +36,12 @@
     <string name="recover_dialog_positive_button">Recover</string>
 
 
+    <!-- SEARCH FRAGMENT -->
+
+    <string name="no_location">We were unable to detect your location. Please turn on location services.</string>
+    <!-- HISTORY FRAGMENT -->
+
+    <string name="history_no_history">You haven\'t visited a restaurant yet! Get browsing!</string>
 
 
     <!-- SETTINGS FRAGMENT -->

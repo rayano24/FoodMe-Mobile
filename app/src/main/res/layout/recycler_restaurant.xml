@@ -9,52 +9,53 @@
     tools:layout_editor_absoluteY="25dp">
 
     <TextView
-        android:id="@+id/historyRestaurantName"
+        android:id="@+id/findRestaurantName"
         android:layout_width="120dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="2dp"
-        android:text="Fiorellino"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="10dp"
+        android:text="Rayrays burger shop"
         android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/historyRestaurantCuisine"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBaseline_toBaselineOf="@+id/findRestaurantCuisine"
+        app:layout_constraintEnd_toStartOf="@+id/findRestaurantCuisine"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/historyRestaurantCuisine"
+        android:id="@+id/findRestaurantCuisine"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="11dp"
         android:text="Italian"
         android:gravity="center"
         android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/historyRestaurantDate"
-        app:layout_constraintStart_toEndOf="@+id/historyRestaurantName"
+        app:layout_constraintEnd_toStartOf="@+id/findRestaurantPrice"
+        app:layout_constraintStart_toEndOf="@+id/findRestaurantName"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/historyRestaurantDate"
-        android:layout_width="95dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="3dp"
-        android:text="12/5/2018"
-        android:gravity="center"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/historyRestaurantRating"
-        app:layout_constraintStart_toEndOf="@+id/historyRestaurantCuisine"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/historyRestaurantRating"
+        android:id="@+id/findRestaurantPrice"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Rate"
+        android:layout_marginEnd="7dp"
+        android:text="$$"
         android:gravity="center"
         android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/historyRestaurantDate"
+        app:layout_constraintEnd_toStartOf="@+id/findRestaurantDistance"
+        app:layout_constraintStart_toEndOf="@+id/findRestaurantCuisine"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/findRestaurantDistance"
+        android:layout_width="95dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="2dp"
+        android:text="4.5 miles"
+        android:gravity="center"
+        android:textSize="18sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/findRestaurantPrice"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/findRestaurantPrice" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

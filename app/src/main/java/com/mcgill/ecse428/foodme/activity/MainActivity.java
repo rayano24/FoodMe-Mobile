@@ -1,11 +1,17 @@
 package com.mcgill.ecse428.foodme.activity;
 
 
+import android.Manifest;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.mcgill.ecse428.foodme.R;
 import com.mcgill.ecse428.foodme.fragment.SettingsFragment;
@@ -17,6 +23,8 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 /**
@@ -34,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final static String KEY_PREFERENCE_THEME = "themePref";
     private static int themeSelected = 0;
+
 
 
 
@@ -98,6 +107,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         switchFragment(0, TAG_FRAGMENT_FIND);
+
+
+
 
     }
 

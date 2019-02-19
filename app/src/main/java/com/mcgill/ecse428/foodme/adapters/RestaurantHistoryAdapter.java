@@ -42,8 +42,7 @@ public class RestaurantHistoryAdapter extends RecyclerView.Adapter<RestaurantHis
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_restaurant_history, parent, false);
-        itemView.setClickable(false);
-        itemView.setFocusable(false);
+;
 
         return new MyViewHolder(itemView);
     }

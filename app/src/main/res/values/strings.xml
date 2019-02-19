@@ -36,8 +36,6 @@
     <string name="recover_dialog_positive_button">Recover</string>
 
 
-
-
     <!-- SETTINGS FRAGMENT -->
 
     <string name="settings_header_app">App</string>
@@ -57,9 +55,6 @@
         <item>Alternate</item>
         <item>Dark</item>
     </string-array>
-
-
-
 
 
 </resources>

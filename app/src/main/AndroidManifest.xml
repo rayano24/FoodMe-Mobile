@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mcgill.ecse428.foodme">
 
-
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -28,13 +27,13 @@
         </activity>
         <activity
             android:name=".activity.MainActivity"
-            android:label="@string/title_activity_main">
-        </activity>
-        <!-- Google Maps API Key  -->
+            android:label="@string/title_activity_main"></activity>
+        <!-- Google Maps API Key -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+        <activity android:name=".activity.EditAccountActivity"></activity>
     </application>
 
 </manifest>

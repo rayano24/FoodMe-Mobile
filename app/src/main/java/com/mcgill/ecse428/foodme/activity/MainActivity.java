@@ -1,7 +1,9 @@
 package com.mcgill.ecse428.foodme.activity;
 
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -30,6 +32,10 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG_FRAGMENT_RESTAURANTS = "tag_frag_restaurants";
     private static final String TAG_FRAGMENT_SETTINGS = "TAG_FRAGMENT_SETTINGS";
 
+    private final static String KEY_PREFERENCE_THEME = "themePref";
+    private static int themeSelected = 0;
+
+
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -51,8 +57,37 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+
+    private SharedPreferences.OnSharedPreferenceChangeListener listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+        public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+            // listener implementation
+
+            if (key.equals(KEY_PREFERENCE_THEME)) {
+                themeSelected = prefs.getInt(KEY_PREFERENCE_THEME, 0);
+                recreate(); //restarts activity to apply change
+
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs.registerOnSharedPreferenceChangeListener(listener);
+        themeSelected = prefs.getInt(KEY_PREFERENCE_THEME, 0);
+
+
+        switch (themeSelected) {
+            case (0):
+                setTheme(R.style.AppTheme);
+                break;
+            case (1):
+                setTheme(R.style.AppTheme_Alternate);
+                break;
+            case (2):
+                setTheme(R.style.AppTheme);
+                break;
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 

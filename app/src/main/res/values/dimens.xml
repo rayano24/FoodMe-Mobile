@@ -3,6 +3,9 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <dimen name="fragment_vertical_margin">70dp</dimen>
+
+
     <!-- Spacing -->
     <dimen name="screen_spacing_horizontal">16dp</dimen>
     <dimen name="screen_spacing_vertical">16dp</dimen>

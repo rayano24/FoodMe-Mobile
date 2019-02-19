@@ -3,7 +3,9 @@ package com.mcgill.ecse428.foodme.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Point;
@@ -51,13 +53,42 @@ public class LoginActivity extends AppCompatActivity  {
     private Button signInPrompt, registerPrompt, signInButton, registerButton;
     private AutoCompleteTextView signInName, registerEmail, registerPhone;
     private EditText signInPassword, registerName, registerPassword;
-    private TextView noAccount;
+    private TextView noAccount, forgotPassword;
+    private final static String KEY_PREFERENCE_THEME = "themePref";
+    private static int themeSelected = 0;
+
+    private SharedPreferences.OnSharedPreferenceChangeListener listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+        public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+            // listener implementation
+
+            if (key.equals(KEY_PREFERENCE_THEME)) {
+                themeSelected = prefs.getInt(KEY_PREFERENCE_THEME, 0);
+                recreate(); //restarts activity to apply change
+
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs.registerOnSharedPreferenceChangeListener(listener);
+        themeSelected = prefs.getInt(KEY_PREFERENCE_THEME, 0);
+
+
+        switch (themeSelected) {
+            case (0):
+                setTheme(R.style.AppTheme);
+                break;
+            case (1):
+                setTheme(R.style.AppTheme_Alternate);
+                break;
+            case (2):
+                setTheme(R.style.AppTheme);
+                break;
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         // if the user is already signed in, skip this and open the main activity
         if (prefs.getString("userID", null) != null) {
@@ -79,6 +110,7 @@ public class LoginActivity extends AppCompatActivity  {
         registerPassword = findViewById(R.id.registerPassword);
         registerButton = findViewById(R.id.registerButton);
         noAccount = findViewById(R.id.noAccount);
+        forgotPassword = findViewById(R.id.forgotPasswordButton);
 
 
         // Handling registration or log in options
@@ -107,6 +139,13 @@ public class LoginActivity extends AppCompatActivity  {
                 startActivity(I);
                 finish();
 
+            }
+        });
+
+        forgotPassword.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                displayRecoveryDialog();
             }
         });
 
@@ -396,8 +435,42 @@ public class LoginActivity extends AppCompatActivity  {
         showRegistrationProgress(false);
 
 
+    }
+
+    /**
+     * Opens a dialog so that the user can enter their location. Once entered, is committed to preferences.
+     */
+    private void displayRecoveryDialog() {
+
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        final EditText input = new EditText(this);
+
+
+        alert.setTitle(R.string.recover_dialog_title);
+        alert.setMessage(R.string.recover_dialog_message);
+
+
+        alert.setView(input);
+
+        alert.setPositiveButton(R.string.recover_dialog_positive_button, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+               // TODO NETWORK LOGIC
+            }
+
+        });
+
+        alert.setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+            }
+        });
+
+        alert.show();
 
     }
+
 
 
     // This is added to return the main page when you are in the process of signing up/registering
@@ -427,22 +500,16 @@ public class LoginActivity extends AppCompatActivity  {
                 noAccount.setVisibility(View.GONE);
                 mRegisterFormView.setVisibility(View.GONE);
                 mLoginFormView.setVisibility(View.VISIBLE);
-                signInName.setVisibility(View.VISIBLE);
-                signInPassword.setVisibility(View.VISIBLE);
-                signInButton.setVisibility(View.VISIBLE);
             } else {
                 registerPrompt.setVisibility(View.VISIBLE);
                 signInPrompt.setVisibility(View.VISIBLE);
                 noAccount.setVisibility(View.VISIBLE);
                 mLoginFormView.setVisibility(View.GONE);
                 mRegisterFormView.setVisibility(View.GONE);
-                signInName.setVisibility(View.GONE);
                 signInName.setText("");
                 signInName.setError(null);
-                signInPassword.setVisibility(View.GONE);
                 signInPassword.setText("");
                 signInPassword.setError(null);
-                signInButton.setVisibility(View.GONE);
             }
         } else if (mode.equals("register")) {
             if (!reverse) {
@@ -451,30 +518,20 @@ public class LoginActivity extends AppCompatActivity  {
                 noAccount.setVisibility(View.GONE);
                 mLoginFormView.setVisibility(View.GONE);
                 mRegisterFormView.setVisibility(View.VISIBLE);
-                registerName.setVisibility(View.VISIBLE);
-                registerEmail.setVisibility(View.VISIBLE);
-                registerPassword.setVisibility(View.VISIBLE);
-                registerPhone.setVisibility(View.VISIBLE);
-                registerButton.setVisibility(View.VISIBLE);
             } else {
                 registerPrompt.setVisibility(View.VISIBLE);
                 signInPrompt.setVisibility(View.VISIBLE);
                 noAccount.setVisibility(View.VISIBLE);
                 mLoginFormView.setVisibility(View.GONE);
                 mRegisterFormView.setVisibility(View.GONE);
-                registerName.setVisibility(View.GONE);
                 registerName.setText("");
                 registerName.setError(null);
-                registerEmail.setVisibility(View.GONE);
                 registerEmail.setText("");
                 registerEmail.setError(null);
-                registerPassword.setVisibility(View.GONE);
                 registerPassword.setText("");
                 registerPassword.setError(null);
-                registerPhone.setVisibility(View.GONE);
                 registerPhone.setText("");
                 registerPhone.setError(null);
-                registerButton.setVisibility(View.GONE);
 
             }
         }

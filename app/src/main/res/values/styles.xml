@@ -65,6 +65,38 @@
     </style>
 
 
+    <!-- Dark theme (didnt make one) -->
+    <!-- TODO Dark theme -->
+
+    <style name="AppTheme.Dark" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Attributes for all APIs -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="selectableRectDrawable">@drawable/state_list_selectable_rect_black</item>
+        <item name="selectableRectDrawableInverse">@drawable/state_list_selectable_rect_white</item>
+        <item name="selectableRectDrawableColored">@drawable/state_list_selectable_rect_black</item>
+        <item name="selectableRoundedRectDrawable">
+            @drawable/state_list_selectable_rounded_rect_black
+        </item>
+        <item name="selectableRoundedRectDrawableInverse">
+            @drawable/state_list_selectable_rounded_rect_white
+        </item>
+        <item name="selectableRoundedRectDrawableColored">
+            @drawable/state_list_selectable_rounded_rect_black
+        </item>
+        <item name="colorPrimary">@color/material_blue_500</item>
+        <item name="colorPrimaryDark">@color/material_blue_700</item>
+        <item name="colorAccent">@color/material_blue_a700</item>
+        <!-- Uncomment to completely color control elements -->
+        <item name="colorControlNormal">@color/material_blue_500</item>
+        <item name="colorControlActivated">@color/material_blue_500</item>
+        <item name="colorControlHighlight">@color/selector_blue_pressed</item>
+
+        <item name="dialogTheme">@style/AppTheme.Dialog.Alternate</item>
+        <item name="alertDialogTheme">@style/AppTheme.Dialog.Alert.Alternate</item>
+
+    </style>
+
 
     <!-- Default Alert Dialog Theme -->
     <style name="AppTheme.Dialog" parent="Theme.AppCompat.Light.Dialog"></style>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:layout_editor_absoluteY="25dp">
+
+    <TextView
+        android:id="@+id/findRestaurantName"
+        android:layout_width="120dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="10dp"
+        android:text="Rayrays burger shop"
+        android:textSize="18sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/findRestaurantCuisine"
+        app:layout_constraintEnd_toStartOf="@+id/findRestaurantCuisine"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/findRestaurantCuisine"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="11dp"
+        android:text="Italian"
+        android:gravity="center"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/findRestaurantPrice"
+        app:layout_constraintStart_toEndOf="@+id/findRestaurantName"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/findRestaurantPrice"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="7dp"
+        android:text="$$"
+        android:gravity="center"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/findRestaurantDistance"
+        app:layout_constraintStart_toEndOf="@+id/findRestaurantCuisine"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/findRestaurantDistance"
+        android:layout_width="95dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="2dp"
+        android:text="4.5 miles"
+        android:gravity="center"
+        android:textSize="18sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/findRestaurantPrice"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/findRestaurantPrice" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

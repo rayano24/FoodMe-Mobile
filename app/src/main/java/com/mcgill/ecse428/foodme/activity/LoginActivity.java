@@ -84,7 +84,7 @@ public class LoginActivity extends AppCompatActivity  {
                 setTheme(R.style.AppTheme_Alternate);
                 break;
             case (2):
-                setTheme(R.style.AppTheme);
+                setTheme(R.style.AppTheme_Dark);
                 break;
         }
         super.onCreate(savedInstanceState);

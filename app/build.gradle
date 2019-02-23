@@ -8,13 +8,34 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+//        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.mcgill.ecse428.foodme.test.Instrumentation"
+    }
+    sourceSets {
+        androidTest {
+            assets {
+                assets.srcDirs = ['src/androidTest/assets']
+            }
+            java {
+                java.srcDirs = ['src/androidTest/java']
+            }
+        }
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    useLibrary 'android.test.runner'
+    useLibrary 'android.test.base'
+    useLibrary 'android.test.mock'
+
+    compileOptions {
+        // ...
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+        // ...
     }
 }
 
@@ -35,4 +56,16 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:16.0.0'
 
 
+    implementation 'com.jayway.android.robotium:robotium-solo:5.2.1'
+    //Runner
+    androidTestImplementation( 'com.android.support.test:runner:0.4.1' ){
+        exclude module: 'junit'
+    }
+//    compile group: 'com.android.support.test', name: 'runner', version: '1.0.2'
+    androidTestImplementation 'io.cucumber:cucumber-junit:3.0.2'
+    androidTestImplementation group: 'io.cucumber', name: 'cucumber-android', version: '3.0.2'
+    androidTestImplementation 'io.cucumber:cucumber-picocontainer:3.0.2'
+    androidTestImplementation group: 'io.cucumber', name: 'cucumber-jvm', version: '3.0.2', ext: 'pom'
+    androidTestImplementation 'io.cucumber:cucumber-core:3.0.2'
+    androidTestImplementation 'io.cucumber:cucumber-jvm-deps:1.0.6'
 }

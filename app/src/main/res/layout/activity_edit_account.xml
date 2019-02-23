@@ -31,7 +31,7 @@
         android:layout_height = "wrap_content"
         android:text="Password"/>
     <EditText
-        android:id="@+id/Password"
+        android:id="@+id/etPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

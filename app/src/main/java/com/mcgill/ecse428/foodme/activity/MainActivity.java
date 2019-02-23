@@ -4,6 +4,7 @@ package com.mcgill.ecse428.foodme.activity;
 import android.Manifest;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -96,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
                 setTheme(R.style.AppTheme_Alternate);
                 break;
             case (2):
-                setTheme(R.style.AppTheme);
+                setTheme(R.style.AppTheme_Dark);
                 break;
         }
         super.onCreate(savedInstanceState);
@@ -104,6 +105,9 @@ public class MainActivity extends AppCompatActivity {
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+
+
 
         buildFragmentsList();
 

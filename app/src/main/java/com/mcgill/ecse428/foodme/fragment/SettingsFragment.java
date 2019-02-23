@@ -71,8 +71,8 @@ public class SettingsFragment extends Fragment {
                 accountHeader.setTextColor(ContextCompat.getColor(mActivity, R.color.material_blue_500));
                 break;
             case (2):
-                appHeader.setTextColor(ContextCompat.getColor(mActivity, R.color.material_teal_500));
-                accountHeader.setTextColor(ContextCompat.getColor(mActivity, R.color.material_teal_500));
+                appHeader.setTextColor(ContextCompat.getColor(mActivity, R.color.color_white));
+                accountHeader.setTextColor(ContextCompat.getColor(mActivity, R.color.color_white));
                 break;
         }
 

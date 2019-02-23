@@ -119,6 +119,31 @@ public class CucumberSteps extends ActivityInstrumentationTestCase2<MainActivity
 //        assertTrue(solo.waitForText("This field is required"));
     }
 
+    // ================================== Dislike Restaurant feature: Scenario 1 ===========================================
+
+    @Given("I am viewing a restaurant")
+    public void viewing_restaurant() throws Exception {
+        solo = new Solo(getInstrumentation());
+        getActivity();
+
+        if (!atLogin()) signOut();
+        getToLoginForm();
+    }
+
+    @When("I click dislike restaurant")
+    public void dislike_restaurant() throws Exception {
+        solo.waitForActivity("MainActivity", 2000);
+
+        solo.clickOnButton("Dislike");
+    }
+
+    @Then("The restaurant should be disliked")
+    public void restaurant_should_be_disliked() throws Exception {
+
+        solo.waitForActivity("MainActivity", 2000);
+        assertFalse(solo.searchButton("Sign in"));
+    }
+
     // ================================== End of Test Implementation =======================================================
 
     @Override

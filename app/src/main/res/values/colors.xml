@@ -16,7 +16,6 @@
     <color name="material_blue_a700">#2962FF</color>
 
 
-    <!-- Dark Colors -->
 
     <!-- Selectors -->
     <color name="selector_normal">@android:color/transparent</color>

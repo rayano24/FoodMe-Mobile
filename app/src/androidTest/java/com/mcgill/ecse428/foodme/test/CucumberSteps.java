@@ -39,11 +39,16 @@ public class CucumberSteps extends ActivityInstrumentationTestCase2<MainActivity
 
     // ================================== User Login feature: Scenario 1-2 =======================================================
 
-    @Given("I have an existing account")
-    public void I_have_an_existing_account() throws Exception {
+    @Given("I am on the sign in form")
+    public void i_am_on_the_sign_in_form(){
         solo = new Solo(getInstrumentation());
         getActivity();
         UserLoginStepDefs.given(solo);
+    }
+
+    @Given("I have an existing account")
+    public void I_have_an_existing_account() throws Exception {
+//        solo.waitForActivity("LoginActivity", timeout);
     }
 
     @When("I enter my {string} and my {string}")
@@ -93,7 +98,7 @@ public class CucumberSteps extends ActivityInstrumentationTestCase2<MainActivity
     @When("I select the logout option")
     public void i_select_the_logout_option() throws Exception {
 
-        solo.waitForActivity("MainActivity", timeout);
+        solo.waitForActivity("LoginActivity", timeout);
         UserLogoutStepDefs.when(solo);
     }
 
@@ -104,8 +109,35 @@ public class CucumberSteps extends ActivityInstrumentationTestCase2<MainActivity
         assertTrue(UserLogoutStepDefs.then(solo));
     }
 
-    // ================================== Create Account feature: Scenario =======================================================
+    // ================================== Create Account feature: Scenario 1 =======================================================
+    @Given("I am on the register form")
+    public void i_am_on_the_register_form(){
+        solo = new Solo(getInstrumentation());
+        getActivity();
+        CreateAccountStepDefs.givenRegisterForm(solo);
+    }
 
+    @When("I enter a {string}, an {string}, a {string} and a {string}")
+    public void i_enter_a_username_an_email_a_phone_and_a_pw(String username, String email, String phone, String password){
+
+        solo.waitForActivity("LoginActivity", timeout);
+        CreateAccountStepDefs.when(solo, username, email, phone, password);
+    }
+
+    @Then("I should have an account")
+    public void i_should_have_an_account(){
+
+        solo.waitForActivity("LoginActivity", timeout);
+        assertTrue(CreateAccountStepDefs.validThen(solo));
+    }
+
+    // ================================== Create Account feature: Scenario 2 =======================================================
+    @Then("I should not be able to create an account")
+    public void i_should_not_be_able_to_create_an_account(){
+
+        solo.waitForActivity("LoginActivity", timeout);
+        assertFalse(CreateAccountStepDefs.invalidThen(solo));
+    }
     // ================================== Dislike Restaurant feature: Scenario 1 ===========================================
 
     @Given("I am viewing a restaurant")

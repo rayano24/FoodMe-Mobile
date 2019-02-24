@@ -6,13 +6,15 @@ public class UserLoginStepDefs {
 
     private static int timeout = 2000;
 
-    //I have an existing account
+    //I am on the sign in form
     public static void given(Solo solo){
 
         //If we're not on the sign in page, go back to it
         if (CucumberActionSteps.loggedIn(solo))
             CucumberActionSteps.signOut(solo);
     }
+
+    //TODO DO SOMETHING FOR "I HAVE AN EXISTING ACCOUNT"
 
     //I enter my <username> and my <password>
     //I enter an invalid combination of <username> and <password>

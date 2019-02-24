@@ -15,6 +15,11 @@ public class CucumberActionSteps {
         solo.clickOnButton("Sign in");
     }
 
+    //Goes to register form from welcome page
+    public static void getToRegisterForm(Solo solo) {
+        solo.clickOnButton("Register");
+    }
+
     //Checks whether user is logged in
     public static boolean loggedIn(Solo solo) {
         //TODO FIND A BETTER WAY TO CHECK IF USER IS LOGGED IN
@@ -40,6 +45,31 @@ public class CucumberActionSteps {
 
     public static void logInAsAdmin(Solo solo) {
         logIn(solo, adminUsername, adminPassword);
+    }
+
+    //Logs in using username and password (does not handle invalid input, instead that is asserted in the "Then" method)
+    public static void register(Solo solo, String username, String email, String phone, String password) {
+        if (!loggedIn(solo)) {
+            getToRegisterForm(solo);
+
+            //Fill prompt with username to test
+            EditText registerUsername = (EditText) solo.getView("registerName");
+            solo.typeText(registerUsername, username);
+
+            //Fill prompt with email to test
+            AutoCompleteTextView registerEmail = (AutoCompleteTextView) solo.getView("registerEmail");
+            solo.typeText(registerEmail, email);
+
+            //Fill prompt with phone number to test
+            AutoCompleteTextView registerPhone = (AutoCompleteTextView) solo.getView("registerPhone");
+            solo.typeText(registerPhone, phone);
+
+            //Fill prompt with password to test
+            EditText registerPassword = (EditText) solo.getView("registerPassword");
+            solo.typeText(registerPassword, password);
+
+            solo.clickOnButton("Register");
+        }
     }
 
     public static void signOut(Solo solo) {

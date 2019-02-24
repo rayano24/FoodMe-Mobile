@@ -2,22 +2,33 @@ package com.mcgill.ecse428.foodme.fragment;
 
 
 import android.Manifest;
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.mcgill.ecse428.foodme.R;
 import com.mcgill.ecse428.foodme.adapters.RestaurantAdapter;
 import com.mcgill.ecse428.foodme.adapters.RestaurantHistoryAdapter;
 import com.mcgill.ecse428.foodme.model.Restaurant;
 import com.mcgill.ecse428.foodme.model.RestaurantHistory;
+import com.mcgill.ecse428.foodme.utils.HttpUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +41,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import cz.msebera.android.httpclient.Header;
 
 
 public class FindFragment extends Fragment {
@@ -42,6 +54,8 @@ public class FindFragment extends Fragment {
     private RecyclerView restaurantRecyclerView;
     private RestaurantAdapter restaurantAdapter;
     private TextView noLocation;
+
+    private Activity mActivity;
 
 
     @Override
@@ -57,19 +71,19 @@ public class FindFragment extends Fragment {
 
         restaurantAdapter = new RestaurantAdapter(restaurantList);
 
-        RecyclerView.LayoutManager upcomingLayoutManager = new LinearLayoutManager(getActivity());
+        RecyclerView.LayoutManager upcomingLayoutManager = new LinearLayoutManager(mActivity);
         restaurantRecyclerView.setLayoutManager(upcomingLayoutManager);
         restaurantRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        restaurantRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+        restaurantRecyclerView.addItemDecoration(new DividerItemDecoration(mActivity, LinearLayoutManager.VERTICAL));
         restaurantRecyclerView.setAdapter(restaurantAdapter);
 
 
         // note for anyone looking at this, I elected to put the location stuff here rather than the main activity so we can avoid using GSON and so we can modify the view here
         // LOCATION RELATED
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(mActivity);
 
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             // Permission is not granted
 
@@ -80,7 +94,7 @@ public class FindFragment extends Fragment {
         } else {
             // Permission is granted, get location
             mFusedLocationClient.getLastLocation()
-                    .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+                    .addOnSuccessListener(mActivity, new OnSuccessListener<Location>() {
                         @Override
                         public void onSuccess(Location location) {
                             // Got last known location. In some rare situations this can be null.
@@ -118,6 +132,93 @@ public class FindFragment extends Fragment {
             }
 
         }
+    }
+
+
+    @TargetApi(23)
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        this.mActivity = (Activity) context;
+
+    }
+
+    // deprecated below API 23
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            this.mActivity = activity;
+
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //  displayRestaurants();
+
+    }
+
+
+    /**
+     * Displays a list of restaurants sorted by location
+     *
+     * @param lat latitude of current user position
+     * @param lng longitude of current user position
+     */
+    public void displayRestaurants(String lat, String lng) {
+
+        HttpUtils.get("/", new RequestParams(), new JsonHttpResponseHandler() {
+
+            @Override
+            public void onFinish() {
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+
+                    restaurantList.clear();
+
+
+                    if (response.isNull("test")) {
+                        response.getString("e");
+
+
+                    }
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+              /*  if (restaurantList.isEmpty())
+                    noRestos.setVisibility(View.VISIBLE);
+                else {
+                    noRestos.setVisibility(View.GONE);
+
+                } */
+
+                restaurantAdapter.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+
+                Toast.makeText(mActivity, "There was a network error, try again later.", Toast.LENGTH_LONG).show(); // generic network error
+
+            }
+
+
+        });
+
+
     }
 
 

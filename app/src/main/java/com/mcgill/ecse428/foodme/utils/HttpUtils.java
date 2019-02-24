@@ -5,7 +5,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 public class HttpUtils {
-    public static final String DEFAULT_BASE_URL = "https://karpool-spring-14.herokuapp.com/";
+    public static final String DEFAULT_BASE_URL = "https://foodme-428.herokuapp.com/";
 
     private static String baseUrl;
     private static AsyncHttpClient client = new AsyncHttpClient();

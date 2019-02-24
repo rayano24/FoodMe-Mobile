@@ -134,6 +134,35 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+                <AutoCompleteTextView
+                    android:id="@+id/registerFirstName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="@string/prompt_first_name"
+                    android:inputType="textPersonName"
+                    android:visibility="visible" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <AutoCompleteTextView
+                    android:id="@+id/registerLastName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="@string/prompt_last_name"
+                    android:inputType="textPersonName"
+                    android:visibility="visible" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
                 <EditText
                     android:id="@+id/registerName"
                     android:layout_width="match_parent"
@@ -155,21 +184,6 @@
                     android:ems="10"
                     android:hint="@string/prompt_email"
                     android:inputType="textEmailAddress"
-                    android:visibility="visible" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <AutoCompleteTextView
-                    android:id="@+id/registerPhone"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:hint="@string/prompt_phone"
-
-                    android:inputType="phone"
                     android:visibility="visible" />
             </com.google.android.material.textfield.TextInputLayout>
 

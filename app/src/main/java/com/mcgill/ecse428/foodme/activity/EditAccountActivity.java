@@ -29,7 +29,7 @@ public class EditAccountActivity extends AppCompatActivity implements View.OnCli
 
     Button save_changes;
     EditText etFirstName, etLastName,etPassword;
-    TextView noAccountButton;
+//    TextView noAccountButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +40,7 @@ public class EditAccountActivity extends AppCompatActivity implements View.OnCli
         etLastName = (EditText) findViewById(R.id.etLastName);
         etPassword = (EditText) findViewById(R.id.etPassword);
         save_changes = (Button) findViewById(R.id.save_changes);
-        noAccountButton = (TextView) findViewById(R.id.noAccountButton);
+//        noAccountButton = (TextView) findViewById(R.id.noAccountButton);
 
         save_changes.setOnClickListener(this);
 
@@ -51,9 +51,9 @@ public class EditAccountActivity extends AppCompatActivity implements View.OnCli
                 case R.id.save_changes:
                 break;
 
-                case R.id.noAccountButton:
-                    startActivity(new Intent(this, EditAccountActivity.class));
-                    break;
+//                case R.id.noAccountButton:
+//                    startActivity(new Intent(this, EditAccountActivity.class));
+//                    break;
         }
     }
 }

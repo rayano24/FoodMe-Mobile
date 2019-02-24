@@ -26,9 +26,17 @@ import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.mcgill.ecse428.foodme.R;
+import com.mcgill.ecse428.foodme.utils.HttpUtils;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import androidx.appcompat.app.AppCompatActivity;
+import cz.msebera.android.httpclient.Header;
 
 
 /**
@@ -51,7 +59,7 @@ public class LoginActivity extends AppCompatActivity  {
     private Space progressSpace;
     private ImageView logoImage;
     private Button signInPrompt, registerPrompt, signInButton, registerButton;
-    private AutoCompleteTextView signInName, registerEmail, registerPhone;
+    private AutoCompleteTextView signInName, registerEmail, registerFirstName, registerLastName;
     private EditText signInPassword, registerName, registerPassword;
     private TextView noAccount, forgotPassword;
     private final static String KEY_PREFERENCE_THEME = "themePref";
@@ -106,7 +114,8 @@ public class LoginActivity extends AppCompatActivity  {
         registerPrompt = findViewById(R.id.registerPrompt);
         registerEmail = findViewById(R.id.registerEmail);
         registerName = findViewById(R.id.registerName);
-        registerPhone = findViewById(R.id.registerPhone);
+        registerFirstName = findViewById(R.id.registerFirstName);
+        registerLastName = findViewById(R.id.registerLastName);
         registerPassword = findViewById(R.id.registerPassword);
         registerButton = findViewById(R.id.registerButton);
         noAccount = findViewById(R.id.noAccount);
@@ -256,14 +265,16 @@ public class LoginActivity extends AppCompatActivity  {
         // Reset errors.
         registerName.setError(null);
         registerEmail.setError(null);
-        registerPhone.setError(null);
+        registerFirstName.setError(null);
+        registerLastName.setError(null);
         registerPassword.setError(null);
 
 
         // Store values at the time of the registration attempt.
         String email = registerEmail.getText().toString();
         String name = registerName.getText().toString();
-        String phoneNumber = registerPhone.getText().toString();
+        String firstName = registerFirstName.getText().toString();
+        String lastName = registerLastName.getText().toString();
         String password = registerPassword.getText().toString();
 
         boolean cancel = false;
@@ -282,9 +293,15 @@ public class LoginActivity extends AppCompatActivity  {
         }
 
 
-        if (TextUtils.isEmpty(phoneNumber)) {
-            registerPhone.setError(getString(R.string.error_field_required));
-            focusView = registerPhone;
+        if (TextUtils.isEmpty(firstName)) {
+            registerFirstName.setError(getString(R.string.error_field_required));
+            focusView = registerFirstName;
+            cancel = true;
+        }
+
+        if (TextUtils.isEmpty(lastName)) {
+            registerLastName.setError(getString(R.string.error_field_required));
+            focusView = registerLastName;
             cancel = true;
         }
 
@@ -303,7 +320,7 @@ public class LoginActivity extends AppCompatActivity  {
             // Show a progress spinner, and kick off a background task to
             // perform the user registration attempt.
             showRegistrationProgress(true);
-            userRegisterTask(email, name, password, phoneNumber);
+            userRegisterTask(firstName, lastName, email, name, password);
         }
     }
 
@@ -396,50 +413,112 @@ public class LoginActivity extends AppCompatActivity  {
 
     /**
      * Attempts to authorize the user account and log in through an asynchronous task
-     *
-     * @param mName     the username
+     * @param mName the username
      * @param mPassword the password
      */
     public void userLogInTask(String mName, String mPassword) {
 
-        // ASYNC TASK
-        showSignInProgress(false);
+        final String userID = mName;
 
 
-        if(mName.equals("admin") && mPassword.equals("password")) {
+        // temporary
+        if(userID.equals("admin") && mPassword.equals("password")) {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
-            prefs.edit().putString(KEY_USER, mName).apply(); // adding userID to preferences for future use
+            prefs.edit().putString(KEY_USER, userID).commit(); // adding userID to preferences for future use
             Intent I = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(I);
             finish();
         }
 
 
+        HttpUtils.get("?login" + "username=" + mName + "&password=" + mPassword , new RequestParams(), new JsonHttpResponseHandler() {
 
+            @Override
+            public void onFinish() {
+                showSignInProgress(false);
+
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    if (response.getString("user") != null) {
+                        showSignInProgress(false);
+                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+                        prefs.edit().putString(KEY_USER, userID).apply(); // adding userID to preferences for future use
+                        Intent I = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(I);
+                        finish();
+                    } else {
+                        showSignInProgress(false);
+                       Toast.makeText(LoginActivity.this, "There was an error loggin in, please check your username or password", Toast.LENGTH_LONG).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject
+                    errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                showSignInProgress(false);
+                Toast.makeText(LoginActivity.this, "There was a network error, try again later.", Toast.LENGTH_LONG).show(); // generic network error
+
+            }
+        });
     }
 
 
     /**
      * Attempts to register the user account through an asynchronous task
-     *
-     * @param mEmail    user email
-     * @param mName     username
+     * @param mFirstName users first name
+     * @param mLastName users last name
+     * @param mEmail user email
+     * @param mName username
      * @param mPassword user password
-     * @param mPhone    user phone number
      */
-    public void userRegisterTask(String mEmail, String mName, String mPassword, String mPhone) {
-
-        // missing async task will be added when backend is set up
-
-        Toast.makeText(LoginActivity.this, "There was a network error, try again later.", Toast.LENGTH_LONG).show(); // generic network error
-        showRegistrationProgress(false);
+    public void userRegisterTask(String mFirstName, String mLastName, String mEmail, String mName, String mPassword) {
 
 
+        HttpUtils.post("/users/create/" + mName +  "/?firstName=" + mFirstName + "&lastName=" + mLastName + "&email=" + mEmail + "&password=" + mPassword, new RequestParams(), new JsonHttpResponseHandler() {
+            @Override
+            public void onFinish() {
+                showRegistrationProgress(false);
+
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    showRegistrationProgress(false);
+                    if (response.getString("username") != null) {
+                        setElementVisibility("register", true);
+                    } else {
+                        showRegistrationProgress(false);
+                        Toast.makeText(LoginActivity.this, response.getString("error"), Toast.LENGTH_LONG).show(); // log in error
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject
+                    errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                Toast.makeText(LoginActivity.this, "There was a network error, try again later.", Toast.LENGTH_LONG).show(); // generic network error
+                showRegistrationProgress(false);
+
+
+            }
+        });
     }
 
-    /**
-     * Opens a dialog so that the user can enter their location. Once entered, is committed to preferences.
-     */
+        /**
+         * Opens a dialog so that the user can enter their location. Once entered, is committed to preferences.
+         */
     private void displayRecoveryDialog() {
 
 
@@ -530,8 +609,10 @@ public class LoginActivity extends AppCompatActivity  {
                 registerEmail.setError(null);
                 registerPassword.setText("");
                 registerPassword.setError(null);
-                registerPhone.setText("");
-                registerPhone.setError(null);
+                registerFirstName.setText("");
+                registerFirstName.setError(null);
+                registerLastName.setText("");
+                registerLastName.setError(null);
 
             }
         }

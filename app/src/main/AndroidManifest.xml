@@ -29,8 +29,13 @@
         </activity>
         <activity
             android:name=".activity.MainActivity"
-            android:label="@string/title_activity_main"></activity>
-        <!-- Google Maps API Key -->
+            android:label="@string/title_activity_main">
+        </activity>
+        <activity
+            android:name=".activity.RestaurantActivity"
+            android:label="@string/title_activity_main">
+        </activity>
+        <!-- Google Maps API Key  -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />

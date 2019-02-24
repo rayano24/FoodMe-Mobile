@@ -52,7 +52,7 @@ public class LoginActivity extends AppCompatActivity  {
     private ImageView logoImage;
     private Button signInPrompt, registerPrompt, signInButton, registerButton;
     private AutoCompleteTextView signInName, registerEmail, registerPhone;
-    private EditText signInPassword, registerName, registerPassword;
+    private EditText signInPassword, registerName, registerPassword, registerAge, registerFirstName, registerLastName;
     private TextView noAccount, forgotPassword;
     private final static String KEY_PREFERENCE_THEME = "themePref";
     private static int themeSelected = 0;
@@ -105,8 +105,11 @@ public class LoginActivity extends AppCompatActivity  {
         signInButton = findViewById(R.id.signInButton);
         registerPrompt = findViewById(R.id.registerPrompt);
         registerEmail = findViewById(R.id.registerEmail);
+        registerFirstName = findViewById(R.id.registerFirstName);
+        registerLastName = findViewById(R.id.registerLastName);
         registerName = findViewById(R.id.registerName);
         registerPhone = findViewById(R.id.registerPhone);
+        registerAge = findViewById(R.id.registerAge);
         registerPassword = findViewById(R.id.registerPassword);
         registerButton = findViewById(R.id.registerButton);
         noAccount = findViewById(R.id.noAccount);
@@ -258,6 +261,9 @@ public class LoginActivity extends AppCompatActivity  {
         registerEmail.setError(null);
         registerPhone.setError(null);
         registerPassword.setError(null);
+        registerFirstName.setError(null);
+        registerLastName.setError(null);
+        registerAge.setError(null);
 
 
         // Store values at the time of the registration attempt.
@@ -265,6 +271,9 @@ public class LoginActivity extends AppCompatActivity  {
         String name = registerName.getText().toString();
         String phoneNumber = registerPhone.getText().toString();
         String password = registerPassword.getText().toString();
+        String firstName = registerFirstName.getText().toString();
+        String lastName = registerLastName.getText().toString();
+        String age = registerAge.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -294,6 +303,23 @@ public class LoginActivity extends AppCompatActivity  {
             cancel = true;
         }
 
+        if (TextUtils.isEmpty(firstName)) {
+            registerFirstName.setError(getString(R.string.error_field_required));
+            focusView = registerFirstName;
+            cancel = true;
+        }
+
+        if (TextUtils.isEmpty(lastName)) {
+            registerLastName.setError(getString(R.string.error_field_required));
+            focusView = registerLastName;
+            cancel = true;
+        }
+
+        if (!TextUtils.isDigitsOnly(age)) {
+            registerAge.setError(getString(R.string.error_age_format));
+            focusView = registerAge;
+            cancel = true;
+        }
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first

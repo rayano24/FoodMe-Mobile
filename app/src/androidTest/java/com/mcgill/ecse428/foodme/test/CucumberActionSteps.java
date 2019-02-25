@@ -96,6 +96,10 @@ public class CucumberActionSteps {
         //TODO Change when feature is implemented
     }
 
+    public static void filterByDistance(Solo solo, int maxDistance) {
+        //TODO Change when feature is implemented
+    }
+
     // ================================== Settings ===========================================
 
     private static boolean getToSettings(Solo solo) {

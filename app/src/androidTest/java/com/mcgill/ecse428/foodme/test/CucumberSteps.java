@@ -7,6 +7,7 @@ import com.mcgill.ecse428.foodme.test.StepDefs.CreateAccountStepDefs;
 import com.mcgill.ecse428.foodme.test.StepDefs.DeleteAccountStepDefs;
 import com.mcgill.ecse428.foodme.test.StepDefs.DislikeRestaurantStepDefs;
 import com.mcgill.ecse428.foodme.test.StepDefs.FilterCuisineStepDefs;
+import com.mcgill.ecse428.foodme.test.StepDefs.FilterDistanceStepDefs;
 import com.mcgill.ecse428.foodme.test.StepDefs.FilterOpenRestaurantsStepDefs;
 import com.mcgill.ecse428.foodme.test.StepDefs.FilterPriceStepDefs;
 import com.mcgill.ecse428.foodme.test.StepDefs.UserLoginStepDefs;
@@ -213,6 +214,22 @@ public class CucumberSteps extends ActivityInstrumentationTestCase2<MainActivity
     public void i_should_see_restaurants_that_fit_my_cuisine_selection(String cuisine) {
         solo.waitForActivity("MainActivity", timeout);
         assertTrue(FilterCuisineStepDefs.then(solo, cuisine));
+
+
+
+    }
+    //TODO Change when feature is implemented
+    // ================================== Filter Distance feature: Scenario 1 =======================================================
+    @When("I enter my preferred maximum distance {int}")
+    public void i_select_my_max_dist(int distance) {
+        solo.waitForActivity("MainActivity", timeout);
+        FilterDistanceStepDefs.when(solo, Integer.valueOf(distance));
+    }
+
+    @Then("I should see restaurants that are within this distance {int}")
+    public void i_should_see_restaurants_that_are_withing_this_dist(int distance) {
+        solo.waitForActivity("MainActivity", timeout);
+        assertTrue(FilterDistanceStepDefs.then(solo, Integer.valueOf(distance)));
     }
 
     //TODO Change when feature is implemented

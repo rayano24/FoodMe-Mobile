@@ -1,5 +1,6 @@
-package com.mcgill.ecse428.foodme.test;
+package com.mcgill.ecse428.foodme.test.StepDefs;
 
+import com.mcgill.ecse428.foodme.test.CucumberActionSteps;
 import com.robotium.solo.Solo;
 
 public class FilterPriceStepDefs {

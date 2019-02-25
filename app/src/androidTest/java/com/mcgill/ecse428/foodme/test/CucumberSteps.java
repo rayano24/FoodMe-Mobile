@@ -1,9 +1,16 @@
 package com.mcgill.ecse428.foodme.test;
 
 import android.test.ActivityInstrumentationTestCase2;
-import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
 
+import com.mcgill.ecse428.foodme.test.StepDefs.ChangePasswordStepDefs;
+import com.mcgill.ecse428.foodme.test.StepDefs.CreateAccountStepDefs;
+import com.mcgill.ecse428.foodme.test.StepDefs.DeleteAccountStepDefs;
+import com.mcgill.ecse428.foodme.test.StepDefs.DislikeRestaurantStepDefs;
+import com.mcgill.ecse428.foodme.test.StepDefs.FilterCuisineStepDefs;
+import com.mcgill.ecse428.foodme.test.StepDefs.FilterOpenRestaurantsStepDefs;
+import com.mcgill.ecse428.foodme.test.StepDefs.FilterPriceStepDefs;
+import com.mcgill.ecse428.foodme.test.StepDefs.UserLoginStepDefs;
+import com.mcgill.ecse428.foodme.test.StepDefs.UserLogoutStepDefs;
 import com.robotium.solo.Solo;
 
 import com.mcgill.ecse428.foodme.activity.MainActivity;

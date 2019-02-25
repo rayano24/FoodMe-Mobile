@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +56,8 @@ public class FindFragment extends Fragment {
     private RestaurantAdapter restaurantAdapter;
     private TextView noLocation;
 
+    private Button randomRecommandation;
+
     private Activity mActivity;
 
 
@@ -68,6 +71,7 @@ public class FindFragment extends Fragment {
 
         noLocation = rootView.findViewById(R.id.noLocation);
 
+        randomRecommandation = rootView.findViewById(R.id.button);
 
         restaurantAdapter = new RestaurantAdapter(restaurantList);
 
@@ -110,6 +114,16 @@ public class FindFragment extends Fragment {
 
 
         return rootView;
+    }
+
+    public void onClick(View v) {
+
+        switch(v.getId()) {
+            case R.id.button:
+                //TODO Backend method call
+                break;
+
+        }
     }
 
 

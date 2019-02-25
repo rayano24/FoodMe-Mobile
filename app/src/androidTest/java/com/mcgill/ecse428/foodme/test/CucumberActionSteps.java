@@ -10,6 +10,8 @@ public class CucumberActionSteps {
     private static String adminUsername = "admin";
     private static String adminPassword = "password";
 
+    // ================================== Logging in / Accounts ===========================================
+
     //Goes to login form from welcome page
     public static void getToLoginForm(Solo solo) {
         solo.clickOnButton("Sign in");
@@ -47,6 +49,14 @@ public class CucumberActionSteps {
         logIn(solo, adminUsername, adminPassword);
     }
 
+    public static void accessAppWithoutLogginIn(Solo solo){
+
+        if (loggedIn(solo))
+            signOut(solo);
+
+        solo.clickOnView(solo.getView("noAccount"));
+    }
+
     //Logs in using username and password (does not handle invalid input, instead that is asserted in the "Then" method)
     public static void register(Solo solo, String username, String email, String phone, String password) {
         if (!loggedIn(solo)) {
@@ -72,12 +82,57 @@ public class CucumberActionSteps {
         }
     }
 
-    public static void signOut(Solo solo) {
+    // ================================== Filtering ===========================================
 
+    public static void filterByCuisine(Solo solo, String cuisine){
+        //TODO Change when feature is implemented
+    }
+
+    public static void filterByPrice(Solo solo, String price){
+        //TODO Change when feature is implemented
+    }
+
+    public static void filterByOpenRestaurants(Solo solo, boolean filter){
+        //TODO Change when feature is implemented
+    }
+
+    // ================================== Settings ===========================================
+
+    private static boolean getToSettings(Solo solo) {
         if (loggedIn(solo)) {
             //Settings -> Sign Out
             solo.clickOnMenuItem("Settings");
-            solo.clickOnView(solo.getView("signOutButton"));
+            return true;
         }
+        return false;
+    }
+
+    //TODO Change when feature is implemented
+    public static void selectChangePassword(Solo solo){
+        if (getToSettings(solo))
+            solo.clickOnView(solo.getView("changePasswordButton"));
+    }
+
+    //TODO Change when feature is implemented
+    public static void changePassword(Solo solo, String oldPw, String newPw){
+
+        //Fill prompt with username to test
+        EditText oldPassword = (EditText) solo.getView("oldPassword");
+        solo.typeText(oldPassword, oldPw);
+
+        //Fill prompt with email to test
+        EditText newPassword = (EditText) solo.getView("newPassword");
+        solo.typeText(newPassword, newPw);
+    }
+
+    public static void signOut(Solo solo) {
+        if (getToSettings(solo))
+            solo.clickOnView(solo.getView("signOutButton"));
+    }
+
+    //TODO Change when feature is implemented
+    public static void deleteAccount(Solo solo) {
+        if (getToSettings(solo))
+            solo.clickOnView(solo.getView("deleteAccountButton"));
     }
 }

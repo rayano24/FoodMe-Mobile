@@ -27,6 +27,7 @@ import com.mcgill.ecse428.foodme.model.Restaurant;
 import com.mcgill.ecse428.foodme.model.RestaurantHistory;
 import com.mcgill.ecse428.foodme.utils.HttpUtils;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -53,7 +54,7 @@ public class FindFragment extends Fragment {
     private List<Restaurant> restaurantList = new ArrayList<>();
     private RecyclerView restaurantRecyclerView;
     private RestaurantAdapter restaurantAdapter;
-    private TextView noLocation;
+    private TextView noLocation, noRestaurants;
 
     private Activity mActivity;
 
@@ -67,6 +68,7 @@ public class FindFragment extends Fragment {
         restaurantRecyclerView = rootView.findViewById(R.id.recyclerFindRestaurant);
 
         noLocation = rootView.findViewById(R.id.noLocation);
+        noRestaurants = rootView.findViewById(R.id.noRestaurants);
 
 
         restaurantAdapter = new RestaurantAdapter(restaurantList);
@@ -101,7 +103,7 @@ public class FindFragment extends Fragment {
                             if (location != null) {
                                 double lat = location.getLatitude();
                                 double lng = location.getLongitude();
-                                // TODO BACKEND METHOD
+                                displayRestaurants(Double.toString(lat), Double.toString(lng));
                             }
                         }
                     });
@@ -121,7 +123,22 @@ public class FindFragment extends Fragment {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission granted
-                    // TODO BACKEND METHOD
+                    if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+                        mFusedLocationClient.getLastLocation()
+                                .addOnSuccessListener(mActivity, new OnSuccessListener<Location>() {
+                                    @Override
+                                    public void onSuccess(Location location) {
+                                        // Got last known location. In some rare situations this can be null.
+                                        if (location != null) {
+                                            double lat = location.getLatitude();
+                                            double lng = location.getLongitude();
+                                            displayRestaurants(Double.toString(lat), Double.toString(lng));
+                                        }
+                                    }
+                                });
+                    }
+
 
                 } else {
                     // permission denied, show notice
@@ -172,7 +189,7 @@ public class FindFragment extends Fragment {
      */
     public void displayRestaurants(String lat, String lng) {
 
-        HttpUtils.get("/", new RequestParams(), new JsonHttpResponseHandler() {
+        HttpUtils.get("search/" + lng + "/" + lat + "/distance" + 0, new RequestParams(), new JsonHttpResponseHandler() {
 
             @Override
             public void onFinish() {
@@ -180,13 +197,31 @@ public class FindFragment extends Fragment {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+
                 try {
 
                     restaurantList.clear();
 
+                    JSONArray mainArray = response.getJSONArray("businesses");
 
-                    if (response.isNull("test")) {
-                        response.getString("e");
+                    // parse each trip in the passenger array and load it into the trip lists
+
+                    for (int i = 0; i < mainArray.length(); i++) {
+
+                        JSONObject obj = mainArray.getJSONObject(i);
+                        String name = obj.getString("name");
+                        String price = obj.getString("price");
+                        String distance = obj.getString("distance");
+
+                        JSONArray categories = obj.getJSONArray("categories");
+                        JSONObject cuisineList = categories.getJSONObject(0);
+                        String cuisine = cuisineList.getString("alias");
+
+
+
+
+                        restaurantList.add(new Restaurant(name, cuisine, price, distance));
 
 
                     }
@@ -196,12 +231,13 @@ public class FindFragment extends Fragment {
                     e.printStackTrace();
                 }
 
-              /*  if (restaurantList.isEmpty())
-                    noRestos.setVisibility(View.VISIBLE);
-                else {
-                    noRestos.setVisibility(View.GONE);
 
-                } */
+                if (restaurantList.isEmpty())
+                    noRestaurants.setVisibility(View.VISIBLE);
+                else {
+                    noRestaurants.setVisibility(View.GONE);
+
+                }
 
                 restaurantAdapter.notifyDataSetChanged();
 

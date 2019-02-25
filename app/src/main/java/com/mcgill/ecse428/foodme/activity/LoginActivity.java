@@ -42,7 +42,7 @@ import cz.msebera.android.httpclient.Header;
 /**
  * Handles logging in and signing up
  */
-public class LoginActivity extends AppCompatActivity  {
+public class LoginActivity extends AppCompatActivity {
 
 
     /**
@@ -372,77 +372,66 @@ public class LoginActivity extends AppCompatActivity  {
      */
     private void showRegistrationProgress(final boolean show) {
 
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mRegisterFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            // added by me
-            logoImage.setVisibility(show ? View.GONE : View.VISIBLE);
-            progressSpace.setVisibility(show ? View.VISIBLE : View.GONE);
-            mRegisterFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mRegisterFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
+        mRegisterFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+        // added by me
+        logoImage.setVisibility(show ? View.GONE : View.VISIBLE);
+        progressSpace.setVisibility(show ? View.VISIBLE : View.GONE);
+        mRegisterFormView.animate().setDuration(shortAnimTime).alpha(
+                show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mRegisterFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            }
+        });
 
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(mRegisterFormView.getWindowToken(), 0);
-            // MOVING PROGRESS BAR TO THE MIDDLE
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mRegisterFormView.getWindowToken(), 0);
+        // MOVING PROGRESS BAR TO THE MIDDLE
 
-            Display display = getWindowManager().getDefaultDisplay();
-            Point size = new Point();
-            display.getSize(size);
-            int height = size.y;
-            progressSpace.getLayoutParams().height = (int) (height / 2.5);
-            progressSpace.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int height = size.y;
+        progressSpace.getLayoutParams().height = (int) (height / 2.5);
+        progressSpace.setVisibility(show ? View.VISIBLE : View.GONE);
+        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+        mProgressView.animate().setDuration(shortAnimTime).alpha(
+                show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
 
-                }
-            });
+            }
+        });
 
     }
 
 
-
-
     /**
      * Attempts to authorize the user account and log in through an asynchronous task
-     * @param mName the username
+     *
+     * @param mName     the username
      * @param mPassword the password
      */
     public void userLogInTask(String mName, String mPassword) {
 
         final String userID = mName;
 
+        // TODO IMPROVE ERROR CHECKING
 
-        // temporary
-        if(userID.equals("admin") && mPassword.equals("password")) {
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
-            prefs.edit().putString(KEY_USER, userID).commit(); // adding userID to preferences for future use
-            Intent I = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(I);
-            finish();
-        }
-
-
-        HttpUtils.get("?login" + "username=" + mName + "&password=" + mPassword , new RequestParams(), new JsonHttpResponseHandler() {
+        HttpUtils.get("/users/auth/" + mName + "/" + mPassword, new RequestParams(), new JsonHttpResponseHandler() {
 
             @Override
             public void onFinish() {
                 showSignInProgress(false);
-
             }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
-                    if (response.getString("user") != null) {
+                    if (response.getBoolean("response")) {
                         showSignInProgress(false);
                         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
                         prefs.edit().putString(KEY_USER, userID).apply(); // adding userID to preferences for future use
@@ -451,10 +440,11 @@ public class LoginActivity extends AppCompatActivity  {
                         finish();
                     } else {
                         showSignInProgress(false);
-                       Toast.makeText(LoginActivity.this, "There was an error loggin in, please check your username or password", Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this, "There was an error logging in, please check your username or password", Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+
                 }
             }
 
@@ -463,7 +453,7 @@ public class LoginActivity extends AppCompatActivity  {
                     errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
                 showSignInProgress(false);
-                Toast.makeText(LoginActivity.this, "There was a network error, try again later.", Toast.LENGTH_LONG).show(); // generic network error
+                Toast.makeText(LoginActivity.this, "There was an error logging in, please check your username or password", Toast.LENGTH_LONG).show();
 
             }
         });
@@ -472,16 +462,19 @@ public class LoginActivity extends AppCompatActivity  {
 
     /**
      * Attempts to register the user account through an asynchronous task
+     *
      * @param mFirstName users first name
-     * @param mLastName users last name
-     * @param mEmail user email
-     * @param mName username
-     * @param mPassword user password
+     * @param mLastName  users last name
+     * @param mEmail     user email
+     * @param mName      username
+     * @param mPassword  user password
      */
     public void userRegisterTask(String mFirstName, String mLastName, String mEmail, String mName, String mPassword) {
 
 
-        HttpUtils.post("/users/create/" + mName +  "/?firstName=" + mFirstName + "&lastName=" + mLastName + "&email=" + mEmail + "&password=" + mPassword, new RequestParams(), new JsonHttpResponseHandler() {
+        // TODO IMPROVE ERROR CHECKING
+
+        HttpUtils.post("users/create/" + mName + "/?firstName=" + mFirstName + "&lastName=" + mLastName + "&email=" + mEmail + "&password=" + mPassword, new RequestParams(), new JsonHttpResponseHandler() {
             @Override
             public void onFinish() {
                 showRegistrationProgress(false);
@@ -490,25 +483,25 @@ public class LoginActivity extends AppCompatActivity  {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                try {
+                // try {
+                showRegistrationProgress(false);
+                if (response != null) {
+                    setElementVisibility("register", true);
+                } else {
                     showRegistrationProgress(false);
-                    if (response.getString("username") != null) {
-                        setElementVisibility("register", true);
-                    } else {
-                        showRegistrationProgress(false);
-                        Toast.makeText(LoginActivity.this, response.getString("error"), Toast.LENGTH_LONG).show(); // log in error
+                    Toast.makeText(LoginActivity.this, "There was an error creating your account", Toast.LENGTH_LONG).show();
 
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
+                //} catch (JSONException e) {
+                //   e.printStackTrace();
+                //   }
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject
                     errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
-                Toast.makeText(LoginActivity.this, "There was a network error, try again later.", Toast.LENGTH_LONG).show(); // generic network error
+                Toast.makeText(LoginActivity.this, "There was an error registering, please check your data", Toast.LENGTH_LONG).show();
                 showRegistrationProgress(false);
 
 
@@ -516,9 +509,9 @@ public class LoginActivity extends AppCompatActivity  {
         });
     }
 
-        /**
-         * Opens a dialog so that the user can enter their location. Once entered, is committed to preferences.
-         */
+    /**
+     * Opens a dialog so that the user can enter their location. Once entered, is committed to preferences.
+     */
     private void displayRecoveryDialog() {
 
 
@@ -535,7 +528,7 @@ public class LoginActivity extends AppCompatActivity  {
 
         alert.setPositiveButton(R.string.recover_dialog_positive_button, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-               // TODO NETWORK LOGIC
+                // TODO NETWORK LOGIC
             }
 
         });
@@ -549,7 +542,6 @@ public class LoginActivity extends AppCompatActivity  {
         alert.show();
 
     }
-
 
 
     // This is added to return the main page when you are in the process of signing up/registering
@@ -579,6 +571,11 @@ public class LoginActivity extends AppCompatActivity  {
                 noAccount.setVisibility(View.GONE);
                 mRegisterFormView.setVisibility(View.GONE);
                 mLoginFormView.setVisibility(View.VISIBLE);
+                signInName.setVisibility(View.VISIBLE);
+                signInPassword.setVisibility(View.VISIBLE);
+                signInButton.setVisibility(View.VISIBLE);
+                forgotPassword.setVisibility(View.VISIBLE);
+
             } else {
                 registerPrompt.setVisibility(View.VISIBLE);
                 signInPrompt.setVisibility(View.VISIBLE);
@@ -589,6 +586,10 @@ public class LoginActivity extends AppCompatActivity  {
                 signInName.setError(null);
                 signInPassword.setText("");
                 signInPassword.setError(null);
+                signInName.setVisibility(View.GONE);
+                signInPassword.setVisibility(View.GONE);
+                forgotPassword.setVisibility(View.GONE);
+                signInButton.setVisibility(View.GONE);
             }
         } else if (mode.equals("register")) {
             if (!reverse) {
@@ -597,12 +598,16 @@ public class LoginActivity extends AppCompatActivity  {
                 noAccount.setVisibility(View.GONE);
                 mLoginFormView.setVisibility(View.GONE);
                 mRegisterFormView.setVisibility(View.VISIBLE);
+                registerPassword.setVisibility(View.VISIBLE);
+                registerFirstName.setVisibility(View.VISIBLE);
+                registerLastName.setVisibility(View.VISIBLE);
+                registerButton.setVisibility(View.VISIBLE);
+                registerEmail.setVisibility(View.VISIBLE);
+                registerName.setVisibility(View.VISIBLE);
             } else {
                 registerPrompt.setVisibility(View.VISIBLE);
                 signInPrompt.setVisibility(View.VISIBLE);
                 noAccount.setVisibility(View.VISIBLE);
-                mLoginFormView.setVisibility(View.GONE);
-                mRegisterFormView.setVisibility(View.GONE);
                 registerName.setText("");
                 registerName.setError(null);
                 registerEmail.setText("");
@@ -613,6 +618,14 @@ public class LoginActivity extends AppCompatActivity  {
                 registerFirstName.setError(null);
                 registerLastName.setText("");
                 registerLastName.setError(null);
+                mLoginFormView.setVisibility(View.GONE);
+                mRegisterFormView.setVisibility(View.GONE);
+                registerName.setVisibility(View.GONE);
+                registerPassword.setVisibility(View.GONE);
+                registerFirstName.setVisibility(View.GONE);
+                registerLastName.setVisibility(View.GONE);
+                registerButton.setVisibility(View.GONE);
+                registerEmail.setVisibility(View.GONE);
 
             }
         }

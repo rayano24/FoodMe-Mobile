@@ -33,6 +33,8 @@ import androidx.fragment.app.Fragment;
  */
 public class MainActivity extends AppCompatActivity {
 
+    
+
 
     //List that holds the fragments
     private final List<Fragment> fragments = new ArrayList<>(3);

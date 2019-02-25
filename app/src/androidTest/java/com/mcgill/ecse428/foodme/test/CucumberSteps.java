@@ -241,23 +241,19 @@ public class CucumberSteps extends ActivityInstrumentationTestCase2<MainActivity
     public void viewing_restaurant() throws Exception {
         solo = new Solo(getInstrumentation());
         getActivity();
-
-//        if (!atLogin()) signOut();
-//        getToLoginForm();
+        DislikeRestaurantStepDefs.given(solo);
     }
 
     @When("I click dislike restaurant")
     public void dislike_restaurant() throws Exception {
         solo.waitForActivity("MainActivity", 2000);
-
-        solo.clickOnButton("Dislike");
+        DislikeRestaurantStepDefs.when(solo);
     }
 
     @Then("The restaurant should be disliked")
     public void restaurant_should_be_disliked() throws Exception {
-
         solo.waitForActivity("MainActivity", 2000);
-        assertFalse(solo.searchButton("Sign in"));
+        assertTrue(DislikeRestaurantStepDefs.then(solo));
     }
 
     // ================================== End of Test Implementation =======================================================

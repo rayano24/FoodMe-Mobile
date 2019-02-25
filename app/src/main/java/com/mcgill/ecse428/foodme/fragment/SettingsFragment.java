@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mcgill.ecse428.foodme.R;
+import com.mcgill.ecse428.foodme.activity.EditAccountActivity;
 import com.mcgill.ecse428.foodme.activity.LoginActivity;
 
 import java.util.ArrayList;
@@ -83,6 +84,13 @@ public class SettingsFragment extends Fragment {
                     prefs.edit().remove(KEY_USER_ID).apply();
                     Intent I = new Intent(mActivity, LoginActivity.class);
                     startActivity(I);
+                }
+
+                else if (userID != null && !userID.equals("noAccount")) {
+                   // prefs.edit().remove(KEY_USER_ID).apply();
+                    Intent I = new Intent(mActivity, EditAccountActivity.class);
+                    startActivity(I);
+                    //mActivity.finish();
                 }
             }
         });

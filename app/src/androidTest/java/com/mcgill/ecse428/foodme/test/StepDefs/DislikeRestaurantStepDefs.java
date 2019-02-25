@@ -1,4 +1,4 @@
-package com.mcgill.ecse428.foodme.test;
+package com.mcgill.ecse428.foodme.test.StepDefs;
 
 import com.robotium.solo.Solo;
 

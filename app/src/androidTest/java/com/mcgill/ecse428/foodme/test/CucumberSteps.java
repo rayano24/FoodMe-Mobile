@@ -204,6 +204,11 @@ public class CucumberSteps extends ActivityInstrumentationTestCase2<MainActivity
         FilterCuisineStepDefs.givenNotLogIn(solo);
     }
 
+    @Given("I am on the restaurants page")
+    public void i_am_on_the_restaurants_page(){
+        FilterCuisineStepDefs.givenRestaurantPage(solo);
+    }
+
     @When("I select my cuisine {string} preferences")
     public void i_select_my_cuisine_pref(String cuisine) {
         solo.waitForActivity("MainActivity", timeout);

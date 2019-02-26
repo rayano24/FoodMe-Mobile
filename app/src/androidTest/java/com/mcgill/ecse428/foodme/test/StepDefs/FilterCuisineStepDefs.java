@@ -5,6 +5,10 @@ import com.robotium.solo.Solo;
 
 public class FilterCuisineStepDefs {
 
+    public static void givenRestaurantPage(Solo solo) {
+        CucumberActionSteps.getToRestaurantsPage(solo);
+    }
+
     public static void givenNotLogIn(Solo solo) {
         CucumberActionSteps.accessAppWithoutLogginIn(solo);
     }

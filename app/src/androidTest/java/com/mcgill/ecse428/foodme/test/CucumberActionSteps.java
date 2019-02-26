@@ -84,6 +84,10 @@ public class CucumberActionSteps {
 
     // ================================== Filtering ===========================================
 
+    public static void getToRestaurantsPage(Solo solo){
+        //TODO
+    }
+
     public static void filterByCuisine(Solo solo, String cuisine){
         //TODO Change when feature is implemented
     }

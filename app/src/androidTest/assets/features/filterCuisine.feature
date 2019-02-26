@@ -3,6 +3,7 @@ Feature: User filters restaurants by cuisine
 
   Scenario Outline: Filter by cuisine when logged in (Normal scenario)
     Given I am logged in
+    And I am on the restaurants page
     When I select my cuisine <cuisine> preferences
     Then I should see restaurants that fit my cuisine <cuisine> selection
 
@@ -14,6 +15,7 @@ Feature: User filters restaurants by cuisine
 
   Scenario Outline: Filter by cuisine without logging in (Alternate scenario)
     Given I choose not to log in
+    And I am on the restaurants page
     When I select my cuisine <cuisine> preferences
     Then I should see restaurants that fit my cuisine <cuisine> selection
 

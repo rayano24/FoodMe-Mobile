@@ -44,4 +44,4 @@ before_script:
   - adb shell input keyevent 82 &
 
 script:
-  - adb shell am instrument -w com.mcgill.ecse428.foodme.test/com.mcgill.ecse428.foodme.test.Instrumentation
+  - ./gradlew cAT

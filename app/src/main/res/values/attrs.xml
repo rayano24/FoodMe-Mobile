@@ -5,6 +5,12 @@
         <attr name="selectableDrawableColorDefault" format="reference|color"/>
         <attr name="selectableDrawableColorInverse" format="reference|color"/>
         <attr name="selectableDrawableColor" format="reference|color"/>
+        <attr name="selectableRectDrawable" format="reference|color"/>
+        <attr name="selectableRectDrawableInverse" format="reference|color"/>
+        <attr name="selectableRectDrawableColored" format="reference|color"/>
+        <attr name="selectableRoundedRectDrawable" format="reference|color"/>
+        <attr name="selectableRoundedRectDrawableInverse" format="reference|color"/>
+        <attr name="selectableRoundedRectDrawableColored" format="reference|color"/>
     </declare-styleable>
 
 </resources>

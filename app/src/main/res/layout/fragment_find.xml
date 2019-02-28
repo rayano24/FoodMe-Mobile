@@ -40,7 +40,7 @@
         android:layout_height="match_parent"
         android:scrollbars="vertical"
         android:visibility="visible"
-        tools:itemCount="37"
+        tools:itemCount="50"
         tools:listitem="@layout/recycler_restaurant" />
 
 </LinearLayout>

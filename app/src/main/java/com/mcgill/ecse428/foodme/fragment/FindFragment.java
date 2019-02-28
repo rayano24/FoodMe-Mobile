@@ -31,6 +31,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -189,7 +191,8 @@ public class FindFragment extends Fragment {
      */
     public void displayRestaurants(String lat, String lng) {
 
-        HttpUtils.get("search/" + lng + "/" + lat + "/distance" + 0, new RequestParams(), new JsonHttpResponseHandler() {
+
+        HttpUtils.get("search/distance/" + 0 + "/?long=" + lng + "&lat=" + lat, new RequestParams(), new JsonHttpResponseHandler() {
 
             @Override
             public void onFinish() {
@@ -205,23 +208,27 @@ public class FindFragment extends Fragment {
 
                     JSONArray mainArray = response.getJSONArray("businesses");
 
-                    // parse each trip in the passenger array and load it into the trip lists
 
                     for (int i = 0; i < mainArray.length(); i++) {
 
                         JSONObject obj = mainArray.getJSONObject(i);
                         String name = obj.getString("name");
-                        String price = obj.getString("price");
+                        String price = "n/a";
+                        if(obj.has("price")) {
+                             price = obj.getString("price");
+                        }
                         String distance = obj.getString("distance");
 
                         JSONArray categories = obj.getJSONArray("categories");
                         JSONObject cuisineList = categories.getJSONObject(0);
-                        String cuisine = cuisineList.getString("alias");
+                        String cuisine = cuisineList.getString("title");
 
 
+                        BigDecimal bd = new BigDecimal(distance);
+                        bd = bd.setScale(1, RoundingMode.HALF_UP);
 
 
-                        restaurantList.add(new Restaurant(name, cuisine, price, distance));
+                        restaurantList.add(new Restaurant(name, cuisine, price, bd.toString() + " miles"));
 
 
                     }

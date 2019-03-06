@@ -13,6 +13,7 @@ import com.mcgill.ecse428.foodme.model.Restaurant;
 import org.w3c.dom.Text;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 public class IndividualRestaurantFragment extends Fragment {
@@ -21,30 +22,33 @@ public class IndividualRestaurantFragment extends Fragment {
 
     private String restaurantName, restaurantDistance, restaurantPrice, restaurantCuisine;
 
+
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState){
         View rootView = inflater.inflate(R.layout.fragment_individual_restaurant, container,
                 false);
 
-        Bundle bundle = getArguments();
+        //find the page items
+        TextView name = (TextView) rootView.findViewById(R.id.rName);
+        TextView cuisine = (TextView) rootView.findViewById(R.id.rCuisine);
+        TextView price = (TextView) rootView.findViewById(R.id.rPrice);
+        TextView distance = (TextView) rootView.findViewById(R.id.rDistance);
 
-        restaurantName =  bundle.getString("Name");
-        restaurantDistance = bundle.getString("Distance");
-        restaurantPrice = bundle.getString("Price");
-        restaurantCuisine = bundle.getString("Cuisine");
-
-        TextView nameText = (TextView) rootView.findViewById(R.id.rName);
-        TextView distanceText = (TextView) rootView.findViewById(R.id.rDistance);
-        TextView priceText = (TextView) rootView.findViewById(R.id.rPrice);
-        TextView cuisineText = (TextView) rootView.findViewById(R.id.rCuisine);
-
-        nameText.setText(restaurantName);
-        distanceText.setText(restaurantDistance);
-        priceText.setText(restaurantPrice);
-        cuisineText.setText(restaurantCuisine);
-
+        //assign the values
+        name.setText(restaurantName);
+        cuisine.setText("Cuisine: " + restaurantCuisine);
+        price.setText("Price Range: " + restaurantPrice);
+        distance.setText("Distance: " + restaurantDistance);
 
         return rootView;
     }
 
+    @Override
+    public void setArguments(@Nullable Bundle args) {
+        super.setArguments(args);
+        restaurantName = args.getString("NAME");
+        restaurantCuisine = args.getString("CUISINE");
+        restaurantDistance = args.getString("DISTANCE");
+        restaurantPrice = args.getString("PRICE");
+    }
 }

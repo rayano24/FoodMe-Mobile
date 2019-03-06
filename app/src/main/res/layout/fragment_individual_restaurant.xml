@@ -29,6 +29,17 @@
         android:layout_height="10dp" />
 
     <TextView
+        android:id="@+id/rCuisine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:hint="Cuisine" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
+
+    <TextView
         android:id="@+id/rDistance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -46,15 +57,7 @@
         android:textSize="15sp"
         android:hint="Price" />
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="10dp" />
 
-    <TextView
-        android:id="@+id/rCuisine"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="15sp"
-        android:hint="Cuisine" />
+
 
 </LinearLayout>

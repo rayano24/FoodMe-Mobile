@@ -1,6 +1,8 @@
 package com.mcgill.ecse428.foodme.adapters;
 
+import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,11 +10,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mcgill.ecse428.foodme.R;
+import com.mcgill.ecse428.foodme.fragment.IndividualRestaurantFragment;
 import com.mcgill.ecse428.foodme.model.Restaurant;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
@@ -82,13 +87,23 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.My
            public void onClick(View view, int position, boolean isLongClick){
                List<Restaurant> rList = restaurantList;
                if(isLongClick){
-                   //temporary test code
-                   Toast.makeText(mContext, "#" + position +" - "+rList.get(position).getName()
-                        +" (Long click)", Toast.LENGTH_SHORT).show();
+                   //for now, no additional functionality here
+                   onClick(view, position, false);
                }
                else{
-                   //test code
-                   Toast.makeText(mContext,"#"+position+" - "+rList.get(position).getName(),Toast.LENGTH_SHORT).show();
+                   IndividualRestaurantFragment irf = new IndividualRestaurantFragment();
+
+                   //prepare arguments
+                   Bundle bundle = new Bundle();
+                   bundle.putString("NAME", rList.get(position).getName());
+                   bundle.putString("PRICE", rList.get(position).getPrice());
+                   bundle.putString("CUISINE",rList.get(position).getCuisine());
+                   bundle.putString("DISTANCE",rList.get(position).getDistance());
+                   irf.setArguments(bundle);
+
+                   //swap fragments
+                   FragmentManager fm = ((AppCompatActivity)mContext).getSupportFragmentManager();
+                   fm.beginTransaction().replace(R.id.frame_fragmentholder, irf).commit();
                }
            }
         });

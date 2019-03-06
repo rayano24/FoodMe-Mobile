@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.MyViewHolder> {
 
     private List<Restaurant> restaurantList;
+    //holds our parent's context
     private Context mContext;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder
@@ -34,6 +35,8 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.My
             cuisine = view.findViewById(R.id.findRestaurantCuisine);
             distance = view.findViewById(R.id.findRestaurantDistance);
             price = view.findViewById(R.id.findRestaurantPrice);
+
+            //add the click listeners
             view.setOnClickListener(this);
             view.setOnLongClickListener(this);
         }
@@ -73,15 +76,18 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.My
         holder.cuisine.setText(restaurant.getCuisine());
         holder.distance.setText(restaurant.getDistance());
 
+        //Create the click listeners
         holder.setClickListener(new ItemClickListener(){
            @Override
            public void onClick(View view, int position, boolean isLongClick){
                List<Restaurant> rList = restaurantList;
                if(isLongClick){
+                   //temporary test code
                    Toast.makeText(mContext, "#" + position +" - "+rList.get(position).getName()
                         +" (Long click)", Toast.LENGTH_SHORT).show();
                }
                else{
+                   //test code
                    Toast.makeText(mContext,"#"+position+" - "+rList.get(position).getName(),Toast.LENGTH_SHORT).show();
                }
            }

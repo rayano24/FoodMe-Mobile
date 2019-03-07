@@ -108,7 +108,7 @@ public class RestaurantFragment extends Fragment {
 
         HttpUtils.get("/", new RequestParams(), new JsonHttpResponseHandler() {
 
-            @Override
+                   @Override
             public void onFinish() {
             }
 

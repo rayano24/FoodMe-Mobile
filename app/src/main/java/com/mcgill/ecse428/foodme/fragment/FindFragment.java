@@ -102,7 +102,9 @@ public class FindFragment extends Fragment {
                         @Override
                         public void onSuccess(Location location) {
                             // Got last known location. In some rare situations this can be null.
+
                             if (location != null) {
+
                                 double lat = location.getLatitude();
                                 double lng = location.getLongitude();
                                 displayRestaurants(Double.toString(lat), Double.toString(lng));
@@ -219,6 +221,11 @@ public class FindFragment extends Fragment {
                         }
                         String distance = obj.getString("distance");
 
+                        //get the restaurant's address
+                        JSONObject locObj = obj.getJSONObject("location");
+                        JSONArray locArr = locObj.getJSONArray("display_address");
+                        String[] displayLocation = {locArr.getString(0),locArr.getString(1)};
+
                         JSONArray categories = obj.getJSONArray("categories");
                         JSONObject cuisineList = categories.getJSONObject(0);
                         String cuisine = cuisineList.getString("title");
@@ -228,7 +235,7 @@ public class FindFragment extends Fragment {
                         bd = bd.setScale(1, RoundingMode.HALF_UP);
 
 
-                        restaurantList.add(new Restaurant(name, cuisine, price, bd.toString() + " miles"));
+                        restaurantList.add(new Restaurant(name, cuisine, price, bd.toString() + " miles", displayLocation));
 
 
                     }

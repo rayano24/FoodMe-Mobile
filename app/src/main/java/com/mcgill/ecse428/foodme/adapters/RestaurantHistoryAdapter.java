@@ -95,6 +95,9 @@ public class RestaurantHistoryAdapter extends RecyclerView.Adapter<RestaurantHis
                     bundle.putString("DATE", rList.get(position).getDate());
                     bundle.putString("CUISINE",rList.get(position).getCuisine());
                     bundle.putString("RATING",rList.get(position).getRating());
+                    String[] address = rList.get(position).getAddress();
+                    bundle.putString("ADDRESS1", address[0]);
+                    bundle.putString("ADDRESS2", address[1]);
                     irf.setArguments(bundle);
 
                     //swap fragments

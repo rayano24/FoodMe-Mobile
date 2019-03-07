@@ -51,6 +51,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'com.google.android.material:material:1.1.0-alpha03'
     implementation 'com.google.android.gms:play-services-maps:16.1.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:core:1.1.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
@@ -65,7 +66,7 @@ dependencies {
 
     implementation 'com.jayway.android.robotium:robotium-solo:5.2.1'
     //Runner
-    androidTestImplementation( 'com.android.support.test:runner:0.4.1' ){
+    androidTestImplementation('com.android.support.test:runner:0.4.1') {
         exclude module: 'junit'
     }
 //    compile group: 'com.android.support.test', name: 'runner', version: '1.0.2'

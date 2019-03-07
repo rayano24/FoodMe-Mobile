@@ -99,11 +99,14 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.My
                    bundle.putString("PRICE", rList.get(position).getPrice());
                    bundle.putString("CUISINE",rList.get(position).getCuisine());
                    bundle.putString("DISTANCE",rList.get(position).getDistance());
+                   String[] address = rList.get(position).getAddress();
+                   bundle.putString("ADDRESS1",address[0]);
+                   bundle.putString("ADDRESS2",address[1]);
                    irf.setArguments(bundle);
 
                    //swap fragments
                    FragmentManager fm = ((AppCompatActivity)mContext).getSupportFragmentManager();
-                   fm.beginTransaction().replace(R.id.frame_fragmentholder, irf).commit();
+                   fm.beginTransaction().replace(R.id.frame_fragmentholder, irf, "IRF").commit();
                }
            }
         });

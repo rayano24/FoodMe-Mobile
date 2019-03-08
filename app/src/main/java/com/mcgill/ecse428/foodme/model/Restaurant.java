@@ -8,6 +8,11 @@ package com.mcgill.ecse428.foodme.model;
 public class Restaurant {
 
     private String name, distance, price, cuisine;
+    //Should be length 2
+    //["address", "city state zip"]
+    //i.e: ["123 St-Catherine", "Montreal, Qc X1X1X1"]
+    //kept separate for formatting
+    private String[] address;
 
 
     public Restaurant(String name, String cuisine, String price, String distance) {
@@ -15,6 +20,13 @@ public class Restaurant {
         this.distance = distance;
         this.cuisine = cuisine;
         this.price = price;
+    }
+    public Restaurant(String name, String cuisine, String price, String distance, String[] address){
+        this.name = name;
+        this.distance = distance;
+        this.cuisine = cuisine;
+        this.price = price;
+        this.address = address;
     }
 
     public String getName() {
@@ -49,7 +61,9 @@ public class Restaurant {
         this.price = price;
     }
 
+    public void setAddress(String[] address){ this.address = address;}
 
+    public String[] getAddress(){ return this.address;}
 }
 
 

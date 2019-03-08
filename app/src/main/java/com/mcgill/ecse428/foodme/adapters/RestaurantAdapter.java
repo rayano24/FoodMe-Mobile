@@ -83,29 +83,32 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.My
 
         //Create the click listeners
         holder.setClickListener(new ItemClickListener(){
-           @Override
-           public void onClick(View view, int position, boolean isLongClick){
-               List<Restaurant> rList = restaurantList;
-               if(isLongClick){
-                   //for now, no additional functionality here
-                   onClick(view, position, false);
-               }
-               else{
-                   IndividualRestaurantFragment irf = new IndividualRestaurantFragment();
+            @Override
+            public void onClick(View view, int position, boolean isLongClick){
+                List<Restaurant> rList = restaurantList;
+                if(isLongClick){
+                    //for now, no additional functionality here
+                    onClick(view, position, false);
+                }
+                else{
+                    IndividualRestaurantFragment irf = new IndividualRestaurantFragment();
 
-                   //prepare arguments
-                   Bundle bundle = new Bundle();
-                   bundle.putString("NAME", rList.get(position).getName());
-                   bundle.putString("PRICE", rList.get(position).getPrice());
-                   bundle.putString("CUISINE",rList.get(position).getCuisine());
-                   bundle.putString("DISTANCE",rList.get(position).getDistance());
-                   irf.setArguments(bundle);
+                    //prepare arguments
+                    Bundle bundle = new Bundle();
+                    bundle.putString("NAME", rList.get(position).getName());
+                    bundle.putString("PRICE", rList.get(position).getPrice());
+                    bundle.putString("CUISINE",rList.get(position).getCuisine());
+                    bundle.putString("DISTANCE",rList.get(position).getDistance());
+                    String[] address = rList.get(position).getAddress();
+                    bundle.putString("ADDRESS1",address[0]);
+                    bundle.putString("ADDRESS2",address[1]);
+                    irf.setArguments(bundle);
 
-                   //swap fragments
-                   FragmentManager fm = ((AppCompatActivity)mContext).getSupportFragmentManager();
-                   fm.beginTransaction().replace(R.id.frame_fragmentholder, irf).commit();
-               }
-           }
+                    //swap fragments
+                    FragmentManager fm = ((AppCompatActivity)mContext).getSupportFragmentManager();
+                    fm.beginTransaction().replace(R.id.frame_fragmentholder, irf, "IRF").commit();
+                }
+            }
         });
 
     }

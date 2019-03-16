@@ -49,9 +49,9 @@ public class EditAccountActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onClick(View v) {
                 // removing user data and revert to log in screen
-                Intent I = new Intent(mActivity, PreferenceActivity.class);
+                Intent I = new Intent(EditAccountActivity.this, PreferenceActivity.class);
                 startActivity(I);
-                mActivity.finish();
+                //.finish();
             }
         });
 

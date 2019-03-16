@@ -90,7 +90,7 @@ public class SettingsFragment extends Fragment {
                    // prefs.edit().remove(KEY_USER_ID).apply();
                     Intent I = new Intent(mActivity, EditAccountActivity.class);
                     startActivity(I);
-                    //mActivity.finish();
+                    mActivity.finish();
                 }
             }
         });

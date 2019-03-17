@@ -144,7 +144,7 @@ public class PreferenceAdapter extends RecyclerView.Adapter<PreferenceAdapter.My
         ArrayAdapter<String> dataAdapterP = new ArrayAdapter<String>(holder.location.getContext(),
                 android.R.layout.simple_spinner_item, priceList);
         priceSpinner.setAdapter(dataAdapterP);
-        int spinnerPositionP = dataAdapter.getPosition(preference.getPrice());
+        int spinnerPositionP = dataAdapterP.getPosition(preference.getPrice());
         priceSpinner.setSelection(spinnerPositionP);
         layout.addView(priceSpinner);
 
@@ -153,13 +153,18 @@ public class PreferenceAdapter extends RecyclerView.Adapter<PreferenceAdapter.My
         ArrayAdapter<String> dataAdapterS = new ArrayAdapter<String>(holder.location.getContext(),
                 android.R.layout.simple_spinner_item, sortList);
         sortBySpinner.setAdapter(dataAdapterS);
-        int spinnerPositionS = dataAdapter.getPosition(preference.getSortBy());
+        int spinnerPositionS = dataAdapterS.getPosition(preference.getSortBy());
         sortBySpinner.setSelection(spinnerPositionS);
         layout.addView(sortBySpinner);
 
-        final EditText locationText = new EditText(holder.location.getContext());
-        locationText.setText(preference.getLocation());
-        layout.addView(locationText);
+        final Spinner locationSpinner = new Spinner(holder.location.getContext());
+        List<String> locationList = Arrays.asList("100m", "300m", "500m", "1km", "10km", "30km");
+        ArrayAdapter<String> dataAdapterL = new ArrayAdapter<String>(holder.location.getContext(),
+                android.R.layout.simple_spinner_item, locationList);
+        locationSpinner.setAdapter(dataAdapterL);
+        int spinnerPositionL = dataAdapterL.getPosition(preference.getLocation());
+        locationSpinner.setSelection(spinnerPositionL);
+        layout.addView(locationSpinner);
 
 
         builder.setView(layout);
@@ -168,7 +173,7 @@ public class PreferenceAdapter extends RecyclerView.Adapter<PreferenceAdapter.My
                 String cuisine = String.valueOf(cuisineSpinner.getSelectedItem());
                 String price = String.valueOf(priceSpinner.getSelectedItem());
                 String sortBy = String.valueOf(sortBySpinner.getSelectedItem());
-                String location = String.valueOf(locationText.getText());
+                String location = String.valueOf(locationSpinner.getSelectedItem());
 
                 editPreference(preference, holder, cuisine, price, sortBy, location);
             }

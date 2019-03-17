@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -47,6 +48,7 @@ public class PreferenceActivity extends AppCompatActivity {
     SharedPreferences prefs;
 
     private final static String KEY_USER_ID = "userID";
+    private final static String KEY_PREFERENCE_THEME = "themePref";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +58,7 @@ public class PreferenceActivity extends AppCompatActivity {
         preferenceRecyclerView = findViewById(R.id.recyclerPreferences);
         prefs = PreferenceManager.getDefaultSharedPreferences(PreferenceActivity.this);
         preferenceAdapter = new PreferenceAdapter(preferenceList);
+        int selectedTheme = prefs.getInt(KEY_PREFERENCE_THEME, 0);
 
         RecyclerView.LayoutManager upcomingLayoutManager = new LinearLayoutManager(PreferenceActivity.this);
         preferenceRecyclerView.setLayoutManager(upcomingLayoutManager);
@@ -82,7 +85,7 @@ public class PreferenceActivity extends AppCompatActivity {
         layout.setOrientation(LinearLayout.VERTICAL);
 
         final Spinner cuisineSpinner = new Spinner(PreferenceActivity.this);
-        List<String> cuisineList = Arrays.asList("Mexican", "Chinese", "Indian", "FastFood");
+        List<String> cuisineList = Arrays.asList("Chinese", "Fast Food", "Halal", "Indian", "Italian", "Indian", "Japanese", "Korean");
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(PreferenceActivity.this,
                 android.R.layout.simple_spinner_item, cuisineList);
         cuisineSpinner.setAdapter(dataAdapter);
@@ -105,8 +108,13 @@ public class PreferenceActivity extends AppCompatActivity {
         sortBySpinner.setSelection(0);
         layout.addView(sortBySpinner);
 
-        final EditText locationText = new EditText(PreferenceActivity.this);
-        layout.addView(locationText);
+        final Spinner locationSpinner = new Spinner(PreferenceActivity.this);
+        List<String> locationList = Arrays.asList("100m", "300m", "500m", "1km", "10km", "30km");
+        ArrayAdapter<String> dataAdapterL = new ArrayAdapter<String>(PreferenceActivity.this,
+                android.R.layout.simple_spinner_item, locationList);
+        locationSpinner.setAdapter(dataAdapterL);
+        locationSpinner.setSelection(0);
+        layout.addView(locationSpinner);
 
 
         builder.setView(layout);
@@ -115,7 +123,7 @@ public class PreferenceActivity extends AppCompatActivity {
                 String cuisine = String.valueOf(cuisineSpinner.getSelectedItem());
                 String price = String.valueOf(priceSpinner.getSelectedItem());
                 String sortBy = String.valueOf(sortBySpinner.getSelectedItem());
-                String location = String.valueOf(locationText.getText());
+                String location = String.valueOf(locationSpinner.getSelectedItem());
 
                 addPreference(location, cuisine, price, sortBy);
             }

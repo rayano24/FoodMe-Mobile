@@ -15,11 +15,14 @@ import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.mcgill.ecse428.foodme.R;
 import com.mcgill.ecse428.foodme.activity.EditAccountActivity;
 import com.mcgill.ecse428.foodme.activity.LoginActivity;
+import com.mcgill.ecse428.foodme.activity.MainActivity;
+import com.mcgill.ecse428.foodme.activity.PreferenceActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +60,7 @@ public class SettingsFragment extends Fragment {
         TextView signOut = rootView.findViewById(R.id.signOutButton);
         TextView noAccountButton = rootView.findViewById(R.id.noAccountButton);
         TextView themeButton = rootView.findViewById(R.id.themeButton);
+        Button edit_preferences = (Button) rootView.findViewById(R.id.preference_button);
 
         TextView appHeader = rootView.findViewById(R.id.settingsAppHeader);
         TextView accountHeader = rootView.findViewById(R.id.settingsAccountHeader);
@@ -90,7 +94,7 @@ public class SettingsFragment extends Fragment {
                    // prefs.edit().remove(KEY_USER_ID).apply();
                     Intent I = new Intent(mActivity, EditAccountActivity.class);
                     startActivity(I);
-                    //mActivity.finish();
+                    mActivity.finish();
                 }
             }
         });
@@ -136,6 +140,15 @@ public class SettingsFragment extends Fragment {
                 dialog.show();
 
 
+            }
+        });
+
+        edit_preferences.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent I = new Intent(mActivity, PreferenceActivity.class);
+                startActivity(I);
+                mActivity.finish();
             }
         });
 

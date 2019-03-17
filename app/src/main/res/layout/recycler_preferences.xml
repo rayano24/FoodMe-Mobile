@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -9,48 +8,32 @@
 
     <TextView
         android:id="@+id/preferenceLocation"
-        android:layout_width="120dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="10dp"
-        android:textSize="18sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/preferenceCuisine"
-        app:layout_constraintEnd_toStartOf="@+id/preferenceCuisine"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15sp" />
 
     <TextView
         android:id="@+id/preferenceCuisine"
-        android:layout_width="100dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="11dp"
-        android:gravity="center"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/preferencePrice"
-        app:layout_constraintStart_toEndOf="@+id/preferencePrice"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="15sp" />
 
     <TextView
         android:id="@+id/preferencePrice"
-        android:layout_width="50dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="7dp"
-        android:gravity="center"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/preferenceSortBy"
-        app:layout_constraintStart_toEndOf="@+id/preferenceSortBy"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="15sp" />
 
     <TextView
         android:id="@+id/preferenceSortBy"
-        android:layout_width="95dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="2dp"
-        android:gravity="center"
-        android:textSize="18sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/preferencePrice"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/preferencePrice" />
+        android:textSize="15sp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/preferenceName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15sp" />
+
+</LinearLayout>

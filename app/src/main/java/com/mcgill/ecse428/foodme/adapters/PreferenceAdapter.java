@@ -1,27 +1,53 @@
 package com.mcgill.ecse428.foodme.adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.mcgill.ecse428.foodme.R;
+import com.mcgill.ecse428.foodme.activity.MainActivity;
+import com.mcgill.ecse428.foodme.activity.PreferenceActivity;
 import com.mcgill.ecse428.foodme.model.Preference;
+import com.mcgill.ecse428.foodme.utils.HttpUtils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import cz.msebera.android.httpclient.Header;
 
 public class PreferenceAdapter extends RecyclerView.Adapter<PreferenceAdapter.MyViewHolder> {
     private List<Preference> preferenceList;
     //holds our parent's context
     private Context mContext;
+    private final static String KEY_USER_ID = "userID";
 
     public static class MyViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener, View.OnLongClickListener{
         protected TextView location, cuisine, price, sortBy;
+        protected Button edit;
         private PreferenceAdapter.ItemClickListener clickListener;
 
         public MyViewHolder(View view) {
@@ -64,12 +90,6 @@ public class PreferenceAdapter extends RecyclerView.Adapter<PreferenceAdapter.My
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-
-    }
-
-    /**
-    @Override
     public void onBindViewHolder(@NonNull PreferenceAdapter.MyViewHolder holder, int position) {
         Preference preference = preferenceList.get(position);
         holder.location.setText(preference.getLocation());
@@ -81,33 +101,17 @@ public class PreferenceAdapter extends RecyclerView.Adapter<PreferenceAdapter.My
         holder.setClickListener(new PreferenceAdapter.ItemClickListener(){
             @Override
             public void onClick(View view, int position, boolean isLongClick){
-                List<Preference> rList = preferenceList;
                 if(isLongClick){
                     //for now, no additional functionality here
                     onClick(view, position, false);
                 }
                 else{
-                    IndividualRestaurantFragment irf = new IndividualRestaurantFragment();
-
-                    //prepare arguments
-                    Bundle bundle = new Bundle();
-                    bundle.putString("NAME", rList.get(position).getName());
-                    bundle.putString("PRICE", rList.get(position).getPrice());
-                    bundle.putString("CUISINE",rList.get(position).getCuisine());
-                    bundle.putString("DISTANCE",rList.get(position).getDistance());
-                    String[] address = rList.get(position).getAddress();
-                    bundle.putString("ADDRESS1",address[0]);
-                    bundle.putString("ADDRESS2",address[1]);
-                    irf.setArguments(bundle);
-
-                    //swap fragments
-                    FragmentManager fm = ((AppCompatActivity)mContext).getSupportFragmentManager();
-                    fm.beginTransaction().replace(R.id.frame_fragmentholder, irf, "IRF").commit();
+                    modifyPreference(preference, holder, position);
                 }
             }
         });
     }
-    */
+
 
 
     @Override
@@ -117,5 +121,84 @@ public class PreferenceAdapter extends RecyclerView.Adapter<PreferenceAdapter.My
 
     public interface ItemClickListener{
         void onClick (View view, int position, boolean isLongClick);
+    }
+
+    private void modifyPreference(Preference preference, MyViewHolder holder, int position){
+        AlertDialog.Builder builder = new AlertDialog.Builder(holder.location.getContext());
+        builder.setTitle("Edit Preference");
+
+        LinearLayout layout = new LinearLayout(holder.location.getContext());
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        final Spinner cuisineSpinner = new Spinner(holder.location.getContext());
+        List<String> cuisineList = Arrays.asList("Mexican", "Chinese", "Indian", "FastFood");
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(holder.location.getContext(),
+                android.R.layout.simple_spinner_item, cuisineList);
+        cuisineSpinner.setAdapter(dataAdapter);
+        int spinnerPosition = dataAdapter.getPosition(preference.getCuisine());
+        cuisineSpinner.setSelection(spinnerPosition);
+        layout.addView(cuisineSpinner);
+
+        final Spinner priceSpinner = new Spinner(holder.location.getContext());
+        List<String> priceList = Arrays.asList("$", "$$", "$$$", "$$$$");
+        ArrayAdapter<String> dataAdapterP = new ArrayAdapter<String>(holder.location.getContext(),
+                android.R.layout.simple_spinner_item, priceList);
+        priceSpinner.setAdapter(dataAdapterP);
+        int spinnerPositionP = dataAdapter.getPosition(preference.getPrice());
+        priceSpinner.setSelection(spinnerPositionP);
+        layout.addView(priceSpinner);
+
+        final Spinner sortBySpinner = new Spinner(holder.location.getContext());
+        List<String> sortList = Arrays.asList("Rating", "Distance");
+        ArrayAdapter<String> dataAdapterS = new ArrayAdapter<String>(holder.location.getContext(),
+                android.R.layout.simple_spinner_item, sortList);
+        sortBySpinner.setAdapter(dataAdapterS);
+        int spinnerPositionS = dataAdapter.getPosition(preference.getSortBy());
+        sortBySpinner.setSelection(spinnerPositionS);
+        layout.addView(sortBySpinner);
+
+        final EditText locationText = new EditText(holder.location.getContext());
+        locationText.setText(preference.getLocation());
+        layout.addView(locationText);
+
+
+        builder.setView(layout);
+        builder.setPositiveButton("Edit", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                String cuisine = String.valueOf(cuisineSpinner.getSelectedItem());
+                String price = String.valueOf(priceSpinner.getSelectedItem());
+                String sortBy = String.valueOf(sortBySpinner.getSelectedItem());
+                String location = String.valueOf(locationText.getText());
+
+                editPreference(preference, holder, cuisine, price, sortBy, location);
+            }
+        });
+
+        builder.show();
+    }
+
+    private void editPreference(Preference preference, MyViewHolder holder, String cuisine, String price, String sortBy, String location){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(holder.location.getContext());
+        String username = prefs.getString(KEY_USER_ID, null);
+        HttpUtils.post("preferences/" + username + "/edit/" + preference.getpID() + "?location=" + location + "&cuisine=" + cuisine + "&price=" + price
+                + "&sortBy=" + sortBy, new RequestParams(), new JsonHttpResponseHandler() {
+
+            @Override
+            public void onFinish() {
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                notifyDataSetChanged();
+                int pid = preference.getpID();
+                preferenceList.remove(preference);
+                preferenceList.add(new Preference(pid, location, cuisine, price, sortBy));
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+            }
+        });
     }
 }

@@ -1,9 +1,18 @@
 package com.mcgill.ecse428.foodme.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -20,6 +29,7 @@ import org.json.JSONObject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -54,53 +64,123 @@ public class PreferenceActivity extends AppCompatActivity {
         preferenceRecyclerView.setAdapter(preferenceAdapter);
 
         displayPreferences();
+
+        Button addPreference = (Button) findViewById(R.id.addPreference);
+        addPreference.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createPreference();
+            }
+        });
+    }
+
+    public void createPreference() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(PreferenceActivity.this);
+        builder.setTitle("Add Search Preference");
+
+        LinearLayout layout = new LinearLayout(PreferenceActivity.this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        final Spinner cuisineSpinner = new Spinner(PreferenceActivity.this);
+        List<String> cuisineList = Arrays.asList("Mexican", "Chinese", "Indian", "FastFood");
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(PreferenceActivity.this,
+                android.R.layout.simple_spinner_item, cuisineList);
+        cuisineSpinner.setAdapter(dataAdapter);
+        cuisineSpinner.setSelection(0);
+        layout.addView(cuisineSpinner);
+
+        final Spinner priceSpinner = new Spinner(PreferenceActivity.this);
+        List<String> priceList = Arrays.asList("$", "$$", "$$$", "$$$$");
+        ArrayAdapter<String> dataAdapterP = new ArrayAdapter<String>(PreferenceActivity.this,
+                android.R.layout.simple_spinner_item, priceList);
+        priceSpinner.setAdapter(dataAdapterP);
+        priceSpinner.setSelection(0);
+        layout.addView(priceSpinner);
+
+        final Spinner sortBySpinner = new Spinner(PreferenceActivity.this);
+        List<String> sortList = Arrays.asList("Rating", "Distance");
+        ArrayAdapter<String> dataAdapterS = new ArrayAdapter<String>(PreferenceActivity.this,
+                android.R.layout.simple_spinner_item, sortList);
+        sortBySpinner.setAdapter(dataAdapterS);
+        sortBySpinner.setSelection(0);
+        layout.addView(sortBySpinner);
+
+        final EditText locationText = new EditText(PreferenceActivity.this);
+        layout.addView(locationText);
+
+
+        builder.setView(layout);
+        builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                String cuisine = String.valueOf(cuisineSpinner.getSelectedItem());
+                String price = String.valueOf(priceSpinner.getSelectedItem());
+                String sortBy = String.valueOf(sortBySpinner.getSelectedItem());
+                String location = String.valueOf(locationText.getText());
+
+                addPreference(location, cuisine, price, sortBy);
+            }
+        });
+
+        builder.show();
+    }
+
+
+    /**
+     * Add a new preference
+     */
+    public void addPreference(String location, String cuisine, String price, String sortBy) {
+        String username = prefs.getString(KEY_USER_ID, null);
+        HttpUtils.post("preferences/" + username + "/add/?location=" + location + "&cuisine=" + cuisine + "&price=" + price
+                + "&sortBy=" + sortBy, new RequestParams(), new JsonHttpResponseHandler() {
+
+            @Override
+            public void onFinish() {
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    preferenceList.add(new Preference((Integer) response.get("pid"), location, cuisine, price, sortBy));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                preferenceAdapter.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                Toast.makeText(PreferenceActivity.this, "There was a network error, try again later.", Toast.LENGTH_LONG).show(); // generic network error
+                Intent I = new Intent(PreferenceActivity.this, MainActivity.class);
+                startActivity(I);
+                finish();
+            }
+        });
     }
 
     /**
      * Displays a list of user's preferences
      */
     public void displayPreferences() {
-
-        HttpUtils.get("/preferences/" + prefs.getString(KEY_USER_ID, null) + "/", new RequestParams(), new JsonHttpResponseHandler() {
+        String username = prefs.getString(KEY_USER_ID, null);
+        HttpUtils.get("preferences/" + username + "/", new RequestParams(), new JsonHttpResponseHandler() {
 
             @Override
             public void onFinish() {
-                System.out.println("no");
             }
 
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
 
                 try {
                     preferenceList.clear();
-                    JSONArray mainArray = response.getJSONArray("Array[1]");
 
-                    for (int i = 0; i < mainArray.length(); i++) {
+                    for (int i = 0; i < response.length(); i++) {
+                        JSONArray preference = (JSONArray) response.get(i);
+                        System.out.println(preference);
 
-                        JSONObject obj = mainArray.getJSONObject(i);
-                        String location = obj.getString("name");
-                        String price = "n/a";
-                        if(obj.has("price")) {
-                            price = obj.getString("price");
-                        }
-                        String distance = obj.getString("distance");
-
-                        //get the restaurant's address
-                        JSONObject locObj = obj.getJSONObject("location");
-                        JSONArray locArr = locObj.getJSONArray("display_address");
-                        String[] displayLocation = {locArr.getString(0),locArr.getString(1)};
-
-                        JSONArray categories = obj.getJSONArray("categories");
-                        JSONObject cuisineList = categories.getJSONObject(0);
-                        String cuisine = cuisineList.getString("title");
-
-
-                        BigDecimal bd = new BigDecimal(distance);
-                        bd = bd.setScale(1, RoundingMode.HALF_UP);
-
-
-                        preferenceList.add(new Preference(location, cuisine, price, price));
+                        preferenceList.add(new Preference((Integer) preference.get(0), (String) preference.get(2), (String) preference.get(1), (String) preference.get(3), (String) preference.get(4)));
                     }
 
                 } catch (JSONException e) {
@@ -114,6 +194,9 @@ public class PreferenceActivity extends AppCompatActivity {
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
                 Toast.makeText(PreferenceActivity.this, "There was a network error, try again later.", Toast.LENGTH_LONG).show(); // generic network error
+                Intent I = new Intent(PreferenceActivity.this, MainActivity.class);
+                startActivity(I);
+                finish();
             }
         });
     }

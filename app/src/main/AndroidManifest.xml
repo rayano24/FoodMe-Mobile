@@ -43,11 +43,16 @@
         </activity>
         <activity
             android:name=".activity.RestaurantActivity"
-            android:label="@string/title_activity_main">
+            android:label="@string/title_activity_restaurant">
         </activity>
-
-
-        <activity android:name=".activity.EditAccountActivity"></activity>
+        <activity
+            android:name=".activity.EditAccountActivity"
+            android:label="@string/title_activity_account">
+        </activity>
+        <activity
+            android:name=".activity.PreferenceActivity"
+            android:label="@string/title_activity_preference">
+        </activity>
     </application>
 
     <!-- Needed for gMaps Integration -->

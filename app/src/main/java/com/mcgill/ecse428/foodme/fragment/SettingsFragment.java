@@ -28,6 +28,7 @@ import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ListAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +39,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.mcgill.ecse428.foodme.R;
 import com.mcgill.ecse428.foodme.activity.EditAccountActivity;
 import com.mcgill.ecse428.foodme.activity.LoginActivity;
+import com.mcgill.ecse428.foodme.activity.MainActivity;
+import com.mcgill.ecse428.foodme.activity.PreferenceActivity;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -86,6 +89,7 @@ public class SettingsFragment extends Fragment {
         TextView noAccountButton = rootView.findViewById(R.id.noAccountButton);
         TextView themeButton = rootView.findViewById(R.id.themeButton);
         locationButton = rootView.findViewById(R.id.locationButton);
+        Button edit_preferences =  rootView.findViewById(R.id.preference_button);
 
         TextView appHeader = rootView.findViewById(R.id.settingsAppHeader);
         TextView locationHeader = rootView.findViewById(R.id.settingsLocationHeader);
@@ -124,7 +128,7 @@ public class SettingsFragment extends Fragment {
                     // prefs.edit().remove(KEY_USER_ID).apply();
                     Intent I = new Intent(mActivity, EditAccountActivity.class);
                     startActivity(I);
-                    //mActivity.finish();
+                    mActivity.finish();
                 }
             }
         });
@@ -207,6 +211,13 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 openLocationDialog();
+
+                edit_preferences.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent I = new Intent(mActivity, PreferenceActivity.class);
+                startActivity(I);
+                mActivity.finish();
             }
         });
 

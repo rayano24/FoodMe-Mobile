@@ -39,7 +39,7 @@
 
     <!-- SEARCH FRAGMENT -->
 
-    <string name="no_location">We were unable to detect your location. Please turn on location services.</string>
+    <string name="no_location">We were unable to detect your location. Please turn on location services or set your location in the settings menu.</string>
     <!-- HISTORY FRAGMENT -->
 
     <string name="history_no_history">You haven\'t visited a restaurant yet! Get browsing!</string>
@@ -49,12 +49,16 @@
 
     <string name="settings_header_app">App</string>
     <string name="settings_header_account">Account</string>
+    <string name="settings_header_location">Location</string>
+
 
 
     <string name="action_theme">Theme</string>
     <string name="action_sign_out">Sign out</string>
     <string name="action_create_account">Create an account or sign in</string>
     <string name="action_manage_account">Manage Account</string>
+
+    <string name="action_location">Set your location</string>
 
 
     <string name="theme_dialog_title">Select Theme</string>

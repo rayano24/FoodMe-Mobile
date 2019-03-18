@@ -5,10 +5,12 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,11 +62,20 @@ public class FindFragment extends Fragment {
 
     private Activity mActivity;
 
+    private final static String KEY_USER_LOCATION_LONGITUDE = "latitude";
+    private final static String KEY_USER_LOCATION_LATITUDE = "longitude";
+    private final static String KEY_USER_LOCATION = "userLocation";
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_find, container, false);
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mActivity);
+
+        String storedLat = prefs.getString(KEY_USER_LOCATION_LATITUDE, null);
+        String storedLng = prefs.getString(KEY_USER_LOCATION_LONGITUDE, null);
+        String storedLocation = prefs.getString(KEY_USER_LOCATION, null);
 
 
         restaurantRecyclerView = rootView.findViewById(R.id.recyclerFindRestaurant);
@@ -80,6 +91,10 @@ public class FindFragment extends Fragment {
         restaurantRecyclerView.setItemAnimator(new DefaultItemAnimator());
         restaurantRecyclerView.addItemDecoration(new DividerItemDecoration(mActivity, LinearLayoutManager.VERTICAL));
         restaurantRecyclerView.setAdapter(restaurantAdapter);
+
+
+        final String userLat = prefs.getString(KEY_USER_LOCATION_LATITUDE, null);
+        final String userLng = prefs.getString(KEY_USER_LOCATION_LONGITUDE, null);
 
 
         // note for anyone looking at this, I elected to put the location stuff here rather than the main activity so we can avoid using GSON and so we can modify the view here
@@ -107,10 +122,21 @@ public class FindFragment extends Fragment {
 
                                 double lat = location.getLatitude();
                                 double lng = location.getLongitude();
+                                prefs.edit().putString(KEY_USER_LOCATION_LATITUDE, Double.toString(lat)).apply();
+                                prefs.edit().putString(KEY_USER_LOCATION_LONGITUDE, Double.toString(lng)).apply();
+                                prefs.edit().remove(KEY_USER_LOCATION).apply();
                                 displayRestaurants(Double.toString(lat), Double.toString(lng));
                             }
                         }
                     });
+
+        }
+
+        if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && storedLocation != null) {
+
+            displayRestaurants(storedLat, storedLng);
+            noLocation.setVisibility(View.GONE);
+
 
         }
 
@@ -119,6 +145,7 @@ public class FindFragment extends Fragment {
     }
 
 
+    // requests location permissions
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -135,8 +162,13 @@ public class FindFragment extends Fragment {
                                     public void onSuccess(Location location) {
                                         // Got last known location. In some rare situations this can be null.
                                         if (location != null) {
+                                            final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mActivity);
                                             double lat = location.getLatitude();
                                             double lng = location.getLongitude();
+                                            prefs.edit().putString(KEY_USER_LOCATION_LATITUDE, Double.toString(lat)).apply();
+                                            prefs.edit().putString(KEY_USER_LOCATION_LONGITUDE, Double.toString(lng)).apply();
+                                            // the user location pref is used to indicate that the user has manually set preferences
+                                            prefs.edit().remove(KEY_USER_LOCATION).apply();
                                             displayRestaurants(Double.toString(lat), Double.toString(lng));
                                         }
                                     }
@@ -146,7 +178,13 @@ public class FindFragment extends Fragment {
 
                 } else {
                     // permission denied, show notice
-                    noLocation.setVisibility(View.VISIBLE);
+                    final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mActivity);
+                    String storedLocation = prefs.getString(KEY_USER_LOCATION, null);
+
+                    if (storedLocation == null) {
+                        noLocation.setVisibility(View.VISIBLE);
+
+                    }
 
                 }
                 return;
@@ -216,7 +254,7 @@ public class FindFragment extends Fragment {
                         JSONObject obj = mainArray.getJSONObject(i);
                         String name = obj.getString("name");
                         String price = "n/a";
-                        if(obj.has("price")) {
+                        if (obj.has("price")) {
                             price = obj.getString("price");
                         }
                         String distance = obj.getString("distance");
@@ -224,7 +262,7 @@ public class FindFragment extends Fragment {
                         //get the restaurant's address
                         JSONObject locObj = obj.getJSONObject("location");
                         JSONArray locArr = locObj.getJSONArray("display_address");
-                        String[] displayLocation = {locArr.getString(0),locArr.getString(1)};
+                        String[] displayLocation = {locArr.getString(0), locArr.getString(1)};
 
                         JSONArray categories = obj.getJSONArray("categories");
                         JSONObject cuisineList = categories.getJSONObject(0);

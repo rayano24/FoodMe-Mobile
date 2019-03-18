@@ -93,10 +93,6 @@ public class FindFragment extends Fragment {
         restaurantRecyclerView.setAdapter(restaurantAdapter);
 
 
-        final String userLat = prefs.getString(KEY_USER_LOCATION_LATITUDE, null);
-        final String userLng = prefs.getString(KEY_USER_LOCATION_LONGITUDE, null);
-
-
         // note for anyone looking at this, I elected to put the location stuff here rather than the main activity so we can avoid using GSON and so we can modify the view here
         // LOCATION RELATED
 
@@ -132,7 +128,7 @@ public class FindFragment extends Fragment {
 
         }
 
-        if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && storedLocation != null) {
+        if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && storedLocation != null && storedLat != null && storedLng != null) {
 
             displayRestaurants(storedLat, storedLng);
             noLocation.setVisibility(View.GONE);
@@ -184,6 +180,12 @@ public class FindFragment extends Fragment {
                     if (storedLocation == null) {
                         noLocation.setVisibility(View.VISIBLE);
 
+                    } else {
+                        String storedLat = prefs.getString(KEY_USER_LOCATION_LATITUDE, null);
+                        String storedLng = prefs.getString(KEY_USER_LOCATION_LONGITUDE, null);
+                        if (storedLat != null && storedLng != null) {
+                            displayRestaurants(storedLat, storedLng);
+                        }
                     }
 
                 }
@@ -232,7 +234,7 @@ public class FindFragment extends Fragment {
     public void displayRestaurants(String lat, String lng) {
 
 
-        HttpUtils.get("search/distance/" + 0 + "/?long=" + lng + "&lat=" + lat, new RequestParams(), new JsonHttpResponseHandler() {
+        HttpUtils.get("search/distance/" + 0 + "/?longitude=" + lng + "&latitude=" + lat, new RequestParams(), new JsonHttpResponseHandler() {
 
             @Override
             public void onFinish() {

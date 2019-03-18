@@ -89,7 +89,7 @@ public class SettingsFragment extends Fragment {
         TextView noAccountButton = rootView.findViewById(R.id.noAccountButton);
         TextView themeButton = rootView.findViewById(R.id.themeButton);
         locationButton = rootView.findViewById(R.id.locationButton);
-        Button edit_preferences =  rootView.findViewById(R.id.preference_button);
+        Button edit_preferences = rootView.findViewById(R.id.preference_button);
 
         TextView appHeader = rootView.findViewById(R.id.settingsAppHeader);
         TextView locationHeader = rootView.findViewById(R.id.settingsLocationHeader);
@@ -212,7 +212,11 @@ public class SettingsFragment extends Fragment {
             public void onClick(View v) {
                 openLocationDialog();
 
-                edit_preferences.setOnClickListener(new View.OnClickListener() {
+            }
+        });
+
+
+        edit_preferences.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent I = new Intent(mActivity, PreferenceActivity.class);
@@ -288,6 +292,7 @@ public class SettingsFragment extends Fragment {
                                     prefs.edit().putString(KEY_USER_LOCATION_LONGITUDE, lng).apply();
                                     prefs.edit().putString(KEY_USER_LOCATION, input.getText().toString()).apply();
                                     locationButton.setText(input.getText().toString().replaceAll("_", " "));
+                                    break;
 
                                 }
                             } catch (IOException e) {

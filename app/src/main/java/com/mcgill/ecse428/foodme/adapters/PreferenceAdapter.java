@@ -103,7 +103,6 @@ public class PreferenceAdapter extends RecyclerView.Adapter<PreferenceAdapter.My
             public void onClick(View view, int position, boolean isLongClick){
                 if(isLongClick){
                     //for now, no additional functionality here
-                    onClick(view, position, false);
                 }
                 else{
                     modifyPreference(preference, holder, position);

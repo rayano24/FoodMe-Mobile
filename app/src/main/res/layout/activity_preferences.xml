@@ -63,13 +63,18 @@
         android:id="@+id/preferences"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_vertical_margin"
         android:textSize="20sp"
         android:gravity="center"
+        android:layout_marginTop="10dp"
         android:text="@string/preferences"
         app:layout_constraintTop_toBottomOf="@+id/appbar"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerPreferences"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_vertical_margin"
         android:layout_width="match_parent"
         android:layout_height="350dp"
         android:scrollbars="vertical"
@@ -84,6 +89,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/add_preference"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_vertical_margin"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
         app:layout_constraintTop_toBottomOf="@+id/recyclerPreferences"
         tools:layout_editor_absoluteX="161dp"
         app:layout_constraintBottom_toBottomOf="parent"

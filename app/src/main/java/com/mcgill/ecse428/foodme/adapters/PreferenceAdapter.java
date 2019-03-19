@@ -193,10 +193,10 @@ public class PreferenceAdapter extends RecyclerView.Adapter<PreferenceAdapter.My
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                notifyDataSetChanged();
                 int pid = preference.getpID();
                 preferenceList.remove(preference);
                 preferenceList.add(new Preference(pid, location, cuisine, price, sortBy));
+                notifyDataSetChanged();
             }
 
             @Override

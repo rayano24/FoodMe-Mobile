@@ -274,8 +274,9 @@ public class PreferenceActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 preferenceAdapter.notifyDataSetChanged();
-
+                recreate();
             }
+
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {

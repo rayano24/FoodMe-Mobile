@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mcgill.ecse428.foodme">
-
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the 'MyLocation' functionality. 
     -->
-
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- Needed for gMaps Integration -->
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -19,8 +20,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <!-- Google Maps API Key  -->
-
+        <activity android:name=".activity.PastRestaurantActivity"></activity>
+        <!-- Google Maps API Key -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -39,25 +40,16 @@
         </activity>
         <activity
             android:name=".activity.MainActivity"
-            android:label="@string/title_activity_main">
-        </activity>
+            android:label="@string/title_activity_main"></activity>
         <activity
             android:name=".activity.RestaurantActivity"
-            android:label="@string/title_activity_restaurant">
-        </activity>
+            android:label="@string/title_activity_restaurant"></activity>
         <activity
             android:name=".activity.EditAccountActivity"
-            android:label="@string/title_activity_account">
-        </activity>
+            android:label="@string/title_activity_account"></activity>
         <activity
             android:name=".activity.PreferenceActivity"
-            android:label="@string/title_activity_preference">
-        </activity>
+            android:label="@string/title_activity_preference"></activity>
     </application>
-
-    <!-- Needed for gMaps Integration -->
-    <uses-feature
-        android:glEsVersion="0x00020000"
-        android:required="true" />
 
 </manifest>

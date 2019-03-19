@@ -30,7 +30,7 @@ public class RestaurantHistoryAdapter extends RecyclerView.Adapter<RestaurantHis
 
     public class MyViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener, View.OnLongClickListener{
-        protected TextView name, cuisine, date, rating;
+        protected TextView name, cuisine, date;
         private RestaurantAdapter.ItemClickListener clickListener;
 
         public MyViewHolder(View view) {
@@ -38,7 +38,6 @@ public class RestaurantHistoryAdapter extends RecyclerView.Adapter<RestaurantHis
             name = view.findViewById(R.id.historyRestaurantDate);
             cuisine = view.findViewById(R.id.historyRestaurantCuisine);
             date = view.findViewById(R.id.historyRestaurantDate);
-            rating = view.findViewById(R.id.historyRestaurantRating);
 
             view.setOnClickListener(this);
             view.setOnLongClickListener(this);
@@ -74,9 +73,7 @@ public class RestaurantHistoryAdapter extends RecyclerView.Adapter<RestaurantHis
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         RestaurantHistory history = historyList.get(position);
         holder.name.setText(history.getName());
-        holder.date.setText(history.getDate());
         holder.cuisine.setText(history.getCuisine());
-        holder.rating.setText(history.getRating());
 
         holder.setClickListener(new RestaurantAdapter.ItemClickListener() {
             @Override
@@ -92,9 +89,7 @@ public class RestaurantHistoryAdapter extends RecyclerView.Adapter<RestaurantHis
                     //prepare arguments
                     Bundle bundle = new Bundle();
                     bundle.putString("NAME", rList.get(position).getName());
-                    bundle.putString("DATE", rList.get(position).getDate());
                     bundle.putString("CUISINE",rList.get(position).getCuisine());
-                    bundle.putString("RATING",rList.get(position).getRating());
                     String[] address = rList.get(position).getAddress();
                     bundle.putString("ADDRESS1", address[0]);
                     bundle.putString("ADDRESS2", address[1]);

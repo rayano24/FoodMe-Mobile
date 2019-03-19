@@ -45,6 +45,7 @@
     <!-- HISTORY FRAGMENT -->
 
     <string name="history_no_history">You haven\'t visited a restaurant yet! Get browsing!</string>
+    <string name="history_no_account">You must create an account for your restaurant history to be saved!</string>
 
 
     <!-- SETTINGS FRAGMENT -->
@@ -52,7 +53,6 @@
     <string name="settings_header_app">App</string>
     <string name="settings_header_account">Account</string>
     <string name="settings_header_location">Location</string>
-
 
 
     <string name="action_theme">Theme</string>

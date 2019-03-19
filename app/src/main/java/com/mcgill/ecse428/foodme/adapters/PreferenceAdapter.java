@@ -92,10 +92,10 @@ public class PreferenceAdapter extends RecyclerView.Adapter<PreferenceAdapter.My
     @Override
     public void onBindViewHolder(@NonNull PreferenceAdapter.MyViewHolder holder, int position) {
         Preference preference = preferenceList.get(position);
-        holder.location.setText(preference.getLocation());
-        holder.price.setText(preference.getPrice());
-        holder.cuisine.setText(preference.getCuisine());
-        holder.sortBy.setText(preference.getSortBy());
+        holder.location.setText("Max Radius: " + preference.getLocation());
+        holder.price.setText("Price: " + preference.getPrice());
+        holder.cuisine.setText("Cuisine: " + preference.getCuisine());
+        holder.sortBy.setText("Sort by: " + preference.getSortBy());
 
         //Create the click listeners
         holder.setClickListener(new PreferenceAdapter.ItemClickListener(){

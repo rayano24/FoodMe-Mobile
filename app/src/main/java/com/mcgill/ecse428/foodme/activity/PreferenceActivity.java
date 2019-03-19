@@ -58,7 +58,26 @@ public class PreferenceActivity extends AppCompatActivity {
         preferenceRecyclerView = findViewById(R.id.recyclerPreferences);
         prefs = PreferenceManager.getDefaultSharedPreferences(PreferenceActivity.this);
         preferenceAdapter = new PreferenceAdapter(preferenceList);
-        int selectedTheme = prefs.getInt(KEY_PREFERENCE_THEME, 0);
+
+        /*
+        Hi Rayan pls fix :)
+
+
+        int themeSelected = prefs.getInt(KEY_PREFERENCE_THEME, 0);
+
+        switch (themeSelected) {
+            case (0):
+                setTheme(R.style.AppTheme);
+                break;
+            case (1):
+                setTheme(R.style.AppTheme_Alternate);
+                break;
+            case (2):
+                setTheme(R.style.AppTheme_Dark);
+                break;
+        }
+        */
+
 
         RecyclerView.LayoutManager upcomingLayoutManager = new LinearLayoutManager(PreferenceActivity.this);
         preferenceRecyclerView.setLayoutManager(upcomingLayoutManager);

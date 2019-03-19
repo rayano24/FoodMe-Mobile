@@ -89,29 +89,33 @@ public class SettingsFragment extends Fragment {
         TextView noAccountButton = rootView.findViewById(R.id.noAccountButton);
         TextView themeButton = rootView.findViewById(R.id.themeButton);
         locationButton = rootView.findViewById(R.id.locationButton);
-        Button edit_preferences = rootView.findViewById(R.id.preference_button);
+        TextView editPreferences = rootView.findViewById(R.id.preference_button);
 
         TextView appHeader = rootView.findViewById(R.id.settingsAppHeader);
         TextView locationHeader = rootView.findViewById(R.id.settingsLocationHeader);
         TextView accountHeader = rootView.findViewById(R.id.settingsAccountHeader);
+        TextView preferenceHeader = rootView.findViewById(R.id.settingsPreferenceHeader);
 
         switch (selectedTheme) {
             case (0):
                 appHeader.setTextColor(ContextCompat.getColor(mActivity, R.color.material_teal_500));
                 accountHeader.setTextColor(ContextCompat.getColor(mActivity, R.color.material_teal_500));
                 locationHeader.setTextColor(ContextCompat.getColor(mActivity, R.color.material_teal_500));
+                preferenceHeader.setTextColor(ContextCompat.getColor(mActivity, R.color.material_teal_500));
 
                 break;
             case (1):
                 appHeader.setTextColor(ContextCompat.getColor(mActivity, R.color.material_blue_500));
                 accountHeader.setTextColor(ContextCompat.getColor(mActivity, R.color.material_blue_500));
                 locationHeader.setTextColor(ContextCompat.getColor(mActivity, R.color.material_blue_500));
+                preferenceHeader.setTextColor(ContextCompat.getColor(mActivity, R.color.material_blue_500));
 
                 break;
             case (2):
                 appHeader.setTextColor(ContextCompat.getColor(mActivity, R.color.color_white));
                 accountHeader.setTextColor(ContextCompat.getColor(mActivity, R.color.color_white));
                 locationHeader.setTextColor(ContextCompat.getColor(mActivity, R.color.color_white));
+                preferenceHeader.setTextColor(ContextCompat.getColor(mActivity, R.color.color_white));
 
                 break;
         }
@@ -216,12 +220,12 @@ public class SettingsFragment extends Fragment {
         });
 
 
-        edit_preferences.setOnClickListener(new View.OnClickListener() {
+        editPreferences.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent I = new Intent(mActivity, PreferenceActivity.class);
                 startActivity(I);
-                mActivity.finish();
+                //mActivity.finish();
             }
         });
 

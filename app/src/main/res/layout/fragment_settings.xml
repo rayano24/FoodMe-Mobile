@@ -58,6 +58,31 @@
         android:background="?android:attr/listDivider" />
 
     <TextView
+        android:id="@+id/settingsPreferenceHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7.5dp"
+        android:text="@string/preferences"
+        android:textSize="18sp"
+        android:textColor="@color/material_teal_500" />
+
+    <TextView
+        android:id="@+id/preference_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7.5dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:textSize="18sp"
+        android:text="@string/edit_preferences" />
+
+    <View
+        android:id="@+id/divider6"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
+
+    <TextView
         android:id="@+id/settingsAppHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -98,11 +123,5 @@
         android:layout_height="1dp"
         android:background="?android:attr/listDivider" />
 
-    <Button
-        android:id="@+id/preference_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/edit_preferences"
-        />
 
 </LinearLayout>

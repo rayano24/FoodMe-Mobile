@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -123,6 +124,7 @@ public class PreferenceAdapter extends RecyclerView.Adapter<PreferenceAdapter.My
     }
 
     private void modifyPreference(Preference preference, MyViewHolder holder, int position){
+        AlertDialog dialog;
         AlertDialog.Builder builder = new AlertDialog.Builder(holder.location.getContext());
         builder.setTitle("Edit Preference");
 
@@ -165,6 +167,12 @@ public class PreferenceAdapter extends RecyclerView.Adapter<PreferenceAdapter.My
         locationSpinner.setSelection(spinnerPositionL);
         layout.addView(locationSpinner);
 
+        final Button deleteButton = new Button(holder.location.getContext());
+        deleteButton.setText("Delete");
+        deleteButton.setTextColor(Color.RED);
+        layout.addView(deleteButton);
+
+
 
         builder.setView(layout);
         builder.setPositiveButton("Edit", new DialogInterface.OnClickListener() {
@@ -178,7 +186,38 @@ public class PreferenceAdapter extends RecyclerView.Adapter<PreferenceAdapter.My
             }
         });
 
-        builder.show();
+        dialog = builder.create();
+        dialog.show();
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deletePreference(preference, holder);
+                dialog.dismiss();
+            }
+        });
+    }
+
+    private void deletePreference(Preference preference, MyViewHolder holder) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(holder.location.getContext());
+        String username = prefs.getString(KEY_USER_ID, null);
+        HttpUtils.post("preferences/" + username + "/delete/" + preference.getpID(), new RequestParams(), new JsonHttpResponseHandler() {
+
+            @Override
+            public void onFinish() {
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                preferenceList.remove(preference);
+                notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+            }
+        });
     }
 
     private void editPreference(Preference preference, MyViewHolder holder, String cuisine, String price, String sortBy, String location){

@@ -49,9 +49,9 @@ public class LoginActivity extends AppCompatActivity {
      * Keep track of the login task to ensure we can cancel it if requested.
      */
 
-    private final static String KEY_USER = "userID";
+    private final static String KEY_USER_ID = "userID";
 
-    // UI references.
+    // UI references
 
     private View mProgressView;
     private View mLoginFormView;
@@ -143,7 +143,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
-                prefs.edit().putString(KEY_USER, "noAccount").apply(); // to indicate no account
+                prefs.edit().putString(KEY_USER_ID, "noAccount").apply(); // to indicate no account
                 Intent I = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(I);
                 finish();
@@ -434,13 +434,13 @@ public class LoginActivity extends AppCompatActivity {
                     if (response.getBoolean("response")) {
                         showSignInProgress(false);
                         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
-                        prefs.edit().putString(KEY_USER, userID).apply(); // adding userID to preferences for future use
+                        prefs.edit().putString(KEY_USER_ID, userID).apply(); // adding userID to preferences for future use
                         Intent I = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(I);
                         finish();
                     } else {
                         showSignInProgress(false);
-                        Toast.makeText(LoginActivity.this, "There was an error logging in, please check your username or password", Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this, response.getString("message"), Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -453,7 +453,12 @@ public class LoginActivity extends AppCompatActivity {
                     errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
                 showSignInProgress(false);
-                Toast.makeText(LoginActivity.this, "There was an error logging in, please check your username or password", Toast.LENGTH_LONG).show();
+                try {
+                    Toast.makeText(LoginActivity.this, errorResponse.getString("message"), Toast.LENGTH_LONG).show();
+                }
+                catch(JSONException e) {
+                    Toast.makeText(LoginActivity.this, "There was a network error", Toast.LENGTH_LONG).show();
+                }
 
             }
         });
@@ -472,9 +477,7 @@ public class LoginActivity extends AppCompatActivity {
     public void userRegisterTask(String mFirstName, String mLastName, String mEmail, String mName, String mPassword) {
 
 
-        // TODO IMPROVE ERROR CHECKING
-
-        HttpUtils.post("users/create/" + mName + "/?firstName=" + mFirstName + "&lastName=" + mLastName + "&email=" + mEmail + "&password=" + mPassword, new RequestParams(), new JsonHttpResponseHandler() {
+        HttpUtils.post("users/create/" + mName + "/" + mFirstName + "/" + mLastName + "/" + mEmail + "/" + mPassword , new RequestParams(), new JsonHttpResponseHandler() {
             @Override
             public void onFinish() {
                 showRegistrationProgress(false);
@@ -483,25 +486,31 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                // try {
                 showRegistrationProgress(false);
-                if (response != null) {
-                    setElementVisibility("register", true);
-                } else {
-                    showRegistrationProgress(false);
-                    Toast.makeText(LoginActivity.this, "There was an error creating your account", Toast.LENGTH_LONG).show();
+                try {
+                    if(response.getBoolean("response")) {
+                        setElementVisibility("register", true);
+                    }
+                    else {
+                        Toast.makeText(LoginActivity.this, response.getString("message"), Toast.LENGTH_LONG).show();
 
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-                //} catch (JSONException e) {
-                //   e.printStackTrace();
-                //   }
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject
                     errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
-                Toast.makeText(LoginActivity.this, "There was an error registering, please check your data", Toast.LENGTH_LONG).show();
+                try {
+                    Toast.makeText(LoginActivity.this, errorResponse.getString("message"), Toast.LENGTH_LONG).show();
+                }
+                catch(JSONException e) {
+                    Toast.makeText(LoginActivity.this, "There was a network error", Toast.LENGTH_LONG).show();
+                }
                 showRegistrationProgress(false);
 
 

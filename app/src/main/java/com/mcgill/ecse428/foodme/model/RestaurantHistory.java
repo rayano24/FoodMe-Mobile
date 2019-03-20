@@ -8,15 +8,27 @@ package com.mcgill.ecse428.foodme.model;
  */
 public class RestaurantHistory  {
 
-    private String name, date, rating, cuisine;
+    private String name, date, rating, cuisine, id;
+    //Should be length 2
+    //["address", "city state zip"]
+    //i.e: ["123 St-Catherine", "Montreal, Qc X1X1X1"]
+    //kept separate for formatting
+    private String[] address;
 
-
-    public RestaurantHistory(String name, String cuisine, String date, String rating ) {
+    public RestaurantHistory(String name, String id ) {
+        this.name = name;
+        this.id = id;
+    }
+    public RestaurantHistory(String name, String cuisine, String date, String rating, String[] address){
         this.name = name;
         this.date = date;
         this.cuisine = cuisine;
         this.rating = rating;
-        }
+        this.address = address;
+    }
+    public void setAddress(String[] address){ this.address = address;}
+
+    public String[] getAddress(){ return this.address;}
 
     public String getName() {
         return name;
@@ -49,6 +61,15 @@ public class RestaurantHistory  {
     public void setRating(String rating) {
         this.rating = rating;
     }
+
+    public String getID() {
+        return id;
+    }
+
+    public void setID(String id) {
+        this.id = id;
+    }
+
 
 
 

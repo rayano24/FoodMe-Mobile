@@ -7,6 +7,8 @@
     <string name="dialog_cancel">Cancel</string>
 
     <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_restaurant">RestaurantActivity</string>
+    <string name="title_activity_account">EditAccountActivity</string>
 
 
     <!-- BOTTOM NAVIGATION -->
@@ -37,25 +39,28 @@
     <string name="recover_dialog_positive_button">Recover</string>
 
 
-
     <!-- SEARCH FRAGMENT -->
 
-    <string name="no_location">We were unable to detect your location. Please turn on location services.</string>
+    <string name="no_location">We were unable to detect your location. Please turn on location services or set your location in the settings menu.</string>
     <!-- HISTORY FRAGMENT -->
 
     <string name="history_no_history">You haven\'t visited a restaurant yet! Get browsing!</string>
+    <string name="history_no_account">You must create an account for your restaurant history to be saved!</string>
 
 
     <!-- SETTINGS FRAGMENT -->
 
     <string name="settings_header_app">App</string>
     <string name="settings_header_account">Account</string>
+    <string name="settings_header_location">Location</string>
 
 
     <string name="action_theme">Theme</string>
     <string name="action_sign_out">Sign out</string>
     <string name="action_create_account">Create an account or sign in</string>
     <string name="action_manage_account">Manage Account</string>
+
+    <string name="action_location">Set your location</string>
 
 
     <string name="theme_dialog_title">Select Theme</string>
@@ -65,6 +70,14 @@
         <item>Alternate</item>
         <item>Dark</item>
     </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="edit_preference">Edit Preference</string>
+    <string name="edit_preferences">Edit Search Preferences</string>
+    <string name="title_activity_preference">PreferenceActivity</string>
+    <string name="preferences">Search Preferences</string>
+    <string name="add_preference">+</string>
 
 
 </resources>

@@ -12,22 +12,22 @@
         android:id="@+id/historyRestaurantName"
         android:layout_width="120dp"
         android:layout_height="60dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="2dp"
+        android:layout_marginStart="27dp"
+        android:layout_marginEnd="8dp"
         android:text="Fiorellino"
         android:textSize="18sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/historyRestaurantCuisine"
         app:layout_constraintEnd_toStartOf="@+id/historyRestaurantCuisine"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/historyRestaurantCuisine"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:text="Italian"
+        android:layout_marginEnd="25dp"
         android:gravity="center"
+        android:text="Italian"
         android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/historyRestaurantDate"
         app:layout_constraintStart_toEndOf="@+id/historyRestaurantName"
@@ -38,23 +38,12 @@
         android:layout_width="95dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="3dp"
-        android:text="12/5/2018"
+        android:layout_marginEnd="36dp"
         android:gravity="center"
+        android:text="12/5/2018"
         android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/historyRestaurantRating"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/historyRestaurantCuisine"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/historyRestaurantRating"
-        android:layout_width="50dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Rate"
-        android:gravity="center"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/historyRestaurantDate"
-        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

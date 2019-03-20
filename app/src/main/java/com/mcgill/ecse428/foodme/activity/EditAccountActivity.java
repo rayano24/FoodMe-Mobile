@@ -1,5 +1,6 @@
 package com.mcgill.ecse428.foodme.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ public class EditAccountActivity extends AppCompatActivity implements View.OnCli
     Button save_changes;
     EditText etFirstName, etLastName,etPassword;
 //    TextView noAccountButton;
+    private Activity mActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

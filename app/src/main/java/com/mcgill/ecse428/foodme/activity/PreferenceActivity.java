@@ -162,7 +162,7 @@ public class PreferenceActivity extends AppCompatActivity {
         layout.setOrientation(LinearLayout.VERTICAL);
 
         final Spinner cuisineSpinner = new Spinner(PreferenceActivity.this);
-        List<String> cuisineList = Arrays.asList("Chinese", "Fast Food", "Halal", "Indian", "Italian", "Indian", "Japanese", "Korean");
+        List<String> cuisineList = Arrays.asList("chinese", "foodtrucks", "halal", "indian", "italian", "japanese", "korean");
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(PreferenceActivity.this,
                 android.R.layout.simple_spinner_item, cuisineList);
         cuisineSpinner.setAdapter(dataAdapter);
@@ -178,7 +178,7 @@ public class PreferenceActivity extends AppCompatActivity {
         layout.addView(priceSpinner);
 
         final Spinner sortBySpinner = new Spinner(PreferenceActivity.this);
-        List<String> sortList = Arrays.asList("Rating", "Distance");
+        List<String> sortList = Arrays.asList("rating", "distance", "best_match", "review_count");
         ArrayAdapter<String> dataAdapterS = new ArrayAdapter<String>(PreferenceActivity.this,
                 android.R.layout.simple_spinner_item, sortList);
         sortBySpinner.setAdapter(dataAdapterS);
@@ -186,7 +186,7 @@ public class PreferenceActivity extends AppCompatActivity {
         layout.addView(sortBySpinner);
 
         final Spinner locationSpinner = new Spinner(PreferenceActivity.this);
-        List<String> locationList = Arrays.asList("100m", "300m", "500m", "1km", "10km", "30km");
+        List<String> locationList = Arrays.asList("100m", "500m", "1km", "5km", "15km", "40km");
         ArrayAdapter<String> dataAdapterL = new ArrayAdapter<String>(PreferenceActivity.this,
                 android.R.layout.simple_spinner_item, locationList);
         locationSpinner.setAdapter(dataAdapterL);

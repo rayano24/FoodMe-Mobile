@@ -41,4 +41,28 @@ public class HttpUtils {
     private static String getAbsoluteUrl(String relativeUrl) {
         return baseUrl + relativeUrl;
     }
+
+    public static String convertToMeters(String radius){
+        // Hard coding this for now...
+        switch(radius) {
+            case "100m":
+                return "100";
+            case "500m":
+                return "500";
+            case "1km":
+                return "1000";
+            case "5km":
+                return "5000";
+            case "15km":
+                return "15000";
+            case "40km":
+                return "40000";
+            default:
+                return "1000";
+        }
+    }
+
+    public static String convertToPrice(String price){
+        return String.valueOf(price.length());
+    }
 }

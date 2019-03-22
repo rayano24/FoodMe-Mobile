@@ -96,6 +96,11 @@ public class SettingsFragment extends Fragment {
         TextView accountHeader = rootView.findViewById(R.id.settingsAccountHeader);
         TextView preferenceHeader = rootView.findViewById(R.id.settingsPreferenceHeader);
 
+        if(userID == null || userID.equals("noAccount")){
+            editPreferences.setVisibility(View.GONE);
+            preferenceHeader.setVisibility(View.GONE);
+        }
+
         switch (selectedTheme) {
             case (0):
                 appHeader.setTextColor(ContextCompat.getColor(mActivity, R.color.material_teal_500));

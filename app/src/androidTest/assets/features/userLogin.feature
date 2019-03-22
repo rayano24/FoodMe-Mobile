@@ -10,23 +10,23 @@ Feature: User logs in to the system
     Then I should be able to successfully login
 
     Examples:
-      | username  |  password    |
-      | 'admin'   |  'password'  |
+      | username  |  password     |
+      | 'alaye'   |  'hackme123'  |
 
-  Scenario Outline:  Successful login (Alternate scenario)
-    Given I have an existing account
-    When I enter my <email> and my <password>
-    Then I should be able to successfully login
-
-    Examples:
-      | email     |  password    |
-      | 'admin'   |  'password'  |
-
-  Scenario Outline:  Unsuccessful login (Error scenario)
-    When I enter an invalid combination of <username> and <password>
-    Then I should not be able to login
-    And I should be prompted to re-enter my credentials
-
-    Examples:
-      | username     |   password   |
-      | ''           |     ''       |
+#  Scenario Outline:  Successful login (Alternate scenario)
+#    Given I have an existing account
+#    When I enter my <email> and my <password>
+#    Then I should be able to successfully login
+#
+#    Examples:
+#      | email     |  password    |
+#      | 'admin'   |  'password'  |
+#
+#  Scenario Outline:  Unsuccessful login (Error scenario)
+#    When I enter an invalid combination of <username> and <password>
+#    Then I should not be able to login
+#    And I should be prompted to re-enter my credentials
+#
+#    Examples:
+#      | username     |   password   |
+#      | ''           |     ''       |

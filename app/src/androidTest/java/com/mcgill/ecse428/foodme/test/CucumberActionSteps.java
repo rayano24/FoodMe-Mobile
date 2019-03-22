@@ -26,6 +26,7 @@ public class CucumberActionSteps {
     public static boolean loggedIn(Solo solo) {
         //TODO FIND A BETTER WAY TO CHECK IF USER IS LOGGED IN
         return !solo.searchButton("Sign in");
+//        return solo.waitForActivity("MainActivity") || solo.waitForText("Successful login");
     }
 
     //Logs in using username and password (does not handle invalid input, instead that is asserted in the "Then" method)

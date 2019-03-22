@@ -71,6 +71,7 @@ dependencies {
 //    compile group: 'com.android.support.test', name: 'runner', version: '1.0.2'
     androidTestImplementation 'io.cucumber:cucumber-junit:3.0.2'
     androidTestImplementation group: 'io.cucumber', name: 'cucumber-android', version: '3.0.2'
+    androidTestImplementation group: 'io.cucumber', name: 'cucumber-java', version: '3.0.2'
     androidTestImplementation 'io.cucumber:cucumber-picocontainer:3.0.2'
     androidTestImplementation group: 'io.cucumber', name: 'cucumber-jvm', version: '3.0.2', ext: 'pom'
     androidTestImplementation 'io.cucumber:cucumber-core:3.0.2'

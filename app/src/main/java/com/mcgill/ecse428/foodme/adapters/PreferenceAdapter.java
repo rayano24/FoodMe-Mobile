@@ -132,7 +132,7 @@ public class PreferenceAdapter extends RecyclerView.Adapter<PreferenceAdapter.My
         layout.setOrientation(LinearLayout.VERTICAL);
 
         final Spinner cuisineSpinner = new Spinner(holder.location.getContext());
-        List<String> cuisineList = Arrays.asList("chinese", "foodtrucks", "halal", "indian", "italian", "japanese", "korean");
+        List<String> cuisineList = Arrays.asList("bakeries", "bars", "bistros", "burgers", "chinese", "coffee", "desserts", "diners", "foodtrucks", "french", "greek", "halal", "indian", "italian", "japanese", "korean", "lebanese", "mexican", "pakistani", "persian", "portuguese", "sandwiches", "salad", "seafood", "spanish", "syrian", "tacos", "vegetarian", "vietnamese");
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(holder.location.getContext(),
                 android.R.layout.simple_spinner_item, cuisineList);
         cuisineSpinner.setAdapter(dataAdapter);

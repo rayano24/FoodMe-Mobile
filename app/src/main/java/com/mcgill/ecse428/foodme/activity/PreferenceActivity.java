@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -161,36 +162,48 @@ public class PreferenceActivity extends AppCompatActivity {
         LinearLayout layout = new LinearLayout(PreferenceActivity.this);
         layout.setOrientation(LinearLayout.VERTICAL);
 
+        final TextView cuisineText = new TextView(PreferenceActivity.this);
+        cuisineText.setText("Cuisine: ");
         final Spinner cuisineSpinner = new Spinner(PreferenceActivity.this);
-        List<String> cuisineList = Arrays.asList("chinese", "foodtrucks", "halal", "indian", "italian", "japanese", "korean");
+        List<String> cuisineList = Arrays.asList("bakeries", "bars", "bistros", "burgers", "chinese", "coffee", "desserts", "diners", "foodtrucks", "french", "greek", "halal", "indian", "italian", "japanese", "korean", "lebanese", "mexican", "pakistani", "persian", "portuguese", "sandwiches", "salad", "seafood", "spanish", "syrian", "tacos", "vegetarian", "vietnamese");
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(PreferenceActivity.this,
                 android.R.layout.simple_spinner_item, cuisineList);
         cuisineSpinner.setAdapter(dataAdapter);
         cuisineSpinner.setSelection(0);
+        layout.addView(cuisineText);
         layout.addView(cuisineSpinner);
 
+        final TextView priceText = new TextView(PreferenceActivity.this);
+        priceText.setText("Price range: ");
         final Spinner priceSpinner = new Spinner(PreferenceActivity.this);
         List<String> priceList = Arrays.asList("$", "$$", "$$$", "$$$$");
         ArrayAdapter<String> dataAdapterP = new ArrayAdapter<String>(PreferenceActivity.this,
                 android.R.layout.simple_spinner_item, priceList);
         priceSpinner.setAdapter(dataAdapterP);
         priceSpinner.setSelection(0);
+        layout.addView(priceText);
         layout.addView(priceSpinner);
 
+        final TextView sortText = new TextView(PreferenceActivity.this);
+        sortText.setText("Sort results by: ");
         final Spinner sortBySpinner = new Spinner(PreferenceActivity.this);
         List<String> sortList = Arrays.asList("rating", "distance", "best_match", "review_count");
         ArrayAdapter<String> dataAdapterS = new ArrayAdapter<String>(PreferenceActivity.this,
                 android.R.layout.simple_spinner_item, sortList);
         sortBySpinner.setAdapter(dataAdapterS);
         sortBySpinner.setSelection(0);
+        layout.addView(sortText);
         layout.addView(sortBySpinner);
 
+        final TextView radiusText = new TextView(PreferenceActivity.this);
+        radiusText.setText("Max distance: ");
         final Spinner locationSpinner = new Spinner(PreferenceActivity.this);
         List<String> locationList = Arrays.asList("100m", "500m", "1km", "5km", "15km", "40km");
         ArrayAdapter<String> dataAdapterL = new ArrayAdapter<String>(PreferenceActivity.this,
                 android.R.layout.simple_spinner_item, locationList);
         locationSpinner.setAdapter(dataAdapterL);
         locationSpinner.setSelection(0);
+        layout.addView(radiusText);
         layout.addView(locationSpinner);
 
 

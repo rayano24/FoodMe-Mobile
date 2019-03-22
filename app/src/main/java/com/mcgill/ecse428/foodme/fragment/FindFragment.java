@@ -7,6 +7,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -37,6 +39,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -109,6 +112,7 @@ public class FindFragment extends Fragment {
         preferenceSpinner.setAdapter(dataAdapter);
         int spinnerPosition = 0;
         preferenceSpinner.setSelection(spinnerPosition);
+        preferenceSpinner.setVisibility(View.GONE);
 
         getPreferences();
 
@@ -117,18 +121,14 @@ public class FindFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1,
                                        int arg2, long arg3) {
+
                 String preference = preferenceSpinner.getSelectedItem().toString();
                 if(preference.equals("No search preference")){
-                    if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && storedLocation != null && storedLat != null && storedLng != null) {
-                        displayRestaurants(storedLat, storedLng);
-                        noLocation.setVisibility(View.GONE);
-                    }
+                    displayRestaurants(storedLat, storedLng);
                     return;
                 }
                 String[] values = preference.split(",");
-                if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && storedLocation != null && storedLat != null && storedLng != null) {
-                    searchWithPreference(values);
-                }
+                searchWithPreference(values);
             }
 
             @Override
@@ -171,6 +171,7 @@ public class FindFragment extends Fragment {
                             }
                         }
                     });
+            preferenceSpinner.setVisibility(View.VISIBLE);
 
         }
 
@@ -358,7 +359,21 @@ public class FindFragment extends Fragment {
 
     private void searchWithPreference(String[] values) {
 
-        HttpUtils.get("search/distance/" + 0 + "/?longitude=" + values[0] + "&latitude=" + values[1], new RequestParams(), new JsonHttpResponseHandler() {
+        String radius = HttpUtils.convertToMeters(values[0]);
+        String cuisine = values[1];
+        String price = HttpUtils.convertToPrice(values[2]);
+        String sortBy = values[3];
+        //String storedLocation = prefs.getString(KEY_USER_LOCATION, null);
+        String storedLat = prefs.getString(KEY_USER_LOCATION_LATITUDE, null);
+        String storedLong = prefs.getString(KEY_USER_LOCATION_LONGITUDE, null);
+        Geocoder geo = new Geocoder(mActivity);
+        List<Address> location = null;
+        try {
+            location = geo.getFromLocation(Double.valueOf(storedLat), Double.valueOf(storedLong), 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        HttpUtils.get("search/filter/?location=" + "montreal" + "&radius=" + radius + "&price=" + price + "&cuisine=" + cuisine + "&sortby=" + sortBy, new RequestParams(), new JsonHttpResponseHandler() {
 
             @Override
             public void onFinish() {
@@ -392,7 +407,7 @@ public class FindFragment extends Fragment {
 
                         JSONArray categories = obj.getJSONArray("categories");
                         JSONObject cuisineList = categories.getJSONObject(0);
-                        String cuisine = cuisineList.getString("title");
+                        //String cuisine = cuisineList.getString("title");
 
 
                         BigDecimal bd = new BigDecimal(distance);

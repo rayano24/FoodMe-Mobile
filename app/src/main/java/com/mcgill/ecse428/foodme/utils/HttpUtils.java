@@ -1,5 +1,8 @@
 package com.mcgill.ecse428.foodme.utils;
 
+import android.util.Log;
+import android.widget.Toast;
+
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -39,6 +42,10 @@ public class HttpUtils {
     }
 
     private static String getAbsoluteUrl(String relativeUrl) {
+        relativeUrl = relativeUrl.replace(" ", "%20");
+
+        //commented out is a handy tool for debugging queries
+        //Log.d("URL", baseUrl+relativeUrl);
         return baseUrl + relativeUrl;
     }
 

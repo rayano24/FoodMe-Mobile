@@ -123,7 +123,7 @@ public class FindFragment extends Fragment {
                                        int arg2, long arg3) {
 
                 String preference = preferenceSpinner.getSelectedItem().toString();
-                if(preference.equals("No search preference")){
+                if (preference.equals("No search preference")) {
                     displayRestaurants(storedLat, storedLng);
                     return;
                 }
@@ -137,6 +137,7 @@ public class FindFragment extends Fragment {
 
             }
         });
+
 
 
         // note for anyone looking at this, I elected to put the location stuff here rather than the main activity so we can avoid using GSON and so we can modify the view here
@@ -321,7 +322,7 @@ public class FindFragment extends Fragment {
                         bd = bd.setScale(1, RoundingMode.HALF_UP);
 
 
-                        restaurantList.add(new Restaurant(name, cuisine, price, bd.toString() + " miles", displayLocation));
+                        restaurantList.add(new Restaurant(name, cuisine, price, bd.toString() + " metres", displayLocation));
 
 
                     }
@@ -414,7 +415,7 @@ public class FindFragment extends Fragment {
                         bd = bd.setScale(1, RoundingMode.HALF_UP);
 
 
-                        restaurantList.add(new Restaurant(name, cuisine, price, bd.toString() + " miles", displayLocation));
+                        restaurantList.add(new Restaurant(name, cuisine, price, bd.toString() + " metres", displayLocation));
 
 
                     }
@@ -449,9 +450,13 @@ public class FindFragment extends Fragment {
     }
 
     public void getPreferences() {
-        List<String> preferenceList = new ArrayList<String>();
+        List<String> preferenceList = new ArrayList<>();
+        List<Integer> pIDs = new ArrayList<>();
+
+
         preferenceList.add("No search preference");
         String username = prefs.getString(KEY_USER_ID, null);
+
         HttpUtils.get("preferences/" + username + "/", new RequestParams(), new JsonHttpResponseHandler() {
 
             @Override
@@ -470,6 +475,8 @@ public class FindFragment extends Fragment {
                         System.out.println(preference);
 
                         preferenceList.add(preference.get(2) + "," + preference.get(1) + "," + preference.get(3) + "," + (String) preference.get(4));
+                        pIDs.add((Integer) preference.get(0));
+
                     }
 
                 } catch (JSONException e) {
@@ -477,6 +484,50 @@ public class FindFragment extends Fragment {
                 }
 
                 dataAdapter.addAll(preferenceList);
+                displayDefault(username, pIDs);
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+            }
+        });
+    }
+
+    private void displayDefault(String username, List<Integer> pIDs) {
+        HttpUtils.get("users/" + username + "/getdefault", new RequestParams(), new JsonHttpResponseHandler() {
+
+            @Override
+            public void onFinish() {
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+
+                try {
+
+                    JSONArray preference = (JSONArray) response.get(0);
+
+
+                    int pID = preference.getInt(0);
+
+                    for (int j = 0; j < pIDs.size(); j++) {
+
+                        if (pID == (pIDs.get(j))) {
+                            preferenceSpinner.setSelection(j + 1, true);
+                            dataAdapter.notifyDataSetChanged();
+                            break;
+
+                        }
+
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
             }
 
             @Override

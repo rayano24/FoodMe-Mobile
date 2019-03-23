@@ -227,7 +227,7 @@ public class PreferenceActivity extends AppCompatActivity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(PreferenceActivity.this);
         String username = prefs.getString(KEY_USER_ID, null);
 
-        HttpUtils.post(username + "/setdefault/" + pID, new RequestParams(), new JsonHttpResponseHandler() {
+        HttpUtils.post("users/" + username + "/setdefault/" + pID, new RequestParams(), new JsonHttpResponseHandler() {
 
             @Override
             public void onFinish() {
@@ -239,9 +239,9 @@ public class PreferenceActivity extends AppCompatActivity {
 
                 try {
                     if (response.getBoolean("response")) {
-                        Toast.makeText(PreferenceActivity.this, response.getString("response"), Toast.LENGTH_LONG).show(); // generic network error
+                        Toast.makeText(PreferenceActivity.this, response.getString("message"), Toast.LENGTH_LONG).show();
                     } else {
-                        Toast.makeText(PreferenceActivity.this, response.getString("error"), Toast.LENGTH_LONG).show(); // generic network error
+                        Toast.makeText(PreferenceActivity.this, response.getString("message"), Toast.LENGTH_LONG).show();
                     }
 
                 } catch (JSONException e) {
@@ -251,12 +251,16 @@ public class PreferenceActivity extends AppCompatActivity {
 
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, String
-                    responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject
+                    errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
 
-                Toast.makeText(PreferenceActivity.this, "There was a network error, try again later.", Toast.LENGTH_LONG).show(); // generic network error
-
+                try {
+                    Toast.makeText(PreferenceActivity.this, errorResponse.getString("message"), Toast.LENGTH_LONG).show();
+                }
+                catch(JSONException e) {
+                    Toast.makeText(PreferenceActivity.this, "There was a network error", Toast.LENGTH_LONG).show();
+                }
             }
 
 

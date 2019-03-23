@@ -84,7 +84,7 @@ public class RestaurantFragment extends Fragment {
         historyRecyclerView.setAdapter(historyAdapter);
 
 
-        if (username != null & !username.equals("noAccount")) {
+        if (username != null & username.equals("noAccount")) {
             historyNotice.setText(R.string.history_no_account);
             historyNotice.setVisibility(View.VISIBLE);
         } else {
@@ -97,6 +97,7 @@ public class RestaurantFragment extends Fragment {
             public void onClick(View view, int position) {
                 Intent I = new Intent(getActivity(), PastRestaurantActivity.class);
                 I.putExtra("historyRestaurantID", historyList.get(position).getID());
+                I.putExtra("historyRestaurantName", historyList.get(position).getName());
                 startActivity(I);
 
             }
@@ -144,8 +145,6 @@ public class RestaurantFragment extends Fragment {
 
     }
 
-
-    // TODO fill with restaurant ID's, create on click
     /**
      * Displays a user's past visited restaurants
      *
@@ -153,37 +152,32 @@ public class RestaurantFragment extends Fragment {
      */
     public void displayPastRestaurants(String username) {
 
-        HttpUtils.get(username + "/all/visited", new RequestParams(), new JsonHttpResponseHandler() {
+        HttpUtils.get("restaurants/" + username + "/all/visited", new RequestParams(), new JsonHttpResponseHandler() {
 
             @Override
             public void onFinish() {
             }
 
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
 
-             /*   try {
+                try {
 
                     historyList.clear();
 
-                    JSONArray mainArray = response.getJSONArray("businesses");
 
 
-                    for (int i = 0; i < mainArray.length(); i++) {
+                    for (int i = 0; i < response.length(); i++) {
 
-                        JSONObject obj = mainArray.getJSONObject(i);
-                        String name = obj.getString("name");
-
-
-                        JSONArray categories = obj.getJSONArray("categories");
-                        JSONObject cuisineList = categories.getJSONObject(0);
-                        String cuisine = cuisineList.getString("title");
+                        JSONArray mainArray = response.getJSONArray(i);
 
 
-                        String date = "12/7/2018";
+
+                        String name = mainArray.getString(1);
+                        String id = mainArray.getString(0);
 
 
-                        historyList.add(new RestaurantHistory(name, cuisine, date));
+                        historyList.add(new RestaurantHistory(name, id));
 
 
                     }
@@ -192,7 +186,7 @@ public class RestaurantFragment extends Fragment {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                */
+
 
 
                 if (historyList.isEmpty())

@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,11 +37,18 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.GeofencingClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.mcgill.ecse428.foodme.R;
 import com.mcgill.ecse428.foodme.activity.EditAccountActivity;
 import com.mcgill.ecse428.foodme.activity.LoginActivity;
 import com.mcgill.ecse428.foodme.activity.MainActivity;
 import com.mcgill.ecse428.foodme.activity.PreferenceActivity;
+import com.mcgill.ecse428.foodme.utils.HttpUtils;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,6 +59,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import androidx.annotation.NonNull;
+import cz.msebera.android.httpclient.Header;
 
 public class SettingsFragment extends Fragment {
 
@@ -95,6 +104,11 @@ public class SettingsFragment extends Fragment {
         TextView locationHeader = rootView.findViewById(R.id.settingsLocationHeader);
         TextView accountHeader = rootView.findViewById(R.id.settingsAccountHeader);
         TextView preferenceHeader = rootView.findViewById(R.id.settingsPreferenceHeader);
+
+        TextView changePasswordButton = rootView.findViewById(R.id.changePassword);
+        EditText oldPassword = rootView.findViewById(R.id.oldPassword);
+        EditText newPassword = rootView.findViewById(R.id.newPassword);
+        Button submitChangePasswordButton = rootView.findViewById(R.id.changePasswordButton);
 
         if(userID == null || userID.equals("noAccount")){
             editPreferences.setVisibility(View.GONE);
@@ -234,6 +248,65 @@ public class SettingsFragment extends Fragment {
             }
         });
 
+        //setup tab for changing passwords
+        changePasswordButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //if we click this, and the tab is visible, hide it
+                if(oldPassword.getVisibility() == View.VISIBLE){
+                    oldPassword.setVisibility(View.GONE);
+                    newPassword.setVisibility(View.GONE);
+                    submitChangePasswordButton.setVisibility(View.GONE);
+                }
+                else{   //otherwise show it
+                    oldPassword.setVisibility(View.VISIBLE);
+                    newPassword.setVisibility(View.VISIBLE);
+                    submitChangePasswordButton.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        //setup the submit button
+        submitChangePasswordButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //get the data the user typed
+                String oldP = oldPassword.getText().toString();
+                String newP = newPassword.getText().toString();
+
+                //build the url
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+                String username = prefs.getString("userID", null);
+
+                String url = "users/changePassword/"+username+"/"+oldP+"/"+newP;
+                HttpUtils.post(url, new RequestParams(), new JsonHttpResponseHandler(){
+                    @Override
+                    public void onFinish(){}
+
+                    @Override
+                    public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, JSONObject response) {
+                        Log.d("CHANGED","PASSWORD");
+                        Toast.makeText(getContext(),"Password changed successfully", Toast.LENGTH_LONG).show();
+                    }
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse){
+                        super.onFailure(statusCode,headers,throwable,errorResponse);
+                        try{
+                            Toast.makeText(getContext(), errorResponse.getString("message"), Toast.LENGTH_SHORT).show();
+                        }
+                        catch (Exception e){
+                            Toast.makeText(getContext(),"Failed to change password", Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+                });
+                oldPassword.setVisibility(View.GONE);
+                oldPassword.setText("");
+                newPassword.setVisibility(View.GONE);
+                newPassword.setText("");
+                submitChangePasswordButton.setVisibility(View.GONE);
+            }
+        });
 
         return rootView;
     }

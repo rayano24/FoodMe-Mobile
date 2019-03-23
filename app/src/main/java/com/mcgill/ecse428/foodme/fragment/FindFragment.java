@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.Spinner;
@@ -75,6 +76,7 @@ public class FindFragment extends Fragment {
     private RecyclerView restaurantRecyclerView;
     private RestaurantAdapter restaurantAdapter;
     private TextView noLocation, noRestaurants, searchLocationButton;
+    private Button openFilterMenu;
 
     private Activity mActivity;
 
@@ -104,7 +106,7 @@ public class FindFragment extends Fragment {
         noLocation = rootView.findViewById(R.id.noLocation);
         noRestaurants = rootView.findViewById(R.id.noRestaurants);
         searchLocationButton = rootView.findViewById(R.id.searchLocation);
-
+        openFilterMenu = rootView.findViewById(R.id.show_pref_filter_menu);
 
         restaurantAdapter = new RestaurantAdapter(restaurantList);
 

@@ -28,32 +28,17 @@ public class RestaurantHistoryAdapter extends RecyclerView.Adapter<RestaurantHis
     private List<RestaurantHistory> historyList;
     private Context mContext;
 
-    public class MyViewHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener, View.OnLongClickListener{
-        protected TextView name, cuisine, date;
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+        protected TextView name;
         private RestaurantAdapter.ItemClickListener clickListener;
 
         public MyViewHolder(View view) {
             super(view);
-            name = view.findViewById(R.id.historyRestaurantDate);
-            cuisine = view.findViewById(R.id.historyRestaurantCuisine);
-            date = view.findViewById(R.id.historyRestaurantDate);
+            name = view.findViewById(R.id.historyRestaurantName);
 
-            view.setOnClickListener(this);
-            view.setOnLongClickListener(this);
         }
 
-        public void setClickListener(RestaurantAdapter.ItemClickListener itemClickListener){
-            this.clickListener = itemClickListener;
-        }
 
-        public void onClick(View view){
-            clickListener.onClick(view, getLayoutPosition(),false);
-        }
-        public boolean onLongClick(View view){
-            clickListener.onClick(view, getLayoutPosition(), true);
-            return true;
-        }
     }
 
     public RestaurantHistoryAdapter(List<RestaurantHistory> historyList) {
@@ -64,7 +49,7 @@ public class RestaurantHistoryAdapter extends RecyclerView.Adapter<RestaurantHis
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         this.mContext = parent.getContext();
         View itemView = LayoutInflater.from(mContext).inflate(R.layout.recycler_restaurant_history, parent, false);
-        ;
+
 
         return new MyViewHolder(itemView);
     }
@@ -73,34 +58,8 @@ public class RestaurantHistoryAdapter extends RecyclerView.Adapter<RestaurantHis
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         RestaurantHistory history = historyList.get(position);
         holder.name.setText(history.getName());
-        holder.cuisine.setText(history.getCuisine());
 
-        holder.setClickListener(new RestaurantAdapter.ItemClickListener() {
-            @Override
-            public void onClick(View view, int position, boolean isLongClick) {
-                List<RestaurantHistory> rList = historyList;
-                if(isLongClick){
-                    //for now, no additional functionality here
-                    onClick(view, position, false);
-                }
-                else{
-                    IndividualRestaurantFragment irf = new IndividualRestaurantFragment();
 
-                    //prepare arguments
-                    Bundle bundle = new Bundle();
-                    bundle.putString("NAME", rList.get(position).getName());
-                    bundle.putString("CUISINE",rList.get(position).getCuisine());
-                    String[] address = rList.get(position).getAddress();
-                    bundle.putString("ADDRESS1", address[0]);
-                    bundle.putString("ADDRESS2", address[1]);
-                    irf.setArguments(bundle);
-
-                    //swap fragments
-                    FragmentManager fm = ((AppCompatActivity)mContext).getSupportFragmentManager();
-                    fm.beginTransaction().replace(R.id.frame_fragmentholder, irf).commit();
-                }
-            }
-        });
     }
 
 

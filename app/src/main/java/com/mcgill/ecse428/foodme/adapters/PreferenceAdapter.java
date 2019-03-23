@@ -132,7 +132,7 @@ public class PreferenceAdapter extends RecyclerView.Adapter<PreferenceAdapter.My
         layout.setOrientation(LinearLayout.VERTICAL);
 
         final Spinner cuisineSpinner = new Spinner(holder.location.getContext());
-        List<String> cuisineList = Arrays.asList("Mexican", "Chinese", "Indian", "FastFood");
+        List<String> cuisineList = Arrays.asList("bakeries", "bars", "bistros", "burgers", "chinese", "coffee", "desserts", "diners", "foodtrucks", "french", "greek", "halal", "indian", "italian", "japanese", "korean", "lebanese", "mexican", "pakistani", "persian", "portuguese", "sandwiches", "salad", "seafood", "spanish", "syrian", "tacos", "vegetarian", "vietnamese");
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(holder.location.getContext(),
                 android.R.layout.simple_spinner_item, cuisineList);
         cuisineSpinner.setAdapter(dataAdapter);
@@ -150,7 +150,7 @@ public class PreferenceAdapter extends RecyclerView.Adapter<PreferenceAdapter.My
         layout.addView(priceSpinner);
 
         final Spinner sortBySpinner = new Spinner(holder.location.getContext());
-        List<String> sortList = Arrays.asList("Rating", "Distance");
+        List<String> sortList = Arrays.asList("rating", "distance", "best_match", "review_count");
         ArrayAdapter<String> dataAdapterS = new ArrayAdapter<String>(holder.location.getContext(),
                 android.R.layout.simple_spinner_item, sortList);
         sortBySpinner.setAdapter(dataAdapterS);
@@ -159,7 +159,7 @@ public class PreferenceAdapter extends RecyclerView.Adapter<PreferenceAdapter.My
         layout.addView(sortBySpinner);
 
         final Spinner locationSpinner = new Spinner(holder.location.getContext());
-        List<String> locationList = Arrays.asList("100m", "300m", "500m", "1km", "10km", "30km");
+        List<String> locationList = Arrays.asList("100m", "500m", "1km", "5km", "15km", "40km");
         ArrayAdapter<String> dataAdapterL = new ArrayAdapter<String>(holder.location.getContext(),
                 android.R.layout.simple_spinner_item, locationList);
         locationSpinner.setAdapter(dataAdapterL);

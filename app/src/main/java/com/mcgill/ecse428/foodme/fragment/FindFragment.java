@@ -4,7 +4,9 @@ package com.mcgill.ecse428.foodme.fragment;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -13,11 +15,15 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,6 +51,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -66,7 +73,7 @@ public class FindFragment extends Fragment {
     private List<Restaurant> restaurantList = new ArrayList<>();
     private RecyclerView restaurantRecyclerView;
     private RestaurantAdapter restaurantAdapter;
-    private TextView noLocation, noRestaurants;
+    private TextView noLocation, noRestaurants, searchLocationButton;
 
     private Activity mActivity;
 
@@ -95,6 +102,7 @@ public class FindFragment extends Fragment {
 
         noLocation = rootView.findViewById(R.id.noLocation);
         noRestaurants = rootView.findViewById(R.id.noRestaurants);
+        searchLocationButton = rootView.findViewById(R.id.searchLocation);
 
 
         restaurantAdapter = new RestaurantAdapter(restaurantList);
@@ -173,6 +181,13 @@ public class FindFragment extends Fragment {
                         }
                     });
             preferenceSpinner.setVisibility(View.VISIBLE);
+
+            searchLocationButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openLocationDialog();
+                }
+            });
 
         }
 
@@ -292,7 +307,6 @@ public class FindFragment extends Fragment {
 
 
                 try {
-
                     restaurantList.clear();
 
                     JSONArray mainArray = response.getJSONArray("businesses");
@@ -328,6 +342,7 @@ public class FindFragment extends Fragment {
 
 
                     }
+
 
 
                 } catch (JSONException e) {
@@ -539,5 +554,190 @@ public class FindFragment extends Fragment {
         });
     }
 
+    /**
+     * Opens a dialog so that the user can enter their location. Once entered, is committed to preferences.
+     */
+    private void openLocationDialog() {
 
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+
+        final AutoCompleteTextView input = new AutoCompleteTextView(mActivity);
+
+
+        alert.setTitle("Location");
+        alert.setMessage("Enter a search location");
+
+        alert.setView(input);
+        input.setThreshold(3);
+        input.setAdapter(new AutoCompleteAdapter(mActivity, android.R.layout.simple_list_item_1));
+
+
+        alert.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+                if(input.getAdapter()==null){
+
+                }
+                else {
+                    int count = input.getAdapter().getCount();
+
+                    // the user is forced to select a result from the geocode api to ensure precision
+
+                    if (count != 0) {
+
+                        for (int i = 0; i < count; i++) {
+                            if (input.getAdapter().getItem(i).equals(input.getText().toString())) {
+                                try {
+                                    Geocoder geo = new Geocoder(mActivity);
+                                    List<Address> addresses = geo.getFromLocationName(input.getText().toString(), 1);
+                                    for (int address = 0; address < addresses.size(); address++) {
+                                        String lat = Double.toString(addresses.get(address).getLatitude());
+                                        String lng = Double.toString(addresses.get(address).getLongitude());
+                                        prefs.edit().putString(KEY_USER_LOCATION_LATITUDE, lat).apply();
+                                        prefs.edit().putString(KEY_USER_LOCATION_LONGITUDE, lng).apply();
+                                        prefs.edit().putString(KEY_USER_LOCATION, input.getText().toString()).apply();
+                                        searchLocationButton.setText(input.getText().toString().replaceAll("_", " "));
+                                        displayRestaurants(lat, lng);
+                                        break;
+
+                                    }
+                                } catch (IOException e) {
+                                    Toast.makeText(mActivity, "There was an error setting your location, please try again", Toast.LENGTH_LONG).show();
+                                    e.printStackTrace();
+
+                                }
+                            } else {
+                                // geocode technically only gives 1 result as it is designed for unambiguous results, however, added in case
+                                if (i == (count - 1)) {
+                                    Toast.makeText(mActivity, "Invalid location. Please suggest a suggested location.", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        }
+                    } else {
+                        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(mActivity);
+
+                        if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                            // Permission is not granted
+
+                            // PERMISSIONS_REQUEST_FINE_LOCATION is an app-defined int constant. The callback method gets the result of the request.
+                            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_FINE_LOCATION);
+
+
+                        } else {
+                            // Permission is granted, get location
+                            mFusedLocationClient.getLastLocation()
+                                    .addOnSuccessListener(mActivity, new OnSuccessListener<Location>() {
+                                        @Override
+                                        public void onSuccess(Location location) {
+                                            // Got last known location. In some rare situations this can be null.
+
+                                            if (location != null) {
+
+                                                double lat = location.getLatitude();
+                                                double lng = location.getLongitude();
+                                                prefs.edit().putString(KEY_USER_LOCATION_LATITUDE, Double.toString(lat)).apply();
+                                                prefs.edit().putString(KEY_USER_LOCATION_LONGITUDE, Double.toString(lng)).apply();
+                                                prefs.edit().remove(KEY_USER_LOCATION).apply();
+                                                searchLocationButton.setText("Search Another Location");
+                                                displayRestaurants(Double.toString(lat), Double.toString(lng));
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+                }
+
+            }
+
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+            }
+        });
+
+        alert.show();
+
+    }
+
+    /**
+     * Used to display suggestions in the autocomplete textview within the locations dialog
+     */
+    class AutoCompleteAdapter extends ArrayAdapter implements Filterable {
+
+
+        private ArrayList<String> resultList;
+
+        public AutoCompleteAdapter(Context context, int textViewResourceId) {
+            super(context, textViewResourceId);
+        }
+
+        @Override
+        public int getCount() {
+            if(resultList==null) return 0;
+            return resultList.size();
+        }
+
+        @Override
+        public String getItem(int index) {
+            return resultList.get(index);
+        }
+
+        @Override
+        public Filter getFilter() {
+            Filter filter = new Filter() {
+                @Override
+                protected FilterResults performFiltering(CharSequence constraint) {
+                    FilterResults filterResults = new FilterResults();
+                    if (constraint != null) {
+                        // Retrieve the autocomplete results.
+                        resultList = getAddressInfo(constraint.toString());
+
+                        // Assign the data to the FilterResults
+                        filterResults.values = resultList;
+                        filterResults.count = resultList.size();
+                    }
+                    return filterResults;
+                }
+
+                @Override
+                protected void publishResults(CharSequence constraint, FilterResults results) {
+                    if (results != null && results.count > 0) {
+                        notifyDataSetChanged();
+                    } else {
+                        notifyDataSetInvalidated();
+                    }
+                }
+            };
+            return filter;
+        }
+
+    }
+    /**
+     * Performs the geocoder function to retrieve the adequate location name based on user input
+     *
+     * @param locationName any location name or address including landmarks
+     * @return the location address
+     */
+    private ArrayList<String> getAddressInfo(String locationName) {
+        ArrayList<String> list = new ArrayList<>();
+        Geocoder geocoder = new Geocoder(mActivity, Locale.getDefault());
+        try {
+            List<Address> a = geocoder.getFromLocationName(locationName, 5);
+            for (int i = 0; i < a.size(); i++) {
+                //String city = a.get(i).getLocality();
+                // String country = a.get(i).getCountryName();
+                String address = a.get(i).getAddressLine(0);
+                //  + "--" + (lat!=null? "," + lat:"") + "--" + (lng!=null? ", " + lng:"")
+                list.add(address);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }

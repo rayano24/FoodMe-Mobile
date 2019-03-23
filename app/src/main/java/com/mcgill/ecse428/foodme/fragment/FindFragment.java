@@ -311,6 +311,8 @@ public class FindFragment extends Fragment {
                         JSONArray locArr = locObj.getJSONArray("display_address");
                         String[] displayLocation = {locArr.getString(0), locArr.getString(1)};
 
+                        String id = obj.getString("id");
+
                         JSONArray categories = obj.getJSONArray("categories");
                         JSONObject cuisineList = categories.getJSONObject(0);
                         String cuisine = cuisineList.getString("title");
@@ -320,7 +322,7 @@ public class FindFragment extends Fragment {
                         bd = bd.setScale(1, RoundingMode.HALF_UP);
 
 
-                        restaurantList.add(new Restaurant(name, cuisine, price, bd.toString() + " miles", displayLocation));
+                        restaurantList.add(new Restaurant(name, cuisine, price, bd.toString() + " miles", displayLocation, id));
 
 
                     }

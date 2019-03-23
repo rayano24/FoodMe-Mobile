@@ -71,6 +71,7 @@ public class FindFragment extends Fragment {
     private static final int PERMISSIONS_REQUEST_FINE_LOCATION = 811;
 
     private List<Restaurant> restaurantList = new ArrayList<>();
+    private List<String> dislikedList = new ArrayList<>();
     private RecyclerView restaurantRecyclerView;
     private RestaurantAdapter restaurantAdapter;
     private TextView noLocation, noRestaurants, searchLocationButton;
@@ -123,6 +124,8 @@ public class FindFragment extends Fragment {
         preferenceSpinner.setVisibility(View.GONE);
 
         getPreferences();
+
+        updateDislikeList();
 
         preferenceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
@@ -294,7 +297,7 @@ public class FindFragment extends Fragment {
      * @param lng longitude of current user position
      */
     public void displayRestaurants(String lat, String lng) {
-
+        updateDislikeList();
 
         HttpUtils.get("search/distance/" + 0 + "/?longitude=" + lng + "&latitude=" + lat, new RequestParams(), new JsonHttpResponseHandler() {
 
@@ -315,6 +318,11 @@ public class FindFragment extends Fragment {
                     for (int i = 0; i < mainArray.length(); i++) {
 
                         JSONObject obj = mainArray.getJSONObject(i);
+
+                        //filter disliked restos
+                        String id = obj.getString("id");
+                        if(dislikedList.contains(id)) continue;
+
                         String name = obj.getString("name");
                         String price = "n/a";
                         if (obj.has("price")) {
@@ -327,7 +335,7 @@ public class FindFragment extends Fragment {
                         JSONArray locArr = locObj.getJSONArray("display_address");
                         String[] displayLocation = {locArr.getString(0), locArr.getString(1)};
 
-                        String id = obj.getString("id");
+
 
                         JSONArray categories = obj.getJSONArray("categories");
                         JSONObject cuisineList = categories.getJSONObject(0);
@@ -739,5 +747,46 @@ public class FindFragment extends Fragment {
             e.printStackTrace();
         }
         return list;
+    }
+
+    private void updateDislikeList(){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String url = "restaurants/"+prefs.getString("userID", null)+"/all/disliked";
+        HttpUtils.get(url , new RequestParams(), new JsonHttpResponseHandler() {
+
+            @Override
+            public void onFinish() {
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                boolean emptySet = false;
+                try{ emptySet = response.getBoolean(0); }
+                catch (Exception e){}
+                try {
+                    if(!emptySet) {
+                        //make a new array
+                        List<String> newList = new ArrayList<String>();
+
+                        for(int i = 0; i < response.length(); i++){
+                            JSONArray obj = (JSONArray) response.get(i);
+                            newList.add(obj.getString(0));
+                           // Log.d("DISLIKED",obj.getString("id"));
+                        }
+                        dislikedList = newList;
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject
+                    errorResponse) {
+
+            }
+        });
     }
 }

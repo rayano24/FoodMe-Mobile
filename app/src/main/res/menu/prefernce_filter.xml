@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:id="@+id/priceGroup"
+        android:checkableBehavior="all">
+        <item
+            android:id="@+id/verycheap"
+            android:title="$" />
+        <item
+            android:id="@+id/cheap"
+            android:title="$$" />
+        <item
+            android:id="@+id/expensive"
+            android:title="$$$" />
+        <item
+            android:id="@+id/veryexpensive"
+            android:title="$$$$" />
+    </group>
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/close"
+            android:title="&lt;500m" />
+        <item
+            android:id="@+id/medium"
+            android:title="&lt;1km" />
+        <item
+            android:id="@+id/far"
+            android:title="Any Distance" />
+    </group>
+    <item
+        android:id="@+id/submit"
+        android:title="Submit" />
+</menu>

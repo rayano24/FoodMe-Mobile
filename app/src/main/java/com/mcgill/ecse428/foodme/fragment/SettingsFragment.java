@@ -113,6 +113,7 @@ public class SettingsFragment extends Fragment {
         if(userID == null || userID.equals("noAccount")){
             editPreferences.setVisibility(View.GONE);
             preferenceHeader.setVisibility(View.GONE);
+
         }
 
         switch (selectedTheme) {

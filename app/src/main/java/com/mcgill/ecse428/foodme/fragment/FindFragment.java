@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -25,6 +26,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -70,6 +72,10 @@ public class FindFragment extends Fragment {
 
     private FusedLocationProviderClient mFusedLocationClient;
     private static final int PERMISSIONS_REQUEST_FINE_LOCATION = 811;
+
+    private boolean[] pricePoints = {false,false,false,false};
+    private int distanceRange = 2;
+    private boolean filterApplied = false;
 
     private List<Restaurant> restaurantList = new ArrayList<>();
     private List<String> dislikedList = new ArrayList<>();
@@ -148,6 +154,78 @@ public class FindFragment extends Fragment {
             public void onNothingSelected(AdapterView<?> arg0) {
                 // TODO Auto-generated method stub
 
+            }
+        });
+
+        //set up and implement the filter button
+        //trigger warning: spaghetti to follow
+        openFilterMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Activity activity = getActivity();
+
+                //make the pop-out menu
+                PopupMenu filterMenu = new PopupMenu(getActivity(), v);
+
+                filterMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()){
+                            case R.id.verycheap:
+                                item.setChecked(!item.isChecked());
+                                pricePoints[0] = item.isChecked();
+                                break;
+                            case R.id.cheap:
+                                item.setChecked(!item.isChecked());
+                                pricePoints[1] = item.isChecked();
+                                break;
+                            case R.id.expensive:
+                                item.setChecked(!item.isChecked());
+                                pricePoints[2] = item.isChecked();
+                                break;
+                            case R.id.veryexpensive:
+                                item.setChecked(!item.isChecked());
+                                pricePoints[3] = item.isChecked();
+                                break;
+                            case R.id.close:
+                                item.setChecked(!item.isChecked());
+                                distanceRange = 0;
+                                break;
+                            case R.id.medium:
+                                item.setChecked(!item.isChecked());
+                                distanceRange = 1;
+                                break;
+                            case R.id.far:
+                                item.setChecked(!item.isChecked());
+                                distanceRange = 2;
+                                break;
+                            case R.id.submit:
+                                filterApplied = true;
+                                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+                                displayRestaurants(prefs.getString(KEY_USER_LOCATION_LATITUDE,null),prefs.getString(KEY_USER_LOCATION_LONGITUDE, null));
+                                return false;
+                            default:
+                                return false;
+                        }
+                        //This code keeps the panel open, if this method hasn't already returned
+                        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+                        item.setActionView(new View(getContext()));
+                        item.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+                            @Override
+                            public boolean onMenuItemActionExpand(MenuItem item) {
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onMenuItemActionCollapse(MenuItem item) {
+                                return false;
+                            }
+                        });
+                        return false;
+                    }
+                });
+                filterMenu.inflate(R.menu.prefernce_filter);
+                filterMenu.show();
             }
         });
 
@@ -347,8 +425,8 @@ public class FindFragment extends Fragment {
                         BigDecimal bd = new BigDecimal(distance);
                         bd = bd.setScale(1, RoundingMode.HALF_UP);
 
-
-                        restaurantList.add(new Restaurant(name, cuisine, price, bd.toString() + " metres", displayLocation, id));
+                        Restaurant toAdd = new Restaurant(name, cuisine, price, bd.toString() + " metres", displayLocation, id);
+                        if(!filterRestaurant(toAdd) || !filterApplied) restaurantList.add(toAdd);
 
 
                     }
@@ -369,6 +447,21 @@ public class FindFragment extends Fragment {
 
                 restaurantAdapter.notifyDataSetChanged();
 
+            }
+
+            public boolean filterRestaurant(Restaurant r){
+                Log.d("r.price",r.getPrice());
+                for(int i = 0; i < 4; i++) Log.d(Integer.toString(i),Boolean.toString(pricePoints[i]));
+                //check if the price matches the filter
+                if(r.getPrice().equals("$") && pricePoints[0]==false) return true;
+                if(r.getPrice().equals("$$") && pricePoints[1] == false) return true;
+                if(r.getPrice().equals("$$$") && pricePoints[2] == false) return true;
+                if(r.getPrice().equals("$$$$") && pricePoints[3] == false) return true;
+
+                double distance = Double.parseDouble(r.getDistance().replace(" metres",""));
+                if(distance > 500.0 && distanceRange == 0) return true;
+                if(distance > 1000.0 && distanceRange == 1) return true;
+                return false;
             }
 
             @Override

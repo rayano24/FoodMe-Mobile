@@ -102,6 +102,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.My
                     String[] address = rList.get(position).getAddress();
                     bundle.putString("ADDRESS1",address[0]);
                     bundle.putString("ADDRESS2",address[1]);
+                    bundle.putString("id", rList.get(position).getId());
                     irf.setArguments(bundle);
 
                     //swap fragments

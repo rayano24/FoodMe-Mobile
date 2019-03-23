@@ -2,15 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:id="@+id/individual_restaurant_fragment"
+    android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:paddingLeft="@dimen/fragment_horizontal_margin"
     android:paddingTop="@dimen/fragment_vertical_margin"
     android:paddingRight="@dimen/fragment_horizontal_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:id="@+id/individual_restaurant_fragment">
+    android:paddingBottom="@dimen/activity_vertical_margin">
 
     <Space
         android:layout_width="match_parent"
@@ -21,9 +21,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:hint="Restaurant Name"
         android:textSize="20sp"
-        android:textStyle="bold"
-        android:hint="Restaurant Name" />
+        android:textStyle="bold" />
 
     <Space
         android:layout_width="match_parent"
@@ -33,16 +33,16 @@
         android:id="@+id/rAddress1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="Address"
         android:textSize="15sp"
-        android:textStyle="bold"
-        android:hint="Address" />
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/rAddress2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="15sp"
-        android:hint="Address" />
+        android:hint="Address"
+        android:textSize="15sp" />
 
     <Space
         android:layout_width="match_parent"
@@ -52,8 +52,8 @@
         android:id="@+id/rCuisine"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="15sp"
-        android:hint="Cuisine" />
+        android:hint="Cuisine"
+        android:textSize="15sp" />
 
     <Space
         android:layout_width="match_parent"
@@ -63,8 +63,8 @@
         android:id="@+id/rDistance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="15sp"
-        android:hint="Distance" />
+        android:hint="Distance"
+        android:textSize="15sp" />
 
     <Space
         android:layout_width="match_parent"
@@ -74,17 +74,71 @@
         android:id="@+id/rPrice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="15sp"
-        android:hint="Price" />
+        android:hint="Price"
+        android:textSize="15sp" />
 
     <Space
         android:layout_width="match_parent"
         android:layout_height="10dp" />
 
-    <Button
+    <TableLayout
+        android:id="@+id/LikeBtnTable"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="visible">
+
+        <TableRow
+            android:id="@+id/LikeDislikeRow"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <Button
+                android:id="@+id/LikeBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Like!" />
+
+            <Button
+                android:id="@+id/DislikeBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dislike" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/UnlikeRow"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <Button
+                android:id="@+id/UnlikeBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Unlike"
+                android:visibility="visible" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/UndislikeRow"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <Button
+                android:id="@+id/UnDislikeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Un-Dislike" />
+        </TableRow>
+    </TableLayout>
+
+    <Button
         android:id="@+id/MapBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="Show Map" />
 
 

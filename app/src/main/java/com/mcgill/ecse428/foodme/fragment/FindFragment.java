@@ -73,6 +73,7 @@ public class FindFragment extends Fragment {
     private FusedLocationProviderClient mFusedLocationClient;
     private static final int PERMISSIONS_REQUEST_FINE_LOCATION = 811;
 
+    //parameters for filtering
     private boolean[] pricePoints = {false,false,false,false};
     private int distanceRange = 2;
     private boolean filterApplied = false;
@@ -158,11 +159,15 @@ public class FindFragment extends Fragment {
         });
 
         //set up and implement the filter button
-        //trigger warning: spaghetti to follow
         openFilterMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Activity activity = getActivity();
+
+                //reset previous searches
+                for(int i = 0; i<4; i++) pricePoints[i] = false;
+                distanceRange = 2;
+                filterApplied = false;
 
                 //make the pop-out menu
                 PopupMenu filterMenu = new PopupMenu(getActivity(), v);
@@ -170,37 +175,44 @@ public class FindFragment extends Fragment {
                 filterMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
+                        //update data when items are clicked
                         switch (item.getItemId()){
                             case R.id.verycheap:
+                                filterApplied = true;
                                 item.setChecked(!item.isChecked());
                                 pricePoints[0] = item.isChecked();
                                 break;
                             case R.id.cheap:
+                                filterApplied = true;
                                 item.setChecked(!item.isChecked());
                                 pricePoints[1] = item.isChecked();
                                 break;
                             case R.id.expensive:
+                                filterApplied = true;
                                 item.setChecked(!item.isChecked());
                                 pricePoints[2] = item.isChecked();
                                 break;
                             case R.id.veryexpensive:
+                                filterApplied = true;
                                 item.setChecked(!item.isChecked());
                                 pricePoints[3] = item.isChecked();
                                 break;
                             case R.id.close:
+                                filterApplied = true;
                                 item.setChecked(!item.isChecked());
                                 distanceRange = 0;
                                 break;
                             case R.id.medium:
+                                filterApplied = true;
                                 item.setChecked(!item.isChecked());
                                 distanceRange = 1;
                                 break;
                             case R.id.far:
+                                filterApplied = true;
                                 item.setChecked(!item.isChecked());
                                 distanceRange = 2;
                                 break;
-                            case R.id.submit:
-                                filterApplied = true;
+                            case R.id.submit:   //this commits the changes
                                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
                                 displayRestaurants(prefs.getString(KEY_USER_LOCATION_LATITUDE,null),prefs.getString(KEY_USER_LOCATION_LONGITUDE, null));
                                 return false;
@@ -425,6 +437,7 @@ public class FindFragment extends Fragment {
                         BigDecimal bd = new BigDecimal(distance);
                         bd = bd.setScale(1, RoundingMode.HALF_UP);
 
+                        //apply filtering
                         Restaurant toAdd = new Restaurant(name, cuisine, price, bd.toString() + " metres", displayLocation, id);
                         if(!filterRestaurant(toAdd) || !filterApplied) restaurantList.add(toAdd);
 
@@ -449,15 +462,19 @@ public class FindFragment extends Fragment {
 
             }
 
+            /**
+             * Method to decide whether a restaurant should be filtered
+             * @param r The restaurant we want to decide about
+             * @return true if the restaurant should be filtered
+             */
             public boolean filterRestaurant(Restaurant r){
-                Log.d("r.price",r.getPrice());
-                for(int i = 0; i < 4; i++) Log.d(Integer.toString(i),Boolean.toString(pricePoints[i]));
                 //check if the price matches the filter
                 if(r.getPrice().equals("$") && pricePoints[0]==false) return true;
                 if(r.getPrice().equals("$$") && pricePoints[1] == false) return true;
                 if(r.getPrice().equals("$$$") && pricePoints[2] == false) return true;
                 if(r.getPrice().equals("$$$$") && pricePoints[3] == false) return true;
 
+                //check if the distance is out of range
                 double distance = Double.parseDouble(r.getDistance().replace(" metres",""));
                 if(distance > 500.0 && distanceRange == 0) return true;
                 if(distance > 1000.0 && distanceRange == 1) return true;
@@ -866,7 +883,6 @@ public class FindFragment extends Fragment {
                         for(int i = 0; i < response.length(); i++){
                             JSONArray obj = (JSONArray) response.get(i);
                             newList.add(obj.getString(0));
-                           // Log.d("DISLIKED",obj.getString("id"));
                         }
                         dislikedList = newList;
 

@@ -126,11 +126,12 @@ public class CucumberSteps extends ActivityInstrumentationTestCase2<MainActivity
         CreateAccountStepDefs.givenRegisterForm(solo);
     }
 
-    @When("I enter a {string}, an {string}, a {string} and a {string}")
-    public void i_enter_a_username_an_email_a_phone_and_a_pw(String username, String email, String phone, String password) {
+    @When("I enter a {string}, a {string}, a {string}, an {string} and a {string}")
+    public void i_enter_a_username_an_email_a_phone_and_a_pw(String firstname, String lastname, String username,
+                                                             String email, String password) {
 
         solo.waitForActivity("LoginActivity", timeout);
-        CreateAccountStepDefs.when(solo, username, email, phone, password);
+        CreateAccountStepDefs.when(solo, firstname, lastname, username, email, password);
     }
 
     @Then("I should have an account")
@@ -169,8 +170,15 @@ public class CucumberSteps extends ActivityInstrumentationTestCase2<MainActivity
         assertFalse(DeleteAccountStepDefs.and(solo));
     }
 
-    //TODO Change when feature is implemented
     // ================================== Change Password feature: Scenario 1-2 =======================================================
+
+    @Given("I am logged in as {string} and {string}")
+    public void i_am_logged_in_as_username_and_password(String username, String password){
+        solo = new Solo(getInstrumentation());
+        getActivity();
+        ChangePasswordStepDefs.given(solo, username, password);
+    }
+
     @When("I select the change password option")
     public void i_select_the_change_password_option() {
         solo.waitForActivity("MainActivity", timeout);

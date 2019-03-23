@@ -1,17 +1,17 @@
-Feature: User logs in to the system
-  As a user, I would like to log in so I can receive personalized recommendations.
-
-  Background:
-    Given I am on the sign in form
-
-  Scenario Outline:  Successful login (Normal scenario)
-    Given I have an existing account
-    When I enter my <username> and my <password>
-    Then I should be able to successfully login
-
-    Examples:
-      | username  |  password     |
-      | 'alaye'   |  'hackme123'  |
+#Feature: User logs in to the system
+#  As a user, I would like to log in so I can receive personalized recommendations.
+#
+#  Background:
+#    Given I am on the sign in form
+#
+#  Scenario Outline:  Successful login (Normal scenario)
+#    Given I have an existing account
+#    When I enter my <username> and my <password>
+#    Then I should be able to successfully login
+#
+#    Examples:
+#      | username  |  password     |
+#      | 'alaye'   |  'hackme123'  |
 
 #  Scenario Outline:  Successful login (Alternate scenario)
 #    Given I have an existing account

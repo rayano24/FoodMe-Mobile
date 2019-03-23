@@ -20,13 +20,16 @@ public class CreateAccountStepDefs {
     }
 
     //When I enter an <email>, a <username> and a <password>
-    public static void when(Solo solo, String username, String email, String phone, String password) {
-        CucumberActionSteps.register(solo, username, email, phone, password);
+    public static void when(Solo solo, String firstname, String lastname, String username, String email, String password) {
+        CucumberActionSteps.register(solo, firstname, lastname, username, email, password);
     }
 
+
+    //TODO might need to change
     //I should have an account
     public static boolean validThen(Solo solo) {
-        return solo.waitForText("Account successfully created", 1, timeout);
+//        return solo.waitForText("Account successfully created", 1, timeout);
+        return !CucumberActionSteps.loggedIn(solo);
     }
 
     //I should not be able to create an account

@@ -59,9 +59,17 @@ public class CucumberActionSteps {
     }
 
     //Logs in using username and password (does not handle invalid input, instead that is asserted in the "Then" method)
-    public static void register(Solo solo, String username, String email, String phone, String password) {
+    public static void register(Solo solo, String firstname, String lastname, String username, String email, String password) {
         if (!loggedIn(solo)) {
             getToRegisterForm(solo);
+
+            //Fill prompt with username to test
+            AutoCompleteTextView registerFirstName = (AutoCompleteTextView) solo.getView("registerFirstName");
+            solo.typeText(registerFirstName, firstname);
+
+            //Fill prompt with username to test
+            AutoCompleteTextView registerLastName = (AutoCompleteTextView) solo.getView("registerLastName");
+            solo.typeText(registerLastName, lastname);
 
             //Fill prompt with username to test
             EditText registerUsername = (EditText) solo.getView("registerName");
@@ -70,10 +78,6 @@ public class CucumberActionSteps {
             //Fill prompt with email to test
             AutoCompleteTextView registerEmail = (AutoCompleteTextView) solo.getView("registerEmail");
             solo.typeText(registerEmail, email);
-
-            //Fill prompt with phone number to test
-            AutoCompleteTextView registerPhone = (AutoCompleteTextView) solo.getView("registerPhone");
-            solo.typeText(registerPhone, phone);
 
             //Fill prompt with password to test
             EditText registerPassword = (EditText) solo.getView("registerPassword");
@@ -116,22 +120,23 @@ public class CucumberActionSteps {
         return false;
     }
 
-    //TODO Change when feature is implemented
     public static void selectChangePassword(Solo solo){
         if (getToSettings(solo))
-            solo.clickOnView(solo.getView("changePasswordButton"));
+        solo.clickOnView(solo.getView("noAccountButton"));
+
     }
 
-    //TODO Change when feature is implemented
     public static void changePassword(Solo solo, String oldPw, String newPw){
 
         //Fill prompt with username to test
-        EditText oldPassword = (EditText) solo.getView("oldPassword");
+        EditText oldPassword = (EditText) solo.getView("etOldPassword");
         solo.typeText(oldPassword, oldPw);
 
         //Fill prompt with email to test
-        EditText newPassword = (EditText) solo.getView("newPassword");
+        EditText newPassword = (EditText) solo.getView("etPassword");
         solo.typeText(newPassword, newPw);
+
+        solo.clickOnView(solo.getView("save_changes"));
     }
 
     public static void signOut(Solo solo) {
@@ -139,9 +144,11 @@ public class CucumberActionSteps {
             solo.clickOnView(solo.getView("signOutButton"));
     }
 
-    //TODO Change when feature is implemented
     public static void deleteAccount(Solo solo) {
-        if (getToSettings(solo))
-            solo.clickOnView(solo.getView("deleteAccountButton"));
+        if (getToSettings(solo)) {
+            solo.clickOnView(solo.getView("noAccountButton"));
+            solo.clickOnView(solo.getView("deleteAccount"));
+
+        }
     }
 }

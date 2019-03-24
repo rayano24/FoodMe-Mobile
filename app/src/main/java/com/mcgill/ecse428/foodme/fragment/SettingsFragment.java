@@ -89,10 +89,6 @@ public class SettingsFragment extends Fragment {
         selectedTheme = prefs.getInt(KEY_PREFERENCE_THEME, 0);
 
 
-        if (userID != null && !userID.equals("noAccount")) {
-            // TODO if a user is signed in, we can change the purpose of this to a "manage account" button
-        }
-
 
         TextView signOut = rootView.findViewById(R.id.signOutButton);
         TextView noAccountButton = rootView.findViewById(R.id.noAccountButton);
@@ -105,6 +101,7 @@ public class SettingsFragment extends Fragment {
         TextView accountHeader = rootView.findViewById(R.id.settingsAccountHeader);
         TextView preferenceHeader = rootView.findViewById(R.id.settingsPreferenceHeader);
 
+
         TextView changePasswordButton = rootView.findViewById(R.id.changePassword);
         EditText oldPassword = rootView.findViewById(R.id.oldPassword);
         EditText newPassword = rootView.findViewById(R.id.newPassword);
@@ -113,7 +110,9 @@ public class SettingsFragment extends Fragment {
         if(userID == null || userID.equals("noAccount")){
             editPreferences.setVisibility(View.GONE);
             preferenceHeader.setVisibility(View.GONE);
-
+        }
+        else {
+            noAccountButton.setText("Account settings");
         }
 
         switch (selectedTheme) {
@@ -148,11 +147,12 @@ public class SettingsFragment extends Fragment {
                     prefs.edit().remove(KEY_USER_ID).apply();
                     Intent I = new Intent(mActivity, LoginActivity.class);
                     startActivity(I);
+                    mActivity.finish();
+
                 } else if (userID != null && !userID.equals("noAccount")) {
                     // prefs.edit().remove(KEY_USER_ID).apply();
                     Intent I = new Intent(mActivity, EditAccountActivity.class);
                     startActivity(I);
-                    mActivity.finish();
                 }
             }
         });

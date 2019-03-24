@@ -47,6 +47,12 @@
     <string name="history_no_history">You haven\'t visited a restaurant yet! Get browsing!</string>
     <string name="history_no_account">You must create an account for your restaurant history to be saved!</string>
 
+    <!-- HISTORY ACTIVITY -->
+
+    <string name="history_like">Like</string>
+    <string name="history_dislike">Dislike</string>
+
+
 
     <!-- SETTINGS FRAGMENT -->
 
@@ -78,6 +84,7 @@
     <string name="title_activity_preference">PreferenceActivity</string>
     <string name="preferences">Search Preferences</string>
     <string name="add_preference">+</string>
+    <string name="history_rate">Rate</string>
 
 
 </resources>

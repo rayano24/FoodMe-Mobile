@@ -5,7 +5,7 @@ import com.robotium.solo.Solo;
 
 public class UserLoginStepDefs {
 
-    private static int timeout = 2000;
+    private static int timeout = 1000;
 
     //I am on the sign in form
     public static void given(Solo solo){

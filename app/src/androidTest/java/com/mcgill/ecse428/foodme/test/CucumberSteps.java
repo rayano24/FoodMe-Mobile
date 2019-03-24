@@ -10,6 +10,7 @@ import com.mcgill.ecse428.foodme.test.StepDefs.FilterCuisineStepDefs;
 import com.mcgill.ecse428.foodme.test.StepDefs.FilterDistanceStepDefs;
 import com.mcgill.ecse428.foodme.test.StepDefs.FilterOpenRestaurantsStepDefs;
 import com.mcgill.ecse428.foodme.test.StepDefs.FilterPriceStepDefs;
+import com.mcgill.ecse428.foodme.test.StepDefs.LikeRestaurantStepDefs;
 import com.mcgill.ecse428.foodme.test.StepDefs.UserLoginStepDefs;
 import com.mcgill.ecse428.foodme.test.StepDefs.UserLogoutStepDefs;
 import com.robotium.solo.Solo;
@@ -272,6 +273,7 @@ public class CucumberSteps extends ActivityInstrumentationTestCase2<MainActivity
         solo.waitForActivity("MainActivity", timeout);
         assertTrue(FilterPriceStepDefs.then(solo, price));
     }
+
     // ================================== Dislike Restaurant feature: Scenario 1 ===========================================
 
     @Given("I am viewing a restaurant's information")
@@ -291,6 +293,21 @@ public class CucumberSteps extends ActivityInstrumentationTestCase2<MainActivity
     public void restaurant_should_be_disliked() throws Exception {
         //solo.waitForActivity("MainActivity", 2000);
         assertTrue(DislikeRestaurantStepDefs.thenDisliked(solo));
+    }
+
+
+    // ================================== Like Restaurant feature: Scenario 1 ===========================================
+
+    @When("I click on the 'like' button")
+    public void like_restaurant() throws Exception {
+        //solo.waitForActivity("MainActivity", 2000);
+        LikeRestaurantStepDefs.when(solo);
+    }
+
+    @Then("the restaurant should be marked as liked")
+    public void restaurant_should_be_liked() throws Exception {
+        //solo.waitForActivity("MainActivity", 2000);
+        assertTrue(LikeRestaurantStepDefs.then(solo));
     }
 
 

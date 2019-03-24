@@ -12,6 +12,7 @@ public class CucumberActionSteps {
 
     private static String adminUsername = "admin";
     private static String adminPassword = "password";
+    private static int timeout = 1000;
 
     // ================================== Logging in / Accounts ===========================================
 
@@ -27,14 +28,10 @@ public class CucumberActionSteps {
 
     //Checks whether user is logged in
     public static boolean loggedIn(Solo solo) {
-        try {
-            solo.wait(3000);
-        }
-        catch (Exception e){
 
-        }
         //TODO FIND A BETTER WAY TO CHECK IF USER IS LOGGED IN
-        return !solo.searchButton("Sign in");
+        return solo.waitForText("Find", 1, timeout);
+
 //        return solo.waitForActivity("MainActivity") || solo.waitForText("Successful login");
     }
 
@@ -120,16 +117,42 @@ public class CucumberActionSteps {
 
     // ================================== Rating =============================================
     public static void clickRestaurant(Solo solo){
-        solo.clickInRecyclerView(1);;
+        solo.clickInRecyclerView(1);
     }
 
     public static void clickDislike(Solo solo){
-        solo.clickOnView(solo.getView("DislikeBtn"));
+
+        //If restaurant is not disliked -> dislike it, otherwise -> undislike it -> dislike it
+        if (solo.getView("DislikeBtn").getVisibility() == View.VISIBLE)
+            solo.clickOnView(solo.getView("DislikeBtn"));
+
+        else {
+            solo.clickOnView(solo.getView("UnDislikeButton"));
+            solo.clickOnView(solo.getView("DislikeBtn"));
+        }
     }
 
     public static boolean checkDisliked(Solo solo){
         solo.waitForView(solo.getView("UnDislikeButton"));
         return solo.getView("UnDislikeButton").getVisibility() == View.VISIBLE;
+    }
+
+    public static void clickLike(Solo solo){
+
+        //If restaurant is not liked -> like it, otherwise -> unlike it -> like it
+        if (solo.getView("LikeBtn").getVisibility() == View.VISIBLE)
+            solo.clickOnView(solo.getView("LikeBtn"));
+
+        else {
+            solo.clickOnView(solo.getView("UnlikeBtn"));
+            solo.clickOnView(solo.getView("LikeBtn"));
+        }
+
+    }
+
+    public static boolean checkLiked(Solo solo){
+        solo.waitForView(solo.getView("UnlikeBtn"));
+        return solo.getView("UnlikeBtn").getVisibility() == View.VISIBLE;
     }
 
 

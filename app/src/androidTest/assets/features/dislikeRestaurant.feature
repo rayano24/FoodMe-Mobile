@@ -4,7 +4,7 @@ Feature: User dislikes a restaurant
   Background:
     Given I am logged in
 
-  Scenario:
+  Scenario: User dislikes a restaurant (Normal scenario)
     Given I am viewing a restaurant's information
     When I click on the 'dislike' button
     Then the restaurant should be marked as disliked

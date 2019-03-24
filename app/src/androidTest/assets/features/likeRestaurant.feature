@@ -1,16 +1,10 @@
-#Feature: User likes a restaurant
-#  As a user
-#  I would like to be able to like a restaurants
-#  So that I can get better recommendations based on my favorite restaurants
-#
-#  Scenario Outline: Liking a restaurant (Normal scenario)
-#    Given I am logged in
-#    And I am on the restaurants page
-#    When I select a restaurant
-#    Then I should be able to like it
-#
-#    Examples:
-#      | rating      |
-#      | 'None'       |
-#      | 'Chinese'    |
-#      | 'Italian'    |
+Feature: User likes a restaurant
+  As a user, I would like mark a restaurant as 'liked' so that I am recommended it again
+
+  Background:
+    Given I am logged in
+
+  Scenario: User likes a restaurant (Normal scenario)
+    Given I am viewing a restaurant's information
+    When I click on the 'like' button
+    Then the restaurant should be marked as liked

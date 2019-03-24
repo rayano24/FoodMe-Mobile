@@ -24,7 +24,6 @@
     <string name="prompt_first_name">First Name</string>
     <string name="prompt_last_name">Last Name</string>
     <string name="prompt_name">Username</string>
-    <string name="prompt_random">Random Recommandation !</string>
     <string name="action_sign_in">Sign in</string>
     <string name="action_register">Register</string>
     <string name="error_invalid_email">This email address is invalid</string>

@@ -24,6 +24,12 @@ public class CucumberActionSteps {
 
     //Checks whether user is logged in
     public static boolean loggedIn(Solo solo) {
+        try {
+            solo.wait(1000);
+        }
+        catch (Exception e){
+
+        }
         //TODO FIND A BETTER WAY TO CHECK IF USER IS LOGGED IN
         return !solo.searchButton("Sign in");
 //        return solo.waitForActivity("MainActivity") || solo.waitForText("Successful login");

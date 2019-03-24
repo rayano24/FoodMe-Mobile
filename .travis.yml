@@ -4,7 +4,7 @@ jdk: oraclejdk8
 env:
  global:
  - ANDROID_API=28
- - EMULATOR_API=24
+ - EMULATOR_API=28
 
 android:
   components:
@@ -13,7 +13,7 @@ android:
     - build-tools-28.0.3
     - android-$ANDROID_API
     - android-$EMULATOR_API
-    - sys-img-armeabi-v7a-google_apis-24
+    - sys-img-armeabi-v7a-google_apis-28
     - sys-img-armeabi-v7a-android-$EMULATOR_API
     - extra
 
@@ -38,11 +38,13 @@ install:
 - "./gradlew clean test"
 
 before_script:
-  - echo no | android create avd --force -n test -t android-24 --abi armeabi-v7a
+  - echo no | android create avd --force -n test -t android-28 --abi armeabi-v7a
   - emulator -avd test -no-skin -no-window -no-boot-anim &
   - android-wait-for-emulator
   - adb shell input keyevent 82 &
-  - adb shell input keyevent 82 &
+#  - adb -d shell pm grant com.mcgill.ecse428.foodme android.permission.ACCESS_COARSE_LOCATION
+#  - adb -d shell pm grant com.mcgill.ecse428.foodme android.permission.ACCESS_FINE_LOCATION
+#  - adb -d shell pm grant com.mcgill.ecse428.foodme android.permission.WRITE_EXTERNAL_STORAGE
 
 script:
   - ./gradlew cAT

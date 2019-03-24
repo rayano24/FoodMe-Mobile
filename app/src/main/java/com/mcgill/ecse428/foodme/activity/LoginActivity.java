@@ -519,7 +519,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
-     * Opens a dialog so that the user can enter their location. Once entered, is committed to preferences.
+     * Opens a dialog so that the user can recover their password.
      */
     private void displayRecoveryDialog() {
 
@@ -537,7 +537,7 @@ public class LoginActivity extends AppCompatActivity {
 
         alert.setPositiveButton(R.string.recover_dialog_positive_button, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                // TODO NETWORK LOGIC
+                resetPassword(input.getText().toString());
             }
 
         });
@@ -550,6 +550,54 @@ public class LoginActivity extends AppCompatActivity {
 
         alert.show();
 
+    }
+
+    /**
+     * Resets the users password and emails them a new 16 length character password
+     * @param username The user's username
+     */
+    public void resetPassword(String username) {
+
+
+        HttpUtils.post("users/" + username + "/resetPassword/" + 16 , new RequestParams(), new JsonHttpResponseHandler() {
+            @Override
+            public void onFinish() {
+
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                showRegistrationProgress(false);
+                try {
+                    if(response.getBoolean("response")) {
+                        Toast.makeText(LoginActivity.this, "Check your email for a new password!", Toast.LENGTH_LONG).show();
+
+                    }
+                    else {
+                        Toast.makeText(LoginActivity.this, response.getString("message"), Toast.LENGTH_LONG).show();
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject
+                    errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                try {
+                    Toast.makeText(LoginActivity.this, errorResponse.getString("message"), Toast.LENGTH_LONG).show();
+                }
+                catch(JSONException e) {
+                    Toast.makeText(LoginActivity.this, "There was a network error", Toast.LENGTH_LONG).show();
+                }
+                showRegistrationProgress(false);
+
+
+            }
+        });
     }
 
 

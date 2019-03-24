@@ -266,6 +266,8 @@ public class IndividualRestaurantFragment extends Fragment {
             undislikeButton.setVisibility(View.GONE);
             alreadyLiked(username);
             alreadyDisLiked(username);
+            notifyRestaurantclosing(restaurantID);
+
         }
     }
 
@@ -377,10 +379,9 @@ public class IndividualRestaurantFragment extends Fragment {
         return alreadyDisliked;
     }
 }
-
- public boolean notifyRestaurantclosing()
+ public boolean notifyRestaurantclosing(String restoID)
  {
-     String url = "/search/get/closing/Id";
+     String url = "/search/get/closing/" + restoID;
      HttpUtils.get(url , new RequestParams(), new JsonHttpResponseHandler() {
          @Override
          public void onFinish() {}
@@ -423,4 +424,4 @@ public class IndividualRestaurantFragment extends Fragment {
  }
 
 }
- }
+

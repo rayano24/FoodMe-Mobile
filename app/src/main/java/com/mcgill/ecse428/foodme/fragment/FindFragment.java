@@ -933,5 +933,87 @@ public class FindFragment extends Fragment {
         });
     }
 
+    private void openRandomRestaurant(String lat, String lng) {
+
+    HttpUtils.get("search/distance/" + 1 + "/?longitude=" + lng + "&latitude=" + lat, new RequestParams(), new JsonHttpResponseHandler() {
+
+        @Override
+        public void onFinish() {
+        }
+
+        @Override
+        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+
+            try {
+                restaurantList.clear();
+
+                JSONArray mainArray = response.getJSONArray("businesses");
+
+
+                JSONObject obj = mainArray.getJSONObject(0);
+
+                //filter disliked restos
+                String id = obj.getString("id");
+
+
+                String name = obj.getString("name");
+                String price = "n/a";
+                if (obj.has("price")) {
+                    price = obj.getString("price");
+                }
+                String distance = obj.getString("distance");
+
+                //get the restaurant's address
+                JSONObject locObj = obj.getJSONObject("location");
+                JSONArray locArr = locObj.getJSONArray("display_address");
+
+
+                JSONArray categories = obj.getJSONArray("categories");
+                JSONObject cuisineList = categories.getJSONObject(0);
+                String cuisine = cuisineList.getString("title");
+
+
+                BigDecimal bd = new BigDecimal(distance);
+                bd = bd.setScale(1, RoundingMode.HALF_UP);
+
+
+                IndividualRestaurantFragment irf = new IndividualRestaurantFragment();
+
+                //prepare arguments
+                Bundle bundle = new Bundle();
+                bundle.putString("NAME", name);
+                bundle.putString("PRICE", price);
+                bundle.putString("CUISINE", cuisine);
+                bundle.putString("DISTANCE", bd.toString() + "metres");
+                bundle.putString("ADDRESS1", locArr.getString(0));
+                bundle.putString("ADDRESS2", locArr.getString(1));
+                bundle.putString("id", id);
+                irf.setArguments(bundle);
+
+                //swap fragments
+                FragmentManager fm = ((AppCompatActivity) mActivity).getSupportFragmentManager();
+                fm.beginTransaction().replace(R.id.frame_fragmentholder, irf, "IRF").commit();
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+
+        @Override
+        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+            super.onFailure(statusCode, headers, responseString, throwable);
+
+            Toast.makeText(mActivity, "There was a network error, try again later.", Toast.LENGTH_LONG).show(); // generic network error
+
+        }
+
+
+    });
+}
+
 
 }

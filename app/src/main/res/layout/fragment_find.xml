@@ -14,6 +14,15 @@
 
 
     <TextView
+        android:id="@+id/noRestaurants"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="No restaurants were found, try restarting the app"
+        android:textSize="15sp"
+        android:visibility="gone" />
+
+    <TextView
         android:id="@+id/noLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,6 +30,40 @@
         android:text="@string/no_location"
         android:textSize="15sp"
         android:visibility="gone" />
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/searchLocation"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7.5dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="Seach Another Location"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/show_pref_filter_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
+            android:text="Filters"
+            android:textSize="10dp" />
+
+
+    </TableRow>
+    </TableLayout>
+
+    <Spinner
+        android:id="@+id/preference_spinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
 
     <Space
         android:layout_width="match_parent"
@@ -38,7 +81,7 @@
         android:layout_height="match_parent"
         android:scrollbars="vertical"
         android:visibility="visible"
-        tools:itemCount="37"
+        tools:itemCount="50"
         tools:listitem="@layout/recycler_restaurant" />
 
 </LinearLayout>

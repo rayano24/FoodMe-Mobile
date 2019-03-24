@@ -2,6 +2,7 @@ package com.mcgill.ecse428.foodme.activity;
 
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -9,6 +10,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -113,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         switchFragment(0, TAG_FRAGMENT_FIND);
-
 
 
 

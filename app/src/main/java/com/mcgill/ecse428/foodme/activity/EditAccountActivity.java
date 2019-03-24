@@ -41,6 +41,7 @@ public class EditAccountActivity extends AppCompatActivity implements View.OnCli
     Button save_changes, delete_account;
     EditText etFirstName, etLastName,etPassword, etOldPassword;
 //    TextView noAccountButton;
+    private Activity mActivity;
 
     private final static String KEY_USER_ID = "userID";
 

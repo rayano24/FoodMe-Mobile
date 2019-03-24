@@ -25,7 +25,7 @@ public class CucumberActionSteps {
     //Checks whether user is logged in
     public static boolean loggedIn(Solo solo) {
         try {
-            solo.wait(1000);
+            solo.wait(3000);
         }
         catch (Exception e){
 

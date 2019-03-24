@@ -1,50 +1,49 @@
 language: android
-jdk: oraclejdk8
+jdk: oraclejdk7
+# Use the Travis Container-Based Infrastructure
+sudo: false
+
+cache:
+ directories:
+ - ${TRAVIS_BUILD_DIR}/gradle/caches/
+ - ${TRAVIS_BUILD_DIR}/gradle/wrapper/dists/
 
 env:
  global:
- - ANDROID_API=28
- - EMULATOR_API=28
+ - ANDROID_API_LEVEL=28
+ - EMULATOR_API_LEVEL=24
+ - ANDROID_BUILD_TOOLS_VERSION=28.0.3
+ - ANDROID_ABI=armeabi-v7a
+ - ANDROID_TAG=google_apis
+ - ADB_INSTALL_TIMEOUT=20 # minutes (2 minutes by default)
 
 android:
-  components:
-    - tools
-    - platform-tools
-    - build-tools-28.0.3
-    - android-$ANDROID_API
-    - android-$EMULATOR_API
-    - sys-img-armeabi-v7a-google_apis-28
-    - sys-img-armeabi-v7a-android-$EMULATOR_API
-    - extra
-
-licenses:
-  - 'android-sdk-preview-license-52d11cd2'
-  - 'android-sdk-license-.+'
-  - 'google-gdk-license-.+'
-
-before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
-cache:
-  directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
-    - $HOME/.android/build-cache
-
-before_install:
-  - yes | sdkmanager "platforms;android-28"
-
-install:
-- "./gradlew clean test"
+ components:
+ - tools
+ - platform-tools
+ - tools
+ - build-tools-$ANDROID_BUILD_TOOLS_VERSION
+ - android-$ANDROID_API_LEVEL
+ - android-$EMULATOR_API_LEVEL
+ # For Google APIs
+ - addon-google_apis-google-$ANDROID_API_LEVEL
+ - addon-google_apis-google-$EMULATOR_API_LEVEL
+ # Google Play Services
+ - extra-google-google_play_services
+ # Support library
+ - extra-android-support
+ # Latest artifacts in local repository
+ - extra-google-m2repository
+ - extra-android-m2repository
+ # Specify at least one system image
+ - sys-img-armeabi-v7a-google_apis-$ANDROID_API_LEVEL
+ - sys-img-armeabi-v7a-google_apis-$EMULATOR_API_LEVEL
 
 before_script:
-  - echo no | android create avd --force -n test -t android-28 --abi armeabi-v7a
-  - emulator -avd test -no-skin -no-window -no-boot-anim &
-  - android-wait-for-emulator
-  - adb shell input keyevent 82 &
-#  - adb -d shell pm grant com.mcgill.ecse428.foodme android.permission.ACCESS_COARSE_LOCATION
-#  - adb -d shell pm grant com.mcgill.ecse428.foodme android.permission.ACCESS_FINE_LOCATION
-#  - adb -d shell pm grant com.mcgill.ecse428.foodme android.permission.WRITE_EXTERNAL_STORAGE
+# Create and start emulator
+- echo no | android create avd --force -n test -t "android-"$EMULATOR_API_LEVEL --abi $ANDROID_ABI --tag $ANDROID_TAG
+- emulator -avd test -no-skin -no-audio -no-window &
+- android-wait-for-emulator
 
 script:
-  - ./gradlew cAT
+- ./gradlew cAT

@@ -89,10 +89,6 @@ public class SettingsFragment extends Fragment {
         selectedTheme = prefs.getInt(KEY_PREFERENCE_THEME, 0);
 
 
-        if (userID != null && !userID.equals("noAccount")) {
-            // TODO if a user is signed in, we can change the purpose of this to a "manage account" button
-        }
-
 
         TextView signOut = rootView.findViewById(R.id.signOutButton);
         TextView noAccountButton = rootView.findViewById(R.id.noAccountButton);
@@ -105,6 +101,7 @@ public class SettingsFragment extends Fragment {
         TextView accountHeader = rootView.findViewById(R.id.settingsAccountHeader);
         TextView preferenceHeader = rootView.findViewById(R.id.settingsPreferenceHeader);
 
+
         TextView changePasswordButton = rootView.findViewById(R.id.changePassword);
         EditText oldPassword = rootView.findViewById(R.id.oldPassword);
         EditText newPassword = rootView.findViewById(R.id.newPassword);
@@ -113,7 +110,9 @@ public class SettingsFragment extends Fragment {
         if(userID == null || userID.equals("noAccount")){
             editPreferences.setVisibility(View.GONE);
             preferenceHeader.setVisibility(View.GONE);
-
+        }
+        else {
+            noAccountButton.setText("Account settings");
         }
 
         switch (selectedTheme) {
@@ -148,11 +147,12 @@ public class SettingsFragment extends Fragment {
                     prefs.edit().remove(KEY_USER_ID).apply();
                     Intent I = new Intent(mActivity, LoginActivity.class);
                     startActivity(I);
+                    mActivity.finish();
+
                 } else if (userID != null && !userID.equals("noAccount")) {
                     // prefs.edit().remove(KEY_USER_ID).apply();
                     Intent I = new Intent(mActivity, EditAccountActivity.class);
                     startActivity(I);
-                    mActivity.finish();
                 }
             }
         });
@@ -280,27 +280,46 @@ public class SettingsFragment extends Fragment {
                 String username = prefs.getString("userID", null);
 
                 String url = "users/changePassword/"+username+"/"+oldP+"/"+newP;
-                HttpUtils.post(url, new RequestParams(), new JsonHttpResponseHandler(){
-                    @Override
-                    public void onFinish(){}
 
-                    @Override
-                    public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, JSONObject response) {
-                        Log.d("CHANGED","PASSWORD");
-                        Toast.makeText(getContext(),"Password changed successfully", Toast.LENGTH_LONG).show();
+                AlertDialog.Builder confirm = new AlertDialog.Builder(getActivity());
+                confirm.setTitle("Confirm password change");
+                confirm.setMessage("Are you sure you want to change your password?");
+                confirm.setPositiveButton("Yes, update", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                        HttpUtils.post(url, new RequestParams(), new JsonHttpResponseHandler(){
+                            @Override
+                            public void onFinish(){}
+
+                            @Override
+                            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, JSONObject response) {
+                                Log.d("CHANGED","PASSWORD");
+                                Toast.makeText(getContext(),"Password changed successfully", Toast.LENGTH_LONG).show();
+                            }
+                            @Override
+                            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse){
+                                super.onFailure(statusCode,headers,throwable,errorResponse);
+                                try{
+                                    Toast.makeText(getContext(), errorResponse.getString("message"), Toast.LENGTH_SHORT).show();
+                                }
+                                catch (Exception e){
+                                    Toast.makeText(getContext(),"Failed to change password", Toast.LENGTH_LONG).show();
+                                }
+
+                            }
+                        });
+
+
                     }
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse){
-                        super.onFailure(statusCode,headers,throwable,errorResponse);
-                        try{
-                            Toast.makeText(getContext(), errorResponse.getString("message"), Toast.LENGTH_SHORT).show();
-                        }
-                        catch (Exception e){
-                            Toast.makeText(getContext(),"Failed to change password", Toast.LENGTH_LONG).show();
-                        }
 
+                });
+
+                confirm.setNegativeButton("No, cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // Canceled.
                     }
                 });
+                confirm.show();
                 oldPassword.setVisibility(View.GONE);
                 oldPassword.setText("");
                 newPassword.setVisibility(View.GONE);

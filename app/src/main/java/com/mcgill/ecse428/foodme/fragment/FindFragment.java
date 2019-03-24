@@ -132,9 +132,14 @@ public class FindFragment extends Fragment {
         preferenceSpinner.setSelection(spinnerPosition);
         preferenceSpinner.setVisibility(View.GONE);
 
-        getPreferences();
 
+
+
+
+        getPreferences();
         updateDislikeList();
+
+
 
         preferenceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
@@ -212,9 +217,19 @@ public class FindFragment extends Fragment {
                                 item.setChecked(!item.isChecked());
                                 distanceRange = 2;
                                 break;
-                            case R.id.submit:   //this commits the changes
+                            case R.id.submit://this commits the changes
                                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-                                displayRestaurants(prefs.getString(KEY_USER_LOCATION_LATITUDE,null),prefs.getString(KEY_USER_LOCATION_LONGITUDE, null));
+
+                                String storedLat = prefs.getString(KEY_USER_LOCATION_LATITUDE, null);
+                                String storedLng = prefs.getString(KEY_USER_LOCATION_LONGITUDE, null);
+                                String selectedPref = preferenceSpinner.getSelectedItem().toString();
+                                if (selectedPref.equals("No search preference")) {
+                                    displayRestaurants(storedLat, storedLng);
+                                }
+                                else {
+                                    String[] values = selectedPref.split(",");
+                                    searchWithPreference(values);
+                                }
                                 return false;
                             default:
                                 return false;
@@ -508,7 +523,7 @@ public class FindFragment extends Fragment {
         List<Address> location = null;
         try {
             location = geo.getFromLocation(Double.valueOf(storedLat), Double.valueOf(storedLong), 1);
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             e.printStackTrace();
         }
         HttpUtils.get("search/filter/?location=" + "montreal" + "&radius=" + radius + "&price=" + price + "&cuisine=" + cuisine + "&sortby=" + sortBy, new RequestParams(), new JsonHttpResponseHandler() {
@@ -660,6 +675,16 @@ public class FindFragment extends Fragment {
 
 
                     }
+                    String storedLat = prefs.getString(KEY_USER_LOCATION_LATITUDE, null);
+                    String storedLng = prefs.getString(KEY_USER_LOCATION_LONGITUDE, null);
+                    String selectedPref = preferenceSpinner.getSelectedItem().toString();
+                    if (selectedPref.equals("No search preference")) {
+                        displayRestaurants(storedLat, storedLng);
+                    }
+                    else {
+                        String[] values = selectedPref.split(",");
+                        searchWithPreference(values);
+                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -723,7 +748,7 @@ public class FindFragment extends Fragment {
                                         break;
 
                                     }
-                                } catch (IOException e) {
+                                } catch (IOException | NullPointerException e) {
                                     Toast.makeText(mActivity, "There was an error setting your location, please try again", Toast.LENGTH_LONG).show();
                                     e.printStackTrace();
 
@@ -855,7 +880,7 @@ public class FindFragment extends Fragment {
                 //  + "--" + (lat!=null? "," + lat:"") + "--" + (lng!=null? ", " + lng:"")
                 list.add(address);
             }
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             e.printStackTrace();
         }
         return list;

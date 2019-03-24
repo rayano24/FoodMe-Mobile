@@ -85,8 +85,6 @@ public class FindFragment extends Fragment {
     private TextView noLocation, noRestaurants, searchLocationButton;
     private Button openFilterMenu;
 
-    private Button randomRecommandation;
-
     private Activity mActivity;
 
     private final static String KEY_USER_LOCATION_LONGITUDE = "latitude";

@@ -57,9 +57,11 @@ import java.util.List;
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -74,7 +76,7 @@ public class FindFragment extends Fragment {
     private static final int PERMISSIONS_REQUEST_FINE_LOCATION = 811;
 
     //parameters for filtering
-    private boolean[] pricePoints = {false,false,false,false};
+    private boolean[] pricePoints = {false, false, false, false};
     private int distanceRange = 2;
     private boolean filterApplied = false;
 
@@ -133,12 +135,11 @@ public class FindFragment extends Fragment {
         preferenceSpinner.setVisibility(View.GONE);
 
 
-
+        Button randomRestaurant = rootView.findViewById(R.id.randomRestoButton);
 
 
         getPreferences();
         updateDislikeList();
-
 
 
         preferenceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -170,7 +171,7 @@ public class FindFragment extends Fragment {
                 Activity activity = getActivity();
 
                 //reset previous searches
-                for(int i = 0; i<4; i++) pricePoints[i] = false;
+                for (int i = 0; i < 4; i++) pricePoints[i] = false;
                 distanceRange = 2;
                 filterApplied = false;
 
@@ -181,7 +182,7 @@ public class FindFragment extends Fragment {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         //update data when items are clicked
-                        switch (item.getItemId()){
+                        switch (item.getItemId()) {
                             case R.id.verycheap:
                                 filterApplied = true;
                                 item.setChecked(!item.isChecked());
@@ -225,8 +226,7 @@ public class FindFragment extends Fragment {
                                 String selectedPref = preferenceSpinner.getSelectedItem().toString();
                                 if (selectedPref.equals("No search preference")) {
                                     displayRestaurants(storedLat, storedLng);
-                                }
-                                else {
+                                } else {
                                     String[] values = selectedPref.split(",");
                                     searchWithPreference(values);
                                 }
@@ -255,7 +255,6 @@ public class FindFragment extends Fragment {
                 filterMenu.show();
             }
         });
-
 
 
         // note for anyone looking at this, I elected to put the location stuff here rather than the main activity so we can avoid using GSON and so we can modify the view here
@@ -300,6 +299,15 @@ public class FindFragment extends Fragment {
             });
 
         }
+
+
+        randomRestaurant.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openRandomRestaurant(storedLat, storedLng);
+            }
+        });
+
 
         if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && storedLocation != null && storedLat != null && storedLng != null) {
 
@@ -428,7 +436,7 @@ public class FindFragment extends Fragment {
 
                         //filter disliked restos
                         String id = obj.getString("id");
-                        if(dislikedList.contains(id)) continue;
+                        if (dislikedList.contains(id)) continue;
 
                         String name = obj.getString("name");
                         String price = "n/a";
@@ -443,7 +451,6 @@ public class FindFragment extends Fragment {
                         String[] displayLocation = {locArr.getString(0), locArr.getString(1)};
 
 
-
                         JSONArray categories = obj.getJSONArray("categories");
                         JSONObject cuisineList = categories.getJSONObject(0);
                         String cuisine = cuisineList.getString("title");
@@ -454,11 +461,10 @@ public class FindFragment extends Fragment {
 
                         //apply filtering
                         Restaurant toAdd = new Restaurant(name, cuisine, price, bd.toString() + " metres", displayLocation, id);
-                        if(!filterRestaurant(toAdd) || !filterApplied) restaurantList.add(toAdd);
+                        if (!filterRestaurant(toAdd) || !filterApplied) restaurantList.add(toAdd);
 
 
                     }
-
 
 
                 } catch (JSONException e) {
@@ -482,17 +488,17 @@ public class FindFragment extends Fragment {
              * @param r The restaurant we want to decide about
              * @return true if the restaurant should be filtered
              */
-            public boolean filterRestaurant(Restaurant r){
+            public boolean filterRestaurant(Restaurant r) {
                 //check if the price matches the filter
-                if(r.getPrice().equals("$") && pricePoints[0]==false) return true;
-                if(r.getPrice().equals("$$") && pricePoints[1] == false) return true;
-                if(r.getPrice().equals("$$$") && pricePoints[2] == false) return true;
-                if(r.getPrice().equals("$$$$") && pricePoints[3] == false) return true;
+                if (r.getPrice().equals("$") && pricePoints[0] == false) return true;
+                if (r.getPrice().equals("$$") && pricePoints[1] == false) return true;
+                if (r.getPrice().equals("$$$") && pricePoints[2] == false) return true;
+                if (r.getPrice().equals("$$$$") && pricePoints[3] == false) return true;
 
                 //check if the distance is out of range
-                double distance = Double.parseDouble(r.getDistance().replace(" metres",""));
-                if(distance > 500.0 && distanceRange == 0) return true;
-                if(distance > 1000.0 && distanceRange == 1) return true;
+                double distance = Double.parseDouble(r.getDistance().replace(" metres", ""));
+                if (distance > 500.0 && distanceRange == 0) return true;
+                if (distance > 1000.0 && distanceRange == 1) return true;
                 return false;
             }
 
@@ -680,8 +686,7 @@ public class FindFragment extends Fragment {
                     String selectedPref = preferenceSpinner.getSelectedItem().toString();
                     if (selectedPref.equals("No search preference")) {
                         displayRestaurants(storedLat, storedLng);
-                    }
-                    else {
+                    } else {
                         String[] values = selectedPref.split(",");
                         searchWithPreference(values);
                     }
@@ -722,10 +727,9 @@ public class FindFragment extends Fragment {
         alert.setPositiveButton("Update", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
 
-                if(input.getAdapter()==null){
+                if (input.getAdapter() == null) {
 
-                }
-                else {
+                } else {
                     int count = input.getAdapter().getCount();
 
                     // the user is forced to select a result from the geocode api to ensure precision
@@ -823,7 +827,7 @@ public class FindFragment extends Fragment {
 
         @Override
         public int getCount() {
-            if(resultList==null) return 0;
+            if (resultList == null) return 0;
             return resultList.size();
         }
 
@@ -862,6 +866,7 @@ public class FindFragment extends Fragment {
         }
 
     }
+
     /**
      * Performs the geocoder function to retrieve the adequate location name based on user input
      *
@@ -886,10 +891,10 @@ public class FindFragment extends Fragment {
         return list;
     }
 
-    private void updateDislikeList(){
+    private void updateDislikeList() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String url = "restaurants/"+prefs.getString("userID", null)+"/all/disliked";
-        HttpUtils.get(url , new RequestParams(), new JsonHttpResponseHandler() {
+        String url = "restaurants/" + prefs.getString("userID", null) + "/all/disliked";
+        HttpUtils.get(url, new RequestParams(), new JsonHttpResponseHandler() {
 
             @Override
             public void onFinish() {
@@ -898,14 +903,16 @@ public class FindFragment extends Fragment {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 boolean emptySet = false;
-                try{ emptySet = response.getBoolean(0); }
-                catch (Exception e){}
                 try {
-                    if(!emptySet) {
+                    emptySet = response.getBoolean(0);
+                } catch (Exception e) {
+                }
+                try {
+                    if (!emptySet) {
                         //make a new array
                         List<String> newList = new ArrayList<String>();
 
-                        for(int i = 0; i < response.length(); i++){
+                        for (int i = 0; i < response.length(); i++) {
                             JSONArray obj = (JSONArray) response.get(i);
                             newList.add(obj.getString(0));
                         }
@@ -925,4 +932,6 @@ public class FindFragment extends Fragment {
             }
         });
     }
+
+
 }

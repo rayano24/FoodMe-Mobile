@@ -55,14 +55,14 @@
             android:text="Filters"
             android:textSize="10dp" />
 
-        <Spinner
-            android:id="@+id/preference_spinner"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
+
     </TableRow>
     </TableLayout>
 
-
+    <Spinner
+        android:id="@+id/preference_spinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
 
     <Space
         android:layout_width="match_parent"

@@ -93,6 +93,7 @@ public class IndividualRestaurantFragment extends Fragment {
             @Override
             public void onClick(View v){
                 liking(username, 0);
+                dislikeButton.setEnabled(false);
                 //updateLikeButtonVisibility();
             }
         });
@@ -101,6 +102,7 @@ public class IndividualRestaurantFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 liking(username, 1);
+                likeButton.setEnabled(false);
                 //updateLikeButtonVisibility();
             }
         });
@@ -109,6 +111,7 @@ public class IndividualRestaurantFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 liking(username, 2);
+                dislikeButton.setEnabled(true);
                 //updateLikeButtonVisibility();
             }
         });
@@ -117,6 +120,7 @@ public class IndividualRestaurantFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 liking(username,3);
+                likeButton.setEnabled(true);
                 updateLikeButtonVisibility();
             }
         });

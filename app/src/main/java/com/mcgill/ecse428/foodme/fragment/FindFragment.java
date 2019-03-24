@@ -4,7 +4,9 @@ package com.mcgill.ecse428.foodme.fragment;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -13,11 +15,18 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
+import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,6 +54,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -63,10 +73,17 @@ public class FindFragment extends Fragment {
     private FusedLocationProviderClient mFusedLocationClient;
     private static final int PERMISSIONS_REQUEST_FINE_LOCATION = 811;
 
+    //parameters for filtering
+    private boolean[] pricePoints = {false,false,false,false};
+    private int distanceRange = 2;
+    private boolean filterApplied = false;
+
     private List<Restaurant> restaurantList = new ArrayList<>();
+    private List<String> dislikedList = new ArrayList<>();
     private RecyclerView restaurantRecyclerView;
     private RestaurantAdapter restaurantAdapter;
-    private TextView noLocation, noRestaurants;
+    private TextView noLocation, noRestaurants, searchLocationButton;
+    private Button openFilterMenu;
 
     private Activity mActivity;
 
@@ -95,7 +112,8 @@ public class FindFragment extends Fragment {
 
         noLocation = rootView.findViewById(R.id.noLocation);
         noRestaurants = rootView.findViewById(R.id.noRestaurants);
-
+        searchLocationButton = rootView.findViewById(R.id.searchLocation);
+        openFilterMenu = rootView.findViewById(R.id.show_pref_filter_menu);
 
         restaurantAdapter = new RestaurantAdapter(restaurantList);
 
@@ -116,6 +134,8 @@ public class FindFragment extends Fragment {
 
         getPreferences();
 
+        updateDislikeList();
+
         preferenceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
@@ -135,6 +155,89 @@ public class FindFragment extends Fragment {
             public void onNothingSelected(AdapterView<?> arg0) {
                 // TODO Auto-generated method stub
 
+            }
+        });
+
+        //set up and implement the filter button
+        openFilterMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Activity activity = getActivity();
+
+                //reset previous searches
+                for(int i = 0; i<4; i++) pricePoints[i] = false;
+                distanceRange = 2;
+                filterApplied = false;
+
+                //make the pop-out menu
+                PopupMenu filterMenu = new PopupMenu(getActivity(), v);
+
+                filterMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        //update data when items are clicked
+                        switch (item.getItemId()){
+                            case R.id.verycheap:
+                                filterApplied = true;
+                                item.setChecked(!item.isChecked());
+                                pricePoints[0] = item.isChecked();
+                                break;
+                            case R.id.cheap:
+                                filterApplied = true;
+                                item.setChecked(!item.isChecked());
+                                pricePoints[1] = item.isChecked();
+                                break;
+                            case R.id.expensive:
+                                filterApplied = true;
+                                item.setChecked(!item.isChecked());
+                                pricePoints[2] = item.isChecked();
+                                break;
+                            case R.id.veryexpensive:
+                                filterApplied = true;
+                                item.setChecked(!item.isChecked());
+                                pricePoints[3] = item.isChecked();
+                                break;
+                            case R.id.close:
+                                filterApplied = true;
+                                item.setChecked(!item.isChecked());
+                                distanceRange = 0;
+                                break;
+                            case R.id.medium:
+                                filterApplied = true;
+                                item.setChecked(!item.isChecked());
+                                distanceRange = 1;
+                                break;
+                            case R.id.far:
+                                filterApplied = true;
+                                item.setChecked(!item.isChecked());
+                                distanceRange = 2;
+                                break;
+                            case R.id.submit:   //this commits the changes
+                                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+                                displayRestaurants(prefs.getString(KEY_USER_LOCATION_LATITUDE,null),prefs.getString(KEY_USER_LOCATION_LONGITUDE, null));
+                                return false;
+                            default:
+                                return false;
+                        }
+                        //This code keeps the panel open, if this method hasn't already returned
+                        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+                        item.setActionView(new View(getContext()));
+                        item.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+                            @Override
+                            public boolean onMenuItemActionExpand(MenuItem item) {
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onMenuItemActionCollapse(MenuItem item) {
+                                return false;
+                            }
+                        });
+                        return false;
+                    }
+                });
+                filterMenu.inflate(R.menu.prefernce_filter);
+                filterMenu.show();
             }
         });
 
@@ -173,6 +276,13 @@ public class FindFragment extends Fragment {
                         }
                     });
             preferenceSpinner.setVisibility(View.VISIBLE);
+
+            searchLocationButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openLocationDialog();
+                }
+            });
 
         }
 
@@ -279,7 +389,7 @@ public class FindFragment extends Fragment {
      * @param lng longitude of current user position
      */
     public void displayRestaurants(String lat, String lng) {
-
+        updateDislikeList();
 
         HttpUtils.get("search/distance/" + 0 + "/?longitude=" + lng + "&latitude=" + lat, new RequestParams(), new JsonHttpResponseHandler() {
 
@@ -292,7 +402,6 @@ public class FindFragment extends Fragment {
 
 
                 try {
-
                     restaurantList.clear();
 
                     JSONArray mainArray = response.getJSONArray("businesses");
@@ -301,6 +410,11 @@ public class FindFragment extends Fragment {
                     for (int i = 0; i < mainArray.length(); i++) {
 
                         JSONObject obj = mainArray.getJSONObject(i);
+
+                        //filter disliked restos
+                        String id = obj.getString("id");
+                        if(dislikedList.contains(id)) continue;
+
                         String name = obj.getString("name");
                         String price = "n/a";
                         if (obj.has("price")) {
@@ -313,7 +427,7 @@ public class FindFragment extends Fragment {
                         JSONArray locArr = locObj.getJSONArray("display_address");
                         String[] displayLocation = {locArr.getString(0), locArr.getString(1)};
 
-                        String id = obj.getString("id");
+
 
                         JSONArray categories = obj.getJSONArray("categories");
                         JSONObject cuisineList = categories.getJSONObject(0);
@@ -323,11 +437,13 @@ public class FindFragment extends Fragment {
                         BigDecimal bd = new BigDecimal(distance);
                         bd = bd.setScale(1, RoundingMode.HALF_UP);
 
-
-                        restaurantList.add(new Restaurant(name, cuisine, price, bd.toString() + " metres", displayLocation, id));
+                        //apply filtering
+                        Restaurant toAdd = new Restaurant(name, cuisine, price, bd.toString() + " metres", displayLocation, id);
+                        if(!filterRestaurant(toAdd) || !filterApplied) restaurantList.add(toAdd);
 
 
                     }
+
 
 
                 } catch (JSONException e) {
@@ -344,6 +460,25 @@ public class FindFragment extends Fragment {
 
                 restaurantAdapter.notifyDataSetChanged();
 
+            }
+
+            /**
+             * Method to decide whether a restaurant should be filtered
+             * @param r The restaurant we want to decide about
+             * @return true if the restaurant should be filtered
+             */
+            public boolean filterRestaurant(Restaurant r){
+                //check if the price matches the filter
+                if(r.getPrice().equals("$") && pricePoints[0]==false) return true;
+                if(r.getPrice().equals("$$") && pricePoints[1] == false) return true;
+                if(r.getPrice().equals("$$$") && pricePoints[2] == false) return true;
+                if(r.getPrice().equals("$$$$") && pricePoints[3] == false) return true;
+
+                //check if the distance is out of range
+                double distance = Double.parseDouble(r.getDistance().replace(" metres",""));
+                if(distance > 500.0 && distanceRange == 0) return true;
+                if(distance > 1000.0 && distanceRange == 1) return true;
+                return false;
             }
 
             @Override
@@ -539,5 +674,230 @@ public class FindFragment extends Fragment {
         });
     }
 
+    /**
+     * Opens a dialog so that the user can enter their location. Once entered, is committed to preferences.
+     */
+    private void openLocationDialog() {
 
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+
+        final AutoCompleteTextView input = new AutoCompleteTextView(mActivity);
+
+
+        alert.setTitle("Location");
+        alert.setMessage("Enter a search location");
+
+        alert.setView(input);
+        input.setThreshold(3);
+        input.setAdapter(new AutoCompleteAdapter(mActivity, android.R.layout.simple_list_item_1));
+
+
+        alert.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+                if(input.getAdapter()==null){
+
+                }
+                else {
+                    int count = input.getAdapter().getCount();
+
+                    // the user is forced to select a result from the geocode api to ensure precision
+
+                    if (count != 0) {
+
+                        for (int i = 0; i < count; i++) {
+                            if (input.getAdapter().getItem(i).equals(input.getText().toString())) {
+                                try {
+                                    Geocoder geo = new Geocoder(mActivity);
+                                    List<Address> addresses = geo.getFromLocationName(input.getText().toString(), 1);
+                                    for (int address = 0; address < addresses.size(); address++) {
+                                        String lat = Double.toString(addresses.get(address).getLatitude());
+                                        String lng = Double.toString(addresses.get(address).getLongitude());
+                                        prefs.edit().putString(KEY_USER_LOCATION_LATITUDE, lat).apply();
+                                        prefs.edit().putString(KEY_USER_LOCATION_LONGITUDE, lng).apply();
+                                        prefs.edit().putString(KEY_USER_LOCATION, input.getText().toString()).apply();
+                                        searchLocationButton.setText(input.getText().toString().replaceAll("_", " "));
+                                        displayRestaurants(lat, lng);
+                                        break;
+
+                                    }
+                                } catch (IOException e) {
+                                    Toast.makeText(mActivity, "There was an error setting your location, please try again", Toast.LENGTH_LONG).show();
+                                    e.printStackTrace();
+
+                                }
+                            } else {
+                                // geocode technically only gives 1 result as it is designed for unambiguous results, however, added in case
+                                if (i == (count - 1)) {
+                                    Toast.makeText(mActivity, "Invalid location. Please suggest a suggested location.", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        }
+                    } else {
+                        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(mActivity);
+
+                        if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                            // Permission is not granted
+
+                            // PERMISSIONS_REQUEST_FINE_LOCATION is an app-defined int constant. The callback method gets the result of the request.
+                            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_FINE_LOCATION);
+
+
+                        } else {
+                            // Permission is granted, get location
+                            mFusedLocationClient.getLastLocation()
+                                    .addOnSuccessListener(mActivity, new OnSuccessListener<Location>() {
+                                        @Override
+                                        public void onSuccess(Location location) {
+                                            // Got last known location. In some rare situations this can be null.
+
+                                            if (location != null) {
+
+                                                double lat = location.getLatitude();
+                                                double lng = location.getLongitude();
+                                                prefs.edit().putString(KEY_USER_LOCATION_LATITUDE, Double.toString(lat)).apply();
+                                                prefs.edit().putString(KEY_USER_LOCATION_LONGITUDE, Double.toString(lng)).apply();
+                                                prefs.edit().remove(KEY_USER_LOCATION).apply();
+                                                searchLocationButton.setText("Search Another Location");
+                                                displayRestaurants(Double.toString(lat), Double.toString(lng));
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+                }
+
+            }
+
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+            }
+        });
+
+        alert.show();
+
+    }
+
+    /**
+     * Used to display suggestions in the autocomplete textview within the locations dialog
+     */
+    class AutoCompleteAdapter extends ArrayAdapter implements Filterable {
+
+
+        private ArrayList<String> resultList;
+
+        public AutoCompleteAdapter(Context context, int textViewResourceId) {
+            super(context, textViewResourceId);
+        }
+
+        @Override
+        public int getCount() {
+            if(resultList==null) return 0;
+            return resultList.size();
+        }
+
+        @Override
+        public String getItem(int index) {
+            return resultList.get(index);
+        }
+
+        @Override
+        public Filter getFilter() {
+            Filter filter = new Filter() {
+                @Override
+                protected FilterResults performFiltering(CharSequence constraint) {
+                    FilterResults filterResults = new FilterResults();
+                    if (constraint != null) {
+                        // Retrieve the autocomplete results.
+                        resultList = getAddressInfo(constraint.toString());
+
+                        // Assign the data to the FilterResults
+                        filterResults.values = resultList;
+                        filterResults.count = resultList.size();
+                    }
+                    return filterResults;
+                }
+
+                @Override
+                protected void publishResults(CharSequence constraint, FilterResults results) {
+                    if (results != null && results.count > 0) {
+                        notifyDataSetChanged();
+                    } else {
+                        notifyDataSetInvalidated();
+                    }
+                }
+            };
+            return filter;
+        }
+
+    }
+    /**
+     * Performs the geocoder function to retrieve the adequate location name based on user input
+     *
+     * @param locationName any location name or address including landmarks
+     * @return the location address
+     */
+    private ArrayList<String> getAddressInfo(String locationName) {
+        ArrayList<String> list = new ArrayList<>();
+        Geocoder geocoder = new Geocoder(mActivity, Locale.getDefault());
+        try {
+            List<Address> a = geocoder.getFromLocationName(locationName, 5);
+            for (int i = 0; i < a.size(); i++) {
+                //String city = a.get(i).getLocality();
+                // String country = a.get(i).getCountryName();
+                String address = a.get(i).getAddressLine(0);
+                //  + "--" + (lat!=null? "," + lat:"") + "--" + (lng!=null? ", " + lng:"")
+                list.add(address);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    private void updateDislikeList(){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String url = "restaurants/"+prefs.getString("userID", null)+"/all/disliked";
+        HttpUtils.get(url , new RequestParams(), new JsonHttpResponseHandler() {
+
+            @Override
+            public void onFinish() {
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                boolean emptySet = false;
+                try{ emptySet = response.getBoolean(0); }
+                catch (Exception e){}
+                try {
+                    if(!emptySet) {
+                        //make a new array
+                        List<String> newList = new ArrayList<String>();
+
+                        for(int i = 0; i < response.length(); i++){
+                            JSONArray obj = (JSONArray) response.get(i);
+                            newList.add(obj.getString(0));
+                        }
+                        dislikedList = newList;
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject
+                    errorResponse) {
+
+            }
+        });
+    }
 }

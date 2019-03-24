@@ -7,129 +7,157 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/individualHistoryRestaurantNameLabel"
+        android:id="@+id/restaurantRatingMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:text="You previously liked this restaurant "
+        android:textSize="20sp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider9" />
+
+    <TextView
+        android:id="@+id/individualHistoryRestaurantName"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="19dp"
         android:text="Restaurant Name"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/divider5"
-        app:layout_constraintEnd_toEndOf="@+id/divider5" />
+        app:layout_constraintBottom_toTopOf="@+id/individualHistoryRestaurantAddress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/individualHistoryRestaurantNameLabel2"
+        app:layout_constraintTop_toTopOf="@+id/individualHistoryRestaurantNameLabel2"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/individualHistoryRestaurantNameLabel2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="41dp"
+        android:layout_marginEnd="23dp"
         android:text="Restaurant Name"
         android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@+id/divider5"
+        app:layout_constraintEnd_toStartOf="@+id/individualHistoryRestaurantName"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/individualHistoryRestaurantAddressLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="92dp"
+        android:layout_marginEnd="106dp"
         android:text="Address"
         android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@+id/divider7"
-        app:layout_constraintTop_toBottomOf="@+id/divider5" />
+        app:layout_constraintEnd_toStartOf="@+id/individualHistoryRestaurantAddress"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/individualHistoryRestaurantAddressLabel2"
+        android:id="@+id/individualHistoryRestaurantAddress"
         android:layout_width="200dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="46dp"
         android:text="Address"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/divider7"
-        app:layout_constraintStart_toStartOf="@+id/individualHistoryRestaurantNameLabel"
-        app:layout_constraintTop_toTopOf="@+id/individualHistoryRestaurantAddressLabel" />
+        app:layout_constraintBottom_toBottomOf="@+id/individualHistoryCuisine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/individualHistoryRestaurantAddressLabel"
+        app:layout_constraintTop_toBottomOf="@+id/individualHistoryRestaurantNameLabel2"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/individualHistoryRatingLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="19dp"
-        android:text="Rating"
+        android:layout_marginTop="20dp"
+        android:text="Yelp Rating"
         android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@+id/divider9"
+        app:layout_constraintStart_toStartOf="@+id/individualHistoryCuisineLabel"
         app:layout_constraintTop_toBottomOf="@+id/divider8" />
 
     <TextView
-        android:id="@+id/individualHistoryRatingLabel3"
+        android:id="@+id/individualHistoryRating"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
         android:text="Rating"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/divider9"
-        app:layout_constraintStart_toStartOf="@+id/individualHistoryCuisineLabel2" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/individualHistoryCuisine" />
 
     <TextView
         android:id="@+id/individualHistoryCuisineLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="113dp"
         android:text="Cuisine"
         android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@+id/divider8"
-        app:layout_constraintTop_toBottomOf="@+id/divider7" />
+        app:layout_constraintEnd_toStartOf="@+id/individualHistoryCuisine"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/individualHistoryRestaurantAddressLabel" />
 
     <TextView
-        android:id="@+id/individualHistoryCuisineLabel2"
+        android:id="@+id/individualHistoryCuisine"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
         android:text="Cuisine"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/divider8"
-        app:layout_constraintStart_toStartOf="@+id/individualHistoryRestaurantAddressLabel2" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/individualHistoryCuisineLabel" />
 
     <Button
-        android:id="@+id/rateButton"
+        android:id="@+id/historyRateButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Rate"
+        android:text="@string/history_rate"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider9" />
+        app:layout_constraintTop_toBottomOf="@+id/restaurantRatingMessage" />
 
     <View
         android:id="@+id/divider5"
         android:layout_width="0dp"
         android:layout_height="1dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
         android:background="?android:attr/listDivider"
-        app:layout_constraintBottom_toBottomOf="@+id/individualHistoryRestaurantNameLabel2"
+        app:layout_constraintBottom_toBottomOf="@+id/individualHistoryRestaurantName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/individualHistoryRestaurantNameLabel2" />
+        app:layout_constraintTop_toBottomOf="@+id/individualHistoryRestaurantName" />
 
     <View
         android:id="@+id/divider7"
         android:layout_width="0dp"
         android:layout_height="1dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
         android:background="?android:attr/listDivider"
-        app:layout_constraintBottom_toBottomOf="@+id/individualHistoryRestaurantAddressLabel"
+        app:layout_constraintBottom_toBottomOf="@+id/individualHistoryRestaurantAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/individualHistoryRestaurantAddressLabel" />
+        app:layout_constraintTop_toBottomOf="@+id/individualHistoryRestaurantAddress" />
 
     <View
         android:id="@+id/divider8"
         android:layout_width="0dp"
         android:layout_height="1dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintBottom_toBottomOf="@+id/individualHistoryCuisineLabel"
         app:layout_constraintEnd_toEndOf="parent"
@@ -140,8 +168,6 @@
         android:id="@+id/divider9"
         android:layout_width="0dp"
         android:layout_height="1dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintBottom_toBottomOf="@+id/individualHistoryRatingLabel"
         app:layout_constraintEnd_toEndOf="parent"

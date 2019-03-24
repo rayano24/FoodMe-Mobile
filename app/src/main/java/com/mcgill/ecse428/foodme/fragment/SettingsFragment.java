@@ -280,27 +280,46 @@ public class SettingsFragment extends Fragment {
                 String username = prefs.getString("userID", null);
 
                 String url = "users/changePassword/"+username+"/"+oldP+"/"+newP;
-                HttpUtils.post(url, new RequestParams(), new JsonHttpResponseHandler(){
-                    @Override
-                    public void onFinish(){}
 
-                    @Override
-                    public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, JSONObject response) {
-                        Log.d("CHANGED","PASSWORD");
-                        Toast.makeText(getContext(),"Password changed successfully", Toast.LENGTH_LONG).show();
+                AlertDialog.Builder confirm = new AlertDialog.Builder(getActivity());
+                confirm.setTitle("Confirm password change");
+                confirm.setMessage("Are you sure you want to change your password?");
+                confirm.setPositiveButton("Yes, update", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                        HttpUtils.post(url, new RequestParams(), new JsonHttpResponseHandler(){
+                            @Override
+                            public void onFinish(){}
+
+                            @Override
+                            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, JSONObject response) {
+                                Log.d("CHANGED","PASSWORD");
+                                Toast.makeText(getContext(),"Password changed successfully", Toast.LENGTH_LONG).show();
+                            }
+                            @Override
+                            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse){
+                                super.onFailure(statusCode,headers,throwable,errorResponse);
+                                try{
+                                    Toast.makeText(getContext(), errorResponse.getString("message"), Toast.LENGTH_SHORT).show();
+                                }
+                                catch (Exception e){
+                                    Toast.makeText(getContext(),"Failed to change password", Toast.LENGTH_LONG).show();
+                                }
+
+                            }
+                        });
+
+
                     }
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse){
-                        super.onFailure(statusCode,headers,throwable,errorResponse);
-                        try{
-                            Toast.makeText(getContext(), errorResponse.getString("message"), Toast.LENGTH_SHORT).show();
-                        }
-                        catch (Exception e){
-                            Toast.makeText(getContext(),"Failed to change password", Toast.LENGTH_LONG).show();
-                        }
 
+                });
+
+                confirm.setNegativeButton("No, cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // Canceled.
                     }
                 });
+                confirm.show();
                 oldPassword.setVisibility(View.GONE);
                 oldPassword.setText("");
                 newPassword.setVisibility(View.GONE);

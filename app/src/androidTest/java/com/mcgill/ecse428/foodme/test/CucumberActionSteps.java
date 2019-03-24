@@ -31,7 +31,8 @@ public class CucumberActionSteps {
 
         //TODO FIND A BETTER WAY TO CHECK IF USER IS LOGGED IN
         return solo.waitForText("Find", 1, timeout);
-
+//        return solo.searchText("Find");
+//        return !solo.searchButton("Sign in");
 //        return solo.waitForActivity("MainActivity") || solo.waitForText("Successful login");
     }
 

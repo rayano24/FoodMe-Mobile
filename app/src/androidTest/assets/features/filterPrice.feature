@@ -11,7 +11,7 @@
 #      | price        |
 #      | 'None'       |
 #      | ''           |
-#
+
 #  Scenario Outline: Filter by cuisine without loggin in (Alternate scenario)
 #    Given I choose not to log in
 #    And I am on the restaurants page

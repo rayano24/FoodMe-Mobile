@@ -1,9 +1,12 @@
 package com.mcgill.ecse428.foodme.test;
 
+import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 
 import com.robotium.solo.Solo;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 public class CucumberActionSteps {
 
@@ -114,6 +117,21 @@ public class CucumberActionSteps {
     public static void filterByDistance(Solo solo, int maxDistance) {
         //TODO Change when feature is implemented
     }
+
+    // ================================== Rating =============================================
+    public static void clickRestaurant(Solo solo){
+        solo.clickInRecyclerView(1);;
+    }
+
+    public static void clickDislike(Solo solo){
+        solo.clickOnView(solo.getView("DislikeBtn"));
+    }
+
+    public static boolean checkDisliked(Solo solo){
+        solo.waitForView(solo.getView("UnDislikeButton"));
+        return solo.getView("UnDislikeButton").getVisibility() == View.VISIBLE;
+    }
+
 
     // ================================== Settings ===========================================
 

@@ -274,24 +274,25 @@ public class CucumberSteps extends ActivityInstrumentationTestCase2<MainActivity
     }
     // ================================== Dislike Restaurant feature: Scenario 1 ===========================================
 
-    @Given("I am viewing a restaurant")
+    @Given("I am viewing a restaurant's information")
     public void viewing_restaurant() throws Exception {
         solo = new Solo(getInstrumentation());
         getActivity();
-        DislikeRestaurantStepDefs.given(solo);
+        DislikeRestaurantStepDefs.givenViewingRestaurant(solo);
     }
 
-    @When("I click dislike restaurant")
+    @When("I click on the 'dislike' button")
     public void dislike_restaurant() throws Exception {
-        solo.waitForActivity("MainActivity", 2000);
-        DislikeRestaurantStepDefs.when(solo);
+        //solo.waitForActivity("MainActivity", 2000);
+        DislikeRestaurantStepDefs.whenClickDislike(solo);
     }
 
-    @Then("The restaurant should be disliked")
+    @Then("the restaurant should be marked as disliked")
     public void restaurant_should_be_disliked() throws Exception {
-        solo.waitForActivity("MainActivity", 2000);
-        assertTrue(DislikeRestaurantStepDefs.then(solo));
+        //solo.waitForActivity("MainActivity", 2000);
+        assertTrue(DislikeRestaurantStepDefs.thenDisliked(solo));
     }
+
 
     // ================================== End of Test Implementation =======================================================
 

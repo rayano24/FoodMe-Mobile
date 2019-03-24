@@ -285,13 +285,13 @@ public class CucumberSteps extends ActivityInstrumentationTestCase2<MainActivity
 
     @When("I click on the 'dislike' button")
     public void dislike_restaurant() throws Exception {
-        //solo.waitForActivity("MainActivity", 2000);
+//        solo.waitForActivity("MainActivity", timeout);
         DislikeRestaurantStepDefs.whenClickDislike(solo);
     }
 
     @Then("the restaurant should be marked as disliked")
     public void restaurant_should_be_disliked() throws Exception {
-        //solo.waitForActivity("MainActivity", 2000);
+//        solo.waitForActivity("MainActivity", timeout);
         assertTrue(DislikeRestaurantStepDefs.thenDisliked(solo));
     }
 
@@ -300,13 +300,13 @@ public class CucumberSteps extends ActivityInstrumentationTestCase2<MainActivity
 
     @When("I click on the 'like' button")
     public void like_restaurant() throws Exception {
-        //solo.waitForActivity("MainActivity", 2000);
+//        solo.waitForActivity("MainActivity", timeout);
         LikeRestaurantStepDefs.when(solo);
     }
 
     @Then("the restaurant should be marked as liked")
     public void restaurant_should_be_liked() throws Exception {
-        //solo.waitForActivity("MainActivity", 2000);
+//        solo.waitForActivity("MainActivity", timeout);
         assertTrue(LikeRestaurantStepDefs.then(solo));
     }
 

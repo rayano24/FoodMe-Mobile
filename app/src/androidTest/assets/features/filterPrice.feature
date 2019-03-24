@@ -8,9 +8,11 @@
 #    Then I should see restaurants that fit my price <price> selection
 #
 #    Examples:
-#      | price        |
-#      | 'None'       |
-#      | ''           |
+#      | price          |
+#      | '$'            |
+#      | '$$'           |
+#      | '$$$'          |
+#      | '$$$$'         |
 
 #  Scenario Outline: Filter by cuisine without loggin in (Alternate scenario)
 #    Given I choose not to log in

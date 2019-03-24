@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class CucumberActionSteps {
 
-    private static String adminUsername = "admin";
+    private static String adminUsername = "admin2";
     private static String adminPassword = "password";
     private static int timeout = 1000;
 
@@ -127,15 +127,14 @@ public class CucumberActionSteps {
         if (solo.getView("DislikeBtn").getVisibility() == View.VISIBLE)
             solo.clickOnView(solo.getView("DislikeBtn"));
 
-        else {
-            solo.clickOnView(solo.getView("UnDislikeButton"));
-            solo.clickOnView(solo.getView("DislikeBtn"));
-        }
     }
 
     public static boolean checkDisliked(Solo solo){
-        solo.waitForView(solo.getView("UnDislikeButton"));
-        return solo.getView("UnDislikeButton").getVisibility() == View.VISIBLE;
+        boolean ret = solo.waitForView(solo.getView("UnDislikeButton"));
+//        boolean ret = solo.getView("UnDislikeButton").getVisibility() == View.VISIBLE;
+        solo.clickOnView(solo.getView("UnDislikeButton"));
+
+        return ret;
     }
 
     public static void clickLike(Solo solo){
@@ -143,17 +142,14 @@ public class CucumberActionSteps {
         //If restaurant is not liked -> like it, otherwise -> unlike it -> like it
         if (solo.getView("LikeBtn").getVisibility() == View.VISIBLE)
             solo.clickOnView(solo.getView("LikeBtn"));
-
-        else {
-            solo.clickOnView(solo.getView("UnlikeBtn"));
-            solo.clickOnView(solo.getView("LikeBtn"));
-        }
-
     }
 
     public static boolean checkLiked(Solo solo){
-        solo.waitForView(solo.getView("UnlikeBtn"));
-        return solo.getView("UnlikeBtn").getVisibility() == View.VISIBLE;
+        boolean ret = solo.waitForView(solo.getView("UnlikeBtn"));
+//        boolean ret = solo.getView("UnlikeBtn").getVisibility() == View.VISIBLE;
+        solo.clickOnView(solo.getView("UnlikeBtn"));
+
+        return ret;
     }
 
 

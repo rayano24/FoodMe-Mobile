@@ -28,6 +28,7 @@ import com.mcgill.ecse428.foodme.model.RestaurantHistory;
 import com.mcgill.ecse428.foodme.utils.HttpUtils;
 import com.mcgill.ecse428.foodme.utils.RecyclerTouchListener;
 
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -50,8 +51,11 @@ public class IndividualRestaurantFragment extends Fragment {
     private Button mapButton, likeButton, dislikeButton, unlikeButton, undislikeButton;
     private TableRow likeDislikeRow, unlikeRow, undislikeRow;
     private TableLayout likeBtnTable;
+    private TableLayout rclosingTable;
+    private TextView rclosing2;
+    private ImageView rclosing;
     private boolean alreadyLiked, alreadyDisliked;
-
+    private boolean rclosingcheck;
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState){
 
@@ -74,9 +78,13 @@ public class IndividualRestaurantFragment extends Fragment {
         unlikeRow = (TableRow) rootView.findViewById(R.id.UnlikeRow);
         undislikeRow = (TableRow) rootView.findViewById(R.id.UndislikeRow);
         likeBtnTable = (TableLayout) rootView.findViewById(R.id.LikeBtnTable);
+        rclosingTable =(TableLayout) rootView.findViewById(R.id.rclosingTable);
+        rclosing=(ImageView) rootView.findViewById(R.id.rclosing);
+        rclosing2=(TextView) rootView.findViewById(R.id.rclosing2);
         mapButton = (Button)rootView.findViewById(R.id.MapBtn);
         alreadyLiked = false;
         alreadyDisliked = false;
+        rclosingcheck = false;
 
         //assign the values
         name.setText(restaurantName);
@@ -369,3 +377,50 @@ public class IndividualRestaurantFragment extends Fragment {
         return alreadyDisliked;
     }
 }
+
+ public boolean notifyRestaurantclosing()
+ {
+     String url = "/search/get/closing/Id";
+     HttpUtils.get(url , new RequestParams(), new JsonHttpResponseHandler() {
+         @Override
+         public void onFinish() {}
+
+         @Override
+         public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+             boolean emptySet = false;
+             //check if the query returned empty
+             try {
+                 emptySet = response.getBoolean(0);
+             }catch (Exception e){}
+             try{
+                 if(!emptySet) {
+                     //search the data for the id
+                     for (int i = 0; i < response.length(); i++) {
+                         JSONArray array = (JSONArray) response.get(i);
+
+                         //if we find the value, update the ui and return
+                         if (array.get(0).toString().equals(restaurantID)) {
+                             rclosingTable.setVisibility((View.VISIBLE));
+                             rclosing.setVisibility(View.VISIBLE);
+                             rclosing2.setVisibility(View.VISIBLE);
+                             rclosingcheck = true;
+                             return;
+                         }
+                     }
+                 }
+             } catch (Exception e){//JSONException e) {
+                 e.printStackTrace();
+
+             }
+         }
+
+         @Override
+         public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject
+                 errorResponse) {
+         }
+     });
+     return rclosingcheck;
+ }
+
+}
+ }

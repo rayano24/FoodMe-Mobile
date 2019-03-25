@@ -85,7 +85,7 @@ public class FindFragment extends Fragment {
     private RecyclerView restaurantRecyclerView;
     private RestaurantAdapter restaurantAdapter;
     private TextView noLocation, noRestaurants, searchLocationButton;
-    private Button openFilterMenu;
+    private Button openFilterMenu, randomRestaurant;
 
     private Activity mActivity;
 
@@ -97,6 +97,7 @@ public class FindFragment extends Fragment {
     private final static String KEY_USER_ID = "userID";
     private Spinner preferenceSpinner;
     private ArrayAdapter<String> dataAdapter;
+
 
 
     @Override
@@ -135,7 +136,11 @@ public class FindFragment extends Fragment {
         preferenceSpinner.setVisibility(View.GONE);
 
 
-        Button randomRestaurant = rootView.findViewById(R.id.randomRestoButton);
+        randomRestaurant = rootView.findViewById(R.id.randomRestoButton);
+        randomRestaurant.setVisibility(View.GONE);
+        searchLocationButton.setVisibility(View.GONE);
+        openFilterMenu.setVisibility(View.GONE);
+
 
 
         getPreferences();
@@ -294,6 +299,9 @@ public class FindFragment extends Fragment {
                         }
                     });
             preferenceSpinner.setVisibility(View.VISIBLE);
+            randomRestaurant.setVisibility(View.VISIBLE);
+            searchLocationButton.setVisibility(View.VISIBLE);
+            openFilterMenu.setVisibility(View.VISIBLE);
 
             searchLocationButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -317,6 +325,10 @@ public class FindFragment extends Fragment {
 
             displayRestaurants(storedLat, storedLng);
             noLocation.setVisibility(View.GONE);
+            randomRestaurant.setVisibility(View.VISIBLE);
+            preferenceSpinner.setVisibility(View.VISIBLE);
+            searchLocationButton.setVisibility(View.VISIBLE);
+            openFilterMenu.setVisibility(View.VISIBLE);
 
 
         }
@@ -377,6 +389,7 @@ public class FindFragment extends Fragment {
             }
 
         }
+
     }
 
 

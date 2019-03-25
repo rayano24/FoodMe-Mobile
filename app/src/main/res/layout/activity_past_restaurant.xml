@@ -24,11 +24,13 @@
         android:id="@+id/individualHistoryRestaurantName"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginEnd="16dp"
         android:text="Restaurant Name"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/individualHistoryRestaurantNameLabel2"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/individualHistoryRestaurantAddress"
         app:layout_constraintTop_toTopOf="@+id/individualHistoryRestaurantNameLabel2" />
 
     <TextView
@@ -37,10 +39,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="41dp"
-        android:layout_marginEnd="23dp"
         android:text="Restaurant Name"
         android:textSize="20sp"
-        app:layout_constraintEnd_toStartOf="@+id/individualHistoryRestaurantName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

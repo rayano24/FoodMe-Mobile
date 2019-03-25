@@ -83,10 +83,7 @@ import java.util.List;
 
                 }
 
-// Drawing polyline in the Google Map for the i-th route
-                mMap.addPolyline(lineOptions);
-            }
-        }
+
 
         private String getDirectionsUrl(LatLng origin, LatLng dest) {
 

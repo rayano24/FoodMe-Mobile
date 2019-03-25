@@ -112,7 +112,7 @@ public class SettingsFragment extends Fragment {
             editPreferences.setVisibility(View.GONE);
             preferenceHeader.setVisibility(View.GONE);
         } else {
-            noAccountButton.setText("Account settings");
+            noAccountButton.setText("Change your first or last name");
         }
 
         switch (selectedTheme) {

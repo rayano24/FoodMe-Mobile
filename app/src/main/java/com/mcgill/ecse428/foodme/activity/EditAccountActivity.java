@@ -1,36 +1,22 @@
 package com.mcgill.ecse428.foodme.activity;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.mcgill.ecse428.foodme.R;
-import com.mcgill.ecse428.foodme.fragment.SettingsFragment;
-import com.mcgill.ecse428.foodme.fragment.FindFragment;
-import com.mcgill.ecse428.foodme.fragment.RestaurantFragment;
 import com.mcgill.ecse428.foodme.utils.HttpUtils;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import cz.msebera.android.httpclient.Header;
 
 

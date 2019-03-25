@@ -1,6 +1,5 @@
 package com.mcgill.ecse428.foodme.activity;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,7 +9,6 @@ import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -21,7 +19,6 @@ import com.loopj.android.http.RequestParams;
 import com.mcgill.ecse428.foodme.R;
 import com.mcgill.ecse428.foodme.adapters.PreferenceAdapter;
 import com.mcgill.ecse428.foodme.model.Preference;
-import com.mcgill.ecse428.foodme.model.Restaurant;
 import com.mcgill.ecse428.foodme.utils.HttpUtils;
 import com.mcgill.ecse428.foodme.utils.RecyclerTouchListener;
 
@@ -29,20 +26,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.HttpStatus;
 
 public class PreferenceActivity extends AppCompatActivity {
     private List<Preference> preferenceList = new ArrayList<>();
@@ -146,7 +139,7 @@ public class PreferenceActivity extends AppCompatActivity {
 
         displayPreferences();
 
-        Button addPreference = (Button) findViewById(R.id.addPreference);
+        Button addPreference = findViewById(R.id.addPreference);
         addPreference.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -257,8 +250,7 @@ public class PreferenceActivity extends AppCompatActivity {
 
                 try {
                     Toast.makeText(PreferenceActivity.this, errorResponse.getString("message"), Toast.LENGTH_LONG).show();
-                }
-                catch(JSONException e) {
+                } catch (JSONException e) {
                     Toast.makeText(PreferenceActivity.this, "There was a network error", Toast.LENGTH_LONG).show();
                 }
             }

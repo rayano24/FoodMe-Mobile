@@ -111,6 +111,7 @@ public class SettingsFragment extends Fragment {
         if (userID == null || userID.equals("noAccount")) {
             editPreferences.setVisibility(View.GONE);
             preferenceHeader.setVisibility(View.GONE);
+            signOut.setVisibility(View.GONE);
         } else {
             noAccountButton.setText("Change your first or last name");
         }

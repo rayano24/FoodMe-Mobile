@@ -148,13 +148,15 @@ public class FindFragment extends Fragment {
             public void onItemSelected(AdapterView<?> arg0, View arg1,
                                        int arg2, long arg3) {
 
-                String preference = preferenceSpinner.getSelectedItem().toString();
-                if (preference.equals("No search preference")) {
-                    displayRestaurants(storedLat, storedLng);
-                    return;
+                if (storedLat != null && storedLng != null) {
+                    String preference = preferenceSpinner.getSelectedItem().toString();
+                    if (preference.equals("No search preference")) {
+                        displayRestaurants(storedLat, storedLng);
+                        return;
+                    }
+                    String[] values = preference.split(",");
+                    searchWithPreference(values);
                 }
-                String[] values = preference.split(",");
-                searchWithPreference(values);
             }
 
             @Override
@@ -224,11 +226,13 @@ public class FindFragment extends Fragment {
                                 String storedLat = prefs.getString(KEY_USER_LOCATION_LATITUDE, null);
                                 String storedLng = prefs.getString(KEY_USER_LOCATION_LONGITUDE, null);
                                 String selectedPref = preferenceSpinner.getSelectedItem().toString();
-                                if (selectedPref.equals("No search preference")) {
-                                    displayRestaurants(storedLat, storedLng);
-                                } else {
-                                    String[] values = selectedPref.split(",");
-                                    searchWithPreference(values);
+                                if(storedLat != null && storedLng != null) {
+                                    if (selectedPref.equals("No search preference")) {
+                                        displayRestaurants(storedLat, storedLng);
+                                    } else {
+                                        String[] values = selectedPref.split(",");
+                                        searchWithPreference(values);
+                                    }
                                 }
                                 return false;
                             default:
@@ -684,11 +688,13 @@ public class FindFragment extends Fragment {
                     String storedLat = prefs.getString(KEY_USER_LOCATION_LATITUDE, null);
                     String storedLng = prefs.getString(KEY_USER_LOCATION_LONGITUDE, null);
                     String selectedPref = preferenceSpinner.getSelectedItem().toString();
-                    if (selectedPref.equals("No search preference")) {
-                        displayRestaurants(storedLat, storedLng);
-                    } else {
-                        String[] values = selectedPref.split(",");
-                        searchWithPreference(values);
+                    if(storedLat != null && storedLng != null) {
+                        if (selectedPref.equals("No search preference")) {
+                            displayRestaurants(storedLat, storedLng);
+                        } else {
+                            String[] values = selectedPref.split(",");
+                            searchWithPreference(values);
+                        }
                     }
 
                 } catch (JSONException e) {

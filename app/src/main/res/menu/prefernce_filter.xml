@@ -7,16 +7,16 @@
         android:checkableBehavior="all">
         <item
             android:id="@+id/verycheap"
-            android:title="$" />
+            android:title="@string/title_very_cheap" />
         <item
             android:id="@+id/cheap"
-            android:title="$$" />
+            android:title="@string/title_cheap" />
         <item
             android:id="@+id/expensive"
-            android:title="$$$" />
+            android:title="@string/title_expensive" />
         <item
             android:id="@+id/veryexpensive"
-            android:title="$$$$" />
+            android:title="@string/title_very_expensive" />
     </group>
     <group android:checkableBehavior="single">
         <item

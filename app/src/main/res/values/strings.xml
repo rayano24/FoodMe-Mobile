@@ -85,6 +85,7 @@
     <string name="preferences">Search Preferences</string>
     <string name="add_preference">+</string>
     <string name="history_rate">Rate</string>
+    <string name="action_delete_account">Delete account</string>
 
 
 </resources>

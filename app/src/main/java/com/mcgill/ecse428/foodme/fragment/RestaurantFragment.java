@@ -90,6 +90,7 @@ public class RestaurantFragment extends Fragment {
         } else {
             displayPastRestaurants(username);
             historyNotice.setText(R.string.history_no_history);
+            historyNotice.setVisibility(View.VISIBLE);
         }
 
         historyRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(mActivity.getApplicationContext(), historyRecyclerView, new RecyclerTouchListener.ClickListener() {

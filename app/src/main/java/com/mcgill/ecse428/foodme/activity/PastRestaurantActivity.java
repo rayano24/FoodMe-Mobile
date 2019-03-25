@@ -41,13 +41,42 @@ public class PastRestaurantActivity extends AppCompatActivity {
     private static String restoID, restoName;
 
     private static Boolean alreadyLiked, alreadyDisliked;
+    private final static String KEY_PREFERENCE_THEME = "themePref";
+    private static int themeSelected = 0;
 
+
+    private SharedPreferences.OnSharedPreferenceChangeListener listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+        public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+            // listener implementation
+
+            if (key.equals(KEY_PREFERENCE_THEME)) {
+                themeSelected = prefs.getInt(KEY_PREFERENCE_THEME, 0);
+                recreate(); //restarts activity to apply change
+
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs.registerOnSharedPreferenceChangeListener(listener);
+        themeSelected = prefs.getInt(KEY_PREFERENCE_THEME, 0);
+
+
+        switch (themeSelected) {
+            case (0):
+                setTheme(R.style.AppTheme);
+                break;
+            case (1):
+                setTheme(R.style.AppTheme_Alternate);
+                break;
+            case (2):
+                setTheme(R.style.AppTheme_Dark);
+                break;
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_past_restaurant);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(PastRestaurantActivity.this);
 
         String username = prefs.getString(KEY_USER_ID, "noAccount");
 

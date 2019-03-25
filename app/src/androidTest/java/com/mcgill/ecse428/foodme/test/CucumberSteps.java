@@ -10,6 +10,7 @@ import com.mcgill.ecse428.foodme.test.StepDefs.FilterCuisineStepDefs;
 import com.mcgill.ecse428.foodme.test.StepDefs.FilterDistanceStepDefs;
 import com.mcgill.ecse428.foodme.test.StepDefs.FilterOpenRestaurantsStepDefs;
 import com.mcgill.ecse428.foodme.test.StepDefs.FilterPriceStepDefs;
+import com.mcgill.ecse428.foodme.test.StepDefs.LikeRestaurantStepDefs;
 import com.mcgill.ecse428.foodme.test.StepDefs.UserLoginStepDefs;
 import com.mcgill.ecse428.foodme.test.StepDefs.UserLogoutStepDefs;
 import com.robotium.solo.Solo;
@@ -126,11 +127,12 @@ public class CucumberSteps extends ActivityInstrumentationTestCase2<MainActivity
         CreateAccountStepDefs.givenRegisterForm(solo);
     }
 
-    @When("I enter a {string}, an {string}, a {string} and a {string}")
-    public void i_enter_a_username_an_email_a_phone_and_a_pw(String username, String email, String phone, String password) {
+    @When("I enter a {string}, a {string}, a {string}, an {string} and a {string}")
+    public void i_enter_a_username_an_email_a_phone_and_a_pw(String firstname, String lastname, String username,
+                                                             String email, String password) {
 
         solo.waitForActivity("LoginActivity", timeout);
-        CreateAccountStepDefs.when(solo, username, email, phone, password);
+        CreateAccountStepDefs.when(solo, firstname, lastname, username, email, password);
     }
 
     @Then("I should have an account")
@@ -145,7 +147,7 @@ public class CucumberSteps extends ActivityInstrumentationTestCase2<MainActivity
     public void i_should_not_be_able_to_create_an_account() {
 
         solo.waitForActivity("LoginActivity", timeout);
-        assertFalse(CreateAccountStepDefs.invalidThen(solo));
+        assertTrue(CreateAccountStepDefs.invalidThen(solo));
     }
 
     //TODO Change when feature is implemented
@@ -169,8 +171,15 @@ public class CucumberSteps extends ActivityInstrumentationTestCase2<MainActivity
         assertFalse(DeleteAccountStepDefs.and(solo));
     }
 
-    //TODO Change when feature is implemented
     // ================================== Change Password feature: Scenario 1-2 =======================================================
+
+    @Given("I am logged in as {string} and {string}")
+    public void i_am_logged_in_as_username_and_password(String username, String password){
+        solo = new Solo(getInstrumentation());
+        getActivity();
+        ChangePasswordStepDefs.given(solo, username, password);
+    }
+
     @When("I select the change password option")
     public void i_select_the_change_password_option() {
         solo.waitForActivity("MainActivity", timeout);
@@ -254,7 +263,7 @@ public class CucumberSteps extends ActivityInstrumentationTestCase2<MainActivity
     //TODO Change when feature is implemented
     // ================================== Filter Price feature: Scenario 1 =======================================================
     @When("I select my price {string} preferences")
-    public void i_select_my_price_pref(String price) {
+    public void i_select_my_price_pref(String price) throws  Exception{
         solo.waitForActivity("MainActivity", timeout);
         FilterPriceStepDefs.when(solo, price);
     }
@@ -264,26 +273,43 @@ public class CucumberSteps extends ActivityInstrumentationTestCase2<MainActivity
         solo.waitForActivity("MainActivity", timeout);
         assertTrue(FilterPriceStepDefs.then(solo, price));
     }
+
     // ================================== Dislike Restaurant feature: Scenario 1 ===========================================
 
-    @Given("I am viewing a restaurant")
+    @Given("I am viewing a restaurant's information")
     public void viewing_restaurant() throws Exception {
         solo = new Solo(getInstrumentation());
         getActivity();
-        DislikeRestaurantStepDefs.given(solo);
+        DislikeRestaurantStepDefs.givenViewingRestaurant(solo);
     }
 
-    @When("I click dislike restaurant")
+    @When("I click on the 'dislike' button")
     public void dislike_restaurant() throws Exception {
-        solo.waitForActivity("MainActivity", 2000);
-        DislikeRestaurantStepDefs.when(solo);
+//        solo.waitForActivity("MainActivity", timeout);
+        DislikeRestaurantStepDefs.whenClickDislike(solo);
     }
 
-    @Then("The restaurant should be disliked")
+    @Then("the restaurant should be marked as disliked")
     public void restaurant_should_be_disliked() throws Exception {
-        solo.waitForActivity("MainActivity", 2000);
-        assertTrue(DislikeRestaurantStepDefs.then(solo));
+//        solo.waitForActivity("MainActivity", timeout);
+        assertTrue(DislikeRestaurantStepDefs.thenDisliked(solo));
     }
+
+
+    // ================================== Like Restaurant feature: Scenario 1 ===========================================
+
+    @When("I click on the 'like' button")
+    public void like_restaurant() throws Exception {
+//        solo.waitForActivity("MainActivity", timeout);
+        LikeRestaurantStepDefs.when(solo);
+    }
+
+    @Then("the restaurant should be marked as liked")
+    public void restaurant_should_be_liked() throws Exception {
+//        solo.waitForActivity("MainActivity", timeout);
+        assertTrue(LikeRestaurantStepDefs.then(solo));
+    }
+
 
     // ================================== End of Test Implementation =======================================================
 

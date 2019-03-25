@@ -5,6 +5,15 @@ import com.robotium.solo.Solo;
 
 public class ChangePasswordStepDefs {
 
+    private static long timeout = 200;
+
+    //Given I am logged in as username and password
+    public static void given(Solo solo, String username, String password){
+
+        CucumberActionSteps.signOut(solo);
+        CucumberActionSteps.logIn(solo, username, password);
+    }
+
     //When I select the change pw option
     public static void whenSelect(Solo solo){
 
@@ -19,13 +28,13 @@ public class ChangePasswordStepDefs {
 
     //Then my pw should be changed
     public static boolean then1(Solo solo){
-        //TODO
-        return solo.waitForText("Password successfully changed");
+
+        return solo.waitForText("Password changed successfully");
     }
 
     //Then my pw should not be changed
     public static boolean then2(Solo solo){
-        //TODO
-        return solo.waitForText("Password could not be changed");
+
+        return  solo.waitForText("Invalid old password", 1, timeout);
     }
 }

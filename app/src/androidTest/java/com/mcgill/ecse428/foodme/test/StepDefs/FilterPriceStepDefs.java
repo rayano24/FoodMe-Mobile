@@ -5,12 +5,39 @@ import com.robotium.solo.Solo;
 
 public class FilterPriceStepDefs {
 
-    public static void when(Solo solo, String price){
+    private static long timeout = 1000;
+
+    public static void when(Solo solo, String price) throws Exception{
         CucumberActionSteps.filterByPrice(solo, price);
     }
 
-    //TODO
-    public static boolean then(Solo solo, String price){
-        return solo.waitForText("");
+    public static boolean then(Solo solo, String price) {
+
+        boolean  ret = false;
+
+        switch (price) {
+            case "$":
+                ret = !(solo.searchText("$$", 1, true, true)
+                        || solo.searchText("$$$",1, true, true)
+                        || solo.searchText("$$$$", 1, true, true));
+                break;
+            case "$$":
+                ret =  !(solo.searchText("$", 1, true, true)
+                        || solo.searchText("$$$", 1, true, true)
+                        || solo.searchText("$$$$", 1, true, true));
+                break;
+            case "$$$":
+                ret =  !(solo.searchText("$", 1, true, true)
+                        || solo.searchText("$$", 1, true, true)
+                        || solo.searchText("$$$$", 1, true, true));
+                break;
+            case "$$$$":
+                ret =  !(solo.searchText("$", 1, true, true)
+                        || solo.searchText("$$", 1, true, true)
+                        || solo.searchText("$$$", 1, true, true));
+                break;
+        }
+
+        return ret;
     }
 }

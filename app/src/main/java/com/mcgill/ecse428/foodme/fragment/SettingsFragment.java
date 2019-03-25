@@ -229,7 +229,7 @@ public class SettingsFragment extends Fragment {
             try {
                 List<Address> name = gc.getFromLocation(Double.parseDouble(lat), Double.parseDouble(lng), 1);
                 locationButton.setText(name.get(0).getLocality());
-            } catch (IOException e) {
+            } catch (IOException | NullPointerException   e) {
                 e.printStackTrace();
 
             }

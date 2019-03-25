@@ -968,11 +968,17 @@ public class FindFragment extends Fragment {
                 JSONObject locObj = obj.getJSONObject("location");
                 JSONArray locArr = locObj.getJSONArray("display_address");
 
+                String cuisine;
 
                 JSONArray categories = obj.getJSONArray("categories");
                 JSONObject cuisineList = categories.getJSONObject(0);
-                String cuisine = cuisineList.getString("title");
+                if(cuisineList.has("title")) {
+                     cuisine = cuisineList.getString("title");
 
+                }
+                else {
+                    cuisine = "n/a";
+                }
 
                 BigDecimal bd = new BigDecimal(distance);
                 bd = bd.setScale(1, RoundingMode.HALF_UP);

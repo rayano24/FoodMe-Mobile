@@ -131,6 +131,8 @@ public class IndividualRestaurantFragment extends Fragment {
                 // "123 St-Catherine, Montreal, QC X1X1X1"
                 String fullAddress = restaurantAddress1 + ", " + restaurantAddress2;
 
+                addToVisited(username, restaurantName, restaurantID);
+
                 //Pass the location to the map fragment and swap
                 Bundle args = new Bundle();
                 args.putString("ADDRESS", fullAddress);
@@ -363,5 +365,32 @@ public class IndividualRestaurantFragment extends Fragment {
             }
         });
         return alreadyDisliked;
+    }
+
+    /**
+     * Once a user selects the map, the restaurant will be added to their history
+     * @param username the user ID
+     */
+    private void addToVisited(String username, String restaurantName, String restaurantID) {
+
+        HttpUtils.post("restaurants/" + username + "/addvisited/" + restaurantID + "/" + restaurantName, new RequestParams(), new JsonHttpResponseHandler() {
+
+            @Override
+            public void onFinish() {
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                //check if the query returned empty
+
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject
+                    errorResponse) {
+            }
+        });
+
     }
 }

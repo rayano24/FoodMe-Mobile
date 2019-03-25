@@ -35,7 +35,7 @@ import java.math.RoundingMode;
 public class PastRestaurantActivity extends AppCompatActivity {
 
 
-    private static TextView restaurantName, restaurantRating, restaurantAddress, restaurantCuisine, restaurantRatingMessage;
+    private static TextView restaurantName, restaurantRating, restaurantAddress, restaurantCuisine, restaurantRatingMessage, restaurantPrice;
     private static Button rateButton;
     private final static String KEY_USER_ID = "userID";
     private static String restoID, restoName;
@@ -86,6 +86,7 @@ public class PastRestaurantActivity extends AppCompatActivity {
         restaurantCuisine = findViewById(R.id.individualHistoryCuisine);
         restaurantRating = findViewById(R.id.individualHistoryRating);
         restaurantRatingMessage = findViewById(R.id.restaurantRatingMessage);
+        restaurantPrice = findViewById(R.id.individualHistoryPrice);
 
         rateButton = findViewById(R.id.historyRateButton);
 
@@ -136,7 +137,31 @@ public class PastRestaurantActivity extends AppCompatActivity {
                     String name = response.getString("name");
                     JSONObject locationObject = response.getJSONObject("location");
                     String address = locationObject.getString("address1") + " " + locationObject.getString("city");
-                    String cuisine = response.getString("price");
+
+
+                    String cuisine;
+
+                    JSONArray categories = response.getJSONArray("categories");
+                    JSONObject cuisineList = categories.getJSONObject(0);
+                    if(cuisineList.has("title")) {
+                        cuisine = cuisineList.getString("title");
+
+                    }
+                    else {
+                        cuisine = "n/a";
+                    }
+
+                    String price;
+
+                    if(response.has("price")) {
+                        price = response.getString("price");
+
+                    }
+                    else {
+                        price = "n/a";
+                    }
+
+
                     int rating = response.getInt("rating");
 
 
@@ -144,11 +169,13 @@ public class PastRestaurantActivity extends AppCompatActivity {
                     restaurantAddress.setText(address);
                     restaurantCuisine.setText(cuisine);
                     restaurantRating.setText(Integer.toString(rating) + "/5");
+                    restaurantPrice.setText(price);
 
                     restaurantName.setVisibility(View.VISIBLE);
                     restaurantAddress.setVisibility(View.VISIBLE);
                     restaurantCuisine.setVisibility(View.VISIBLE);
                     restaurantRating.setVisibility(View.VISIBLE);
+                    restaurantPrice.setVisibility(View.VISIBLE);
 
 
                 } catch (JSONException e) {

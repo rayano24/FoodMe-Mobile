@@ -73,33 +73,22 @@ public class EditAccountActivity extends AppCompatActivity {
         modifyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                modifyData(username);
-            }
+                if (!etFirstName.getText().toString().isEmpty()) {
+                    modifyName(username, "changeFirstName", "newFName");
+
+                }
+
+                if (!etLastName.getText().toString().isEmpty()) {
+                    modifyName(username, "changeLastName", "newLName");
+
+                }            }
         });
 
 
     }
 
 
-    /**
-     * A method that redirects to other HTTP requests
-     *
-     * @param username
-     */
-    private void modifyData(String username) {
 
-        if (etFirstName.getText().toString().isEmpty()) {
-            modifyName(username, "changeFirstName", "newFName");
-
-        }
-
-        if (etLastName.getText().toString().isEmpty()) {
-            modifyName(username, "changeLastName", "newLName");
-
-        }
-
-
-    }
 
 
     /**

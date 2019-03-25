@@ -11,6 +11,8 @@
 #
 #    Examples:
 #      | username        | password  |
+#      | 'gherkin_test1' | 'test123' |
+#      | 'gherkin_test2' | 'test123' |
 #      | 'gherkin_test3' | 'test123' |
 #
 #  Scenario Outline:  Unsuccessful login (Error scenario)
@@ -19,5 +21,7 @@
 #    And I should be prompted to re-enter my credentials
 #
 #    Examples:
-#      | username     |   password   |
-#      | ''           |     ''       |
+#      | username      | password     |
+#      | 'user'        | ''           |
+#      | ''            | 'pw'         |
+#      | 'nonexistent' | 'nonexistent |

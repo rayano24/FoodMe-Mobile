@@ -38,6 +38,11 @@
     <string name="recover_dialog_message">Please enter your email to receive instructions on how to change your password</string>
     <string name="recover_dialog_positive_button">Recover</string>
 
+    <!-- FILTER MENU -->
+    <string name="title_very_cheap">$</string>
+    <string name="title_cheap">$$</string>
+    <string name="title_expensive">$$$</string>
+    <string name="title_very_expensive">$$$$</string>
 
     <!-- SEARCH FRAGMENT -->
 

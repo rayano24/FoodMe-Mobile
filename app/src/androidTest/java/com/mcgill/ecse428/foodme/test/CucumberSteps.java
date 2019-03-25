@@ -147,7 +147,7 @@ public class CucumberSteps extends ActivityInstrumentationTestCase2<MainActivity
     public void i_should_not_be_able_to_create_an_account() {
 
         solo.waitForActivity("LoginActivity", timeout);
-        assertFalse(CreateAccountStepDefs.invalidThen(solo));
+        assertTrue(CreateAccountStepDefs.invalidThen(solo));
     }
 
     //TODO Change when feature is implemented
@@ -263,7 +263,7 @@ public class CucumberSteps extends ActivityInstrumentationTestCase2<MainActivity
     //TODO Change when feature is implemented
     // ================================== Filter Price feature: Scenario 1 =======================================================
     @When("I select my price {string} preferences")
-    public void i_select_my_price_pref(String price) {
+    public void i_select_my_price_pref(String price) throws  Exception{
         solo.waitForActivity("MainActivity", timeout);
         FilterPriceStepDefs.when(solo, price);
     }

@@ -5,7 +5,7 @@ import com.robotium.solo.Solo;
 
 public class CreateAccountStepDefs {
 
-    private static int timeout = 2000;
+    private static int timeout = 200;
 
     //I am on the register form
     public static void givenRegisterForm(Solo solo) {
@@ -24,8 +24,6 @@ public class CreateAccountStepDefs {
         CucumberActionSteps.register(solo, firstname, lastname, username, email, password);
     }
 
-
-    //TODO might need to change
     //I should have an account
     public static boolean validThen(Solo solo) {
 //        return solo.waitForText("Account successfully created", 1, timeout);
@@ -34,6 +32,12 @@ public class CreateAccountStepDefs {
 
     //I should not be able to create an account
     public static boolean invalidThen(Solo solo) {
-        return !solo.waitForText("Account could not be created", 1, timeout);
+
+        boolean b3 = solo.waitForText("password must be longer than 6", 1, timeout, false, true);
+        boolean b4 = solo.waitForText("valid email address", 1, timeout, false, true);
+        boolean b1 = solo.waitForText("User already exists", 1, timeout, false, true);
+        boolean b2 = solo.waitForText("This field is required", 1, timeout, false, true);
+
+        return (b1 || b2 || b3 || b4);
     }
 }

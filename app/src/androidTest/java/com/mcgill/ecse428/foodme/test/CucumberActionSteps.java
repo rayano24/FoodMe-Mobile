@@ -30,9 +30,15 @@ public class CucumberActionSteps {
     public static boolean loggedIn(Solo solo) {
 
         //TODO FIND A BETTER WAY TO CHECK IF USER IS LOGGED IN
-        return solo.waitForText("Find", 1, timeout);
+        try {
+            Thread.sleep(timeout);
+        } catch (Exception e) {
+
+        }
+
+        return !solo.searchButton("Sign in", 1, true);
 //        return solo.searchText("Find");
-//        return !solo.searchButton("Sign in");
+//        return solo.waitForView(solo.getView("navigation_find"), timeout, false);
 //        return solo.waitForActivity("MainActivity") || solo.waitForText("Successful login");
     }
 
@@ -57,7 +63,7 @@ public class CucumberActionSteps {
         logIn(solo, adminUsername, adminPassword);
     }
 
-    public static void accessAppWithoutLogginIn(Solo solo){
+    public static void accessAppWithoutLogginIn(Solo solo) {
 
         if (loggedIn(solo))
             signOut(solo);
@@ -96,19 +102,40 @@ public class CucumberActionSteps {
 
     // ================================== Filtering ===========================================
 
-    public static void getToRestaurantsPage(Solo solo){
-        //TODO
+    public static void getToRestaurantsPage(Solo solo) {
+
+        solo.clickOnMenuItem("Find");
     }
 
-    public static void filterByCuisine(Solo solo, String cuisine){
+    public static void filterByCuisine(Solo solo, String cuisine) {
         //TODO Change when feature is implemented
     }
 
-    public static void filterByPrice(Solo solo, String price){
-        //TODO Change when feature is implemented
+    public static void filterByPrice(Solo solo, String price) throws Exception {
+
+        //Click on filter btn -> select price
+        solo.clickOnView(solo.getView("show_pref_filter_menu"));
+//        switch (price) {
+//            case "$":
+//
+//                solo.clickOnView(solo.getView("verycheap"));
+//                break;
+//            case "$$":
+//                solo.clickOnView(solo.getView("cheap"));
+//                break;
+//            case "$$$":
+//                solo.clickOnView(solo.getView("expensive"));
+//                break;
+//            case "$$$$":
+//                solo.clickOnView(solo.getView("veryexpensive"));
+//                break;
+//        }
+        Thread.sleep(2000);
+        solo.clickOnMenuItem("$$", true);
+//        solo.clickOnMenuItem("Submit");
     }
 
-    public static void filterByOpenRestaurants(Solo solo, boolean filter){
+    public static void filterByOpenRestaurants(Solo solo, boolean filter) {
         //TODO Change when feature is implemented
     }
 
@@ -117,11 +144,11 @@ public class CucumberActionSteps {
     }
 
     // ================================== Rating =============================================
-    public static void clickRestaurant(Solo solo){
+    public static void clickRestaurant(Solo solo) {
         solo.clickInRecyclerView(1);
     }
 
-    public static void clickDislike(Solo solo){
+    public static void clickDislike(Solo solo) {
 
         //If restaurant is not disliked -> dislike it, otherwise -> undislike it -> dislike it
         if (solo.getView("DislikeBtn").getVisibility() == View.VISIBLE)
@@ -129,24 +156,26 @@ public class CucumberActionSteps {
 
     }
 
-    public static boolean checkDisliked(Solo solo){
+    public static boolean checkDisliked(Solo solo) {
+
+        //Click on undislike so that restaurant does not stay permanently disliked
         boolean ret = solo.waitForView(solo.getView("UnDislikeButton"));
-//        boolean ret = solo.getView("UnDislikeButton").getVisibility() == View.VISIBLE;
         solo.clickOnView(solo.getView("UnDislikeButton"));
 
         return ret;
     }
 
-    public static void clickLike(Solo solo){
+    public static void clickLike(Solo solo) {
 
         //If restaurant is not liked -> like it, otherwise -> unlike it -> like it
         if (solo.getView("LikeBtn").getVisibility() == View.VISIBLE)
             solo.clickOnView(solo.getView("LikeBtn"));
     }
 
-    public static boolean checkLiked(Solo solo){
+    public static boolean checkLiked(Solo solo) {
+
+        //Click on unlike so that restaurant does not stay permanently disliked
         boolean ret = solo.waitForView(solo.getView("UnlikeBtn"));
-//        boolean ret = solo.getView("UnlikeBtn").getVisibility() == View.VISIBLE;
         solo.clickOnView(solo.getView("UnlikeBtn"));
 
         return ret;
@@ -164,23 +193,25 @@ public class CucumberActionSteps {
         return false;
     }
 
-    public static void selectChangePassword(Solo solo){
+    public static void selectChangePassword(Solo solo) {
         if (getToSettings(solo))
-        solo.clickOnView(solo.getView("noAccountButton"));
+            solo.clickOnView(solo.getView("changePassword"));
 
     }
 
-    public static void changePassword(Solo solo, String oldPw, String newPw){
+    public static void changePassword(Solo solo, String oldPw, String newPw) {
 
         //Fill prompt with username to test
-        EditText oldPassword = (EditText) solo.getView("etOldPassword");
+        EditText oldPassword = (EditText) solo.getView("oldPassword");
         solo.typeText(oldPassword, oldPw);
 
         //Fill prompt with email to test
-        EditText newPassword = (EditText) solo.getView("etPassword");
+        EditText newPassword = (EditText) solo.getView("newPassword");
         solo.typeText(newPassword, newPw);
 
-        solo.clickOnView(solo.getView("save_changes"));
+        solo.clickOnView(solo.getView("changePasswordButton"));
+
+        solo.clickOnText("Yes, update");
     }
 
     public static void signOut(Solo solo) {

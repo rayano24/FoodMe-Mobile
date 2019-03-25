@@ -15,7 +15,6 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,11 +36,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.mcgill.ecse428.foodme.R;
-import com.mcgill.ecse428.foodme.adapters.PreferenceAdapter;
 import com.mcgill.ecse428.foodme.adapters.RestaurantAdapter;
-import com.mcgill.ecse428.foodme.adapters.RestaurantHistoryAdapter;
 import com.mcgill.ecse428.foodme.model.Restaurant;
-import com.mcgill.ecse428.foodme.model.RestaurantHistory;
 import com.mcgill.ecse428.foodme.utils.HttpUtils;
 
 import org.json.JSONArray;
@@ -52,13 +48,11 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -285,7 +279,6 @@ public class FindFragment extends Fragment {
                                 prefs.edit().putString(KEY_USER_LOCATION_LATITUDE, Double.toString(lat)).apply();
                                 prefs.edit().putString(KEY_USER_LOCATION_LONGITUDE, Double.toString(lng)).apply();
                                 prefs.edit().remove(KEY_USER_LOCATION).apply();
-                                displayRestaurants(Double.toString(lat), Double.toString(lng));
                             }
                         }
                     });
@@ -477,6 +470,12 @@ public class FindFragment extends Fragment {
                 else {
                     noRestaurants.setVisibility(View.GONE);
 
+                }
+
+                if(preferenceSpinner.getSelectedItemId() > 0){
+                    String preference = preferenceSpinner.getSelectedItem().toString();
+                    String[] values = preference.split(",");
+                    searchWithPreference(values);
                 }
 
                 restaurantAdapter.notifyDataSetChanged();

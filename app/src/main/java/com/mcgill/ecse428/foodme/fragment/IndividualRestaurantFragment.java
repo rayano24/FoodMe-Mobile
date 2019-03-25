@@ -3,6 +3,7 @@ package com.mcgill.ecse428.foodme.fragment;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -97,7 +98,6 @@ public class IndividualRestaurantFragment extends Fragment {
 
         updateLikeButtonVisibility();
         updateRestaurantClosingVisibility();
-
 
 
         //set listeners for all the buttons
@@ -280,6 +280,7 @@ public class IndividualRestaurantFragment extends Fragment {
 
         }
     }
+
     public void updateRestaurantClosingVisibility() {
 
         rclosing.setVisibility(View.GONE);
@@ -287,8 +288,7 @@ public class IndividualRestaurantFragment extends Fragment {
         notifyRestaurantclosing(restaurantID);
 
 
-
-        }
+    }
 
 
     /**
@@ -410,7 +410,6 @@ public class IndividualRestaurantFragment extends Fragment {
      *
      * @param restoID
      * @return true if restaurant is closing soon
-     *
      */
 
     public boolean notifyRestaurantclosing(String restoID) {
@@ -423,7 +422,7 @@ public class IndividualRestaurantFragment extends Fragment {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-               boolean emptySet = false;
+                boolean emptySet = false;
                 //check if the query returned empty
                 try {
                     emptySet = response.getBoolean(0);
@@ -445,15 +444,27 @@ public class IndividualRestaurantFragment extends Fragment {
                             }
 
                         }
-                        ;
 
 
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+            }
 
-            catch (Exception e) {
-                   e.printStackTrace();
-                }
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject
+                    errorResponse) {
+
+
+            }
+        });
+        return rclosingcheck;
+
+    }
+
+
+    /*
      * Once a user selects the map, the restaurant will be added to their history
      * @param username the user ID
      */
@@ -470,17 +481,12 @@ public class IndividualRestaurantFragment extends Fragment {
                 //check if the query returned empty
 
 
-
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject
                     errorResponse) {
 
-
-            }
-        });
-        return rclosingcheck;
 
             }
         });

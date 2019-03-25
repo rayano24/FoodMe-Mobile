@@ -27,7 +27,69 @@
         android:text="@string/action_create_account" />
 
     <View
+        android:id="@+id/divider5"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
+
+    <TextView
+        android:id="@+id/changePassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7.5dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:textSize="18sp"
+        android:text="Change Password" />
+
+    <EditText
+        android:id="@+id/oldPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7.5dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:textSize="18sp"
+        android:hint="Enter you old password"
+        android:inputType="textPassword"
+        android:visibility="gone" />
+    <EditText
+        android:id="@+id/newPassword"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginTop="7.5dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:textSize="18sp"
+        android:inputType="textPassword"
+        android:hint="Enter your new password"
+        android:visibility="gone" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/changePasswordButton"
+        android:text="Submit"
+        android:visibility="gone" />
+
+
+
+    <View
         android:id="@+id/divider3"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
+
+
+    <TextView
+        android:id="@+id/deleteAccountButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7.5dp"
+        android:text="@string/action_delete_account"
+        android:textSize="18sp" />
+
+    <View
+        android:id="@+id/divider12"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="?android:attr/listDivider" />
@@ -107,51 +169,7 @@
         android:layout_height="1dp"
         android:background="?android:attr/listDivider" />
 
-    <TextView
-        android:id="@+id/changePassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="7.5dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:textSize="18sp"
-        android:text="Change Password" />
 
-    <EditText
-        android:id="@+id/oldPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="7.5dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:textSize="18sp"
-        android:hint="Enter you old password"
-        android:inputType="textPassword"
-        android:visibility="gone" />
-    <EditText
-        android:id="@+id/newPassword"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:layout_marginTop="7.5dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:textSize="18sp"
-        android:inputType="textPassword"
-        android:hint="Enter your new password"
-        android:visibility="gone" />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/changePasswordButton"
-        android:text="Submit"
-        android:visibility="gone" />
-
-    
-    <View
-        android:id="@+id/divider5"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?android:attr/listDivider" />
 
     <TextView
         android:id="@+id/signOutButton"

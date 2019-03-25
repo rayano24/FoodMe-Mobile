@@ -89,11 +89,6 @@ public class SettingsFragment extends Fragment {
         selectedTheme = prefs.getInt(KEY_PREFERENCE_THEME, 0);
 
 
-        if (userID != null && !userID.equals("noAccount")) {
-            // TODO if a user is signed in, we can change the purpose of this to a "manage account" button
-        }
-
-
         TextView signOut = rootView.findViewById(R.id.signOutButton);
         TextView noAccountButton = rootView.findViewById(R.id.noAccountButton);
         TextView themeButton = rootView.findViewById(R.id.themeButton);
@@ -105,15 +100,20 @@ public class SettingsFragment extends Fragment {
         TextView accountHeader = rootView.findViewById(R.id.settingsAccountHeader);
         TextView preferenceHeader = rootView.findViewById(R.id.settingsPreferenceHeader);
 
+
         TextView changePasswordButton = rootView.findViewById(R.id.changePassword);
         EditText oldPassword = rootView.findViewById(R.id.oldPassword);
         EditText newPassword = rootView.findViewById(R.id.newPassword);
         Button submitChangePasswordButton = rootView.findViewById(R.id.changePasswordButton);
 
-        if(userID == null || userID.equals("noAccount")){
+        TextView deleteAccount = rootView.findViewById(R.id.deleteAccountButton);
+
+        if (userID == null || userID.equals("noAccount")) {
             editPreferences.setVisibility(View.GONE);
             preferenceHeader.setVisibility(View.GONE);
-
+            signOut.setVisibility(View.GONE);
+        } else {
+            noAccountButton.setText("Change your first or last name");
         }
 
         switch (selectedTheme) {
@@ -148,11 +148,12 @@ public class SettingsFragment extends Fragment {
                     prefs.edit().remove(KEY_USER_ID).apply();
                     Intent I = new Intent(mActivity, LoginActivity.class);
                     startActivity(I);
+                    mActivity.finish();
+
                 } else if (userID != null && !userID.equals("noAccount")) {
                     // prefs.edit().remove(KEY_USER_ID).apply();
                     Intent I = new Intent(mActivity, EditAccountActivity.class);
                     startActivity(I);
-                    mActivity.finish();
                 }
             }
         });
@@ -166,6 +167,14 @@ public class SettingsFragment extends Fragment {
                 Intent I = new Intent(mActivity, LoginActivity.class);
                 startActivity(I);
                 mActivity.finish();
+            }
+        });
+
+
+        deleteAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDeleteDialog();
             }
         });
 
@@ -221,7 +230,7 @@ public class SettingsFragment extends Fragment {
             try {
                 List<Address> name = gc.getFromLocation(Double.parseDouble(lat), Double.parseDouble(lng), 1);
                 locationButton.setText(name.get(0).getLocality());
-            } catch (IOException e) {
+            } catch (IOException | NullPointerException   e) {
                 e.printStackTrace();
 
             }
@@ -254,12 +263,11 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 //if we click this, and the tab is visible, hide it
-                if(oldPassword.getVisibility() == View.VISIBLE){
+                if (oldPassword.getVisibility() == View.VISIBLE) {
                     oldPassword.setVisibility(View.GONE);
                     newPassword.setVisibility(View.GONE);
                     submitChangePasswordButton.setVisibility(View.GONE);
-                }
-                else{   //otherwise show it
+                } else {   //otherwise show it
                     oldPassword.setVisibility(View.VISIBLE);
                     newPassword.setVisibility(View.VISIBLE);
                     submitChangePasswordButton.setVisibility(View.VISIBLE);
@@ -279,7 +287,7 @@ public class SettingsFragment extends Fragment {
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
                 String username = prefs.getString("userID", null);
 
-                String url = "users/changePassword/"+username+"/"+oldP+"/"+newP;
+                String url = "users/changePassword/" + username + "/" + oldP + "/" + newP;
 
                 AlertDialog.Builder confirm = new AlertDialog.Builder(getActivity());
                 confirm.setTitle("Confirm password change");
@@ -287,23 +295,24 @@ public class SettingsFragment extends Fragment {
                 confirm.setPositiveButton("Yes, update", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
 
-                        HttpUtils.post(url, new RequestParams(), new JsonHttpResponseHandler(){
+                        HttpUtils.post(url, new RequestParams(), new JsonHttpResponseHandler() {
                             @Override
-                            public void onFinish(){}
+                            public void onFinish() {
+                            }
 
                             @Override
                             public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, JSONObject response) {
-                                Log.d("CHANGED","PASSWORD");
-                                Toast.makeText(getContext(),"Password changed successfully", Toast.LENGTH_LONG).show();
+                                Log.d("CHANGED", "PASSWORD");
+                                Toast.makeText(getContext(), "Password changed successfully", Toast.LENGTH_LONG).show();
                             }
+
                             @Override
-                            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse){
-                                super.onFailure(statusCode,headers,throwable,errorResponse);
-                                try{
+                            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                                super.onFailure(statusCode, headers, throwable, errorResponse);
+                                try {
                                     Toast.makeText(getContext(), errorResponse.getString("message"), Toast.LENGTH_SHORT).show();
-                                }
-                                catch (Exception e){
-                                    Toast.makeText(getContext(),"Failed to change password", Toast.LENGTH_LONG).show();
+                                } catch (Exception e) {
+                                    Toast.makeText(getContext(), "Failed to change password", Toast.LENGTH_LONG).show();
                                 }
 
                             }
@@ -502,6 +511,68 @@ public class SettingsFragment extends Fragment {
             return filter;
         }
 
+    }
+
+    /**
+     * Opens a dialog to verify if a user wants to delete their account
+     */
+    private void openDeleteDialog() {
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        builder.setTitle("Delete account?");
+        builder.setMessage("Are you sure that you want to delete your account? It cannot be recovered once deleted.");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                deleteAccount();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+    }
+
+    /**
+     * Makes an HTTP request to delete the user account
+     */
+    private void deleteAccount() {
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mActivity);
+        String username = prefs.getString(KEY_USER_ID, "noAccount");
+
+        HttpUtils.get("users/delete/" + username, new RequestParams(), new JsonHttpResponseHandler() {
+
+            @Override
+            public void onFinish() {
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    if (response.getBoolean("response")) {
+                        prefs.edit().clear().apply();
+                        Intent I = new Intent(mActivity, LoginActivity.class);
+                        startActivity(I);
+                        mActivity.finish();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject
+                    errorResponse) {
+                Toast.makeText(getContext(), "Failed to delete account", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
 

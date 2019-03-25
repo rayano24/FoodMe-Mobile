@@ -3,6 +3,7 @@ package com.mcgill.ecse428.foodme.fragment;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -50,10 +52,14 @@ public class IndividualRestaurantFragment extends Fragment {
     private Button mapButton, likeButton, dislikeButton, unlikeButton, undislikeButton;
     private TableRow likeDislikeRow, unlikeRow, undislikeRow;
     private TableLayout likeBtnTable;
+    private TableLayout rclosingTable;
+    private TextView rclosing2;
+    private ImageView rclosing;
     private boolean alreadyLiked, alreadyDisliked;
+    private boolean rclosingcheck;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState){
+                             Bundle savedInstanceState) {
 
 
         View rootView = inflater.inflate(R.layout.fragment_individual_restaurant, container,
@@ -74,9 +80,13 @@ public class IndividualRestaurantFragment extends Fragment {
         unlikeRow = (TableRow) rootView.findViewById(R.id.UnlikeRow);
         undislikeRow = (TableRow) rootView.findViewById(R.id.UndislikeRow);
         likeBtnTable = (TableLayout) rootView.findViewById(R.id.LikeBtnTable);
-        mapButton = (Button)rootView.findViewById(R.id.MapBtn);
+        rclosingTable = (TableLayout) rootView.findViewById(R.id.rclosingTable);
+        rclosing = (ImageView) rootView.findViewById(R.id.rclosing);
+        rclosing2 = (TextView) rootView.findViewById(R.id.rclosing2);
+        mapButton = (Button) rootView.findViewById(R.id.MapBtn);
         alreadyLiked = false;
         alreadyDisliked = false;
+        rclosingcheck = false;
 
         //assign the values
         name.setText(restaurantName);
@@ -87,12 +97,15 @@ public class IndividualRestaurantFragment extends Fragment {
         distance.setText("Distance: " + restaurantDistance);
 
         updateLikeButtonVisibility();
+        updateRestaurantClosingVisibility();
+
 
         //set listeners for all the buttons
-        likeButton.setOnClickListener(new View.OnClickListener(){
+        likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 liking(username, 0);
+                dislikeButton.setEnabled(false);
                 //updateLikeButtonVisibility();
             }
         });
@@ -101,6 +114,7 @@ public class IndividualRestaurantFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 liking(username, 1);
+                likeButton.setEnabled(false);
                 //updateLikeButtonVisibility();
             }
         });
@@ -109,6 +123,7 @@ public class IndividualRestaurantFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 liking(username, 2);
+                dislikeButton.setEnabled(true);
                 //updateLikeButtonVisibility();
             }
         });
@@ -116,20 +131,23 @@ public class IndividualRestaurantFragment extends Fragment {
         undislikeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                liking(username,3);
+                liking(username, 3);
+                likeButton.setEnabled(true);
                 updateLikeButtonVisibility();
             }
         });
 
         //add listener for the map button that switches fragments
-        mapButton.setOnClickListener(new View.OnClickListener(){
+        mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 MapFragment mf = new MapFragment();
 
                 //this is how we will query for the location looks like:
                 // "123 St-Catherine, Montreal, QC X1X1X1"
                 String fullAddress = restaurantAddress1 + ", " + restaurantAddress2;
+
+                addToVisited(username, restaurantName, restaurantID);
 
                 //Pass the location to the map fragment and swap
                 Bundle args = new Bundle();
@@ -145,40 +163,42 @@ public class IndividualRestaurantFragment extends Fragment {
 
     /**
      * Method to like dislike remove like or remove dislike from a restaurant and update the ui
+     *
      * @param username username
-     * @param mode 0: add a like
-     *             1: add a dislike
-     *             2: remove a like
-     *             3: remove a dislike
+     * @param mode     0: add a like
+     *                 1: add a dislike
+     *                 2: remove a like
+     *                 3: remove a dislike
      */
-    public void liking(String username, int mode){
+    public void liking(String username, int mode) {
         //check input
-        if(mode < 0 || mode > 3) return;
+        if (mode < 0 || mode > 3) return;
 
         //generate the query
-        String[] MODES = {"/addliked/","/adddisliked/","/removeliked/","/removedisliked/"};
-        String url = "restaurants/"+username+MODES[mode]+restaurantID;
-        if(mode < 2) url = url + "/"+restaurantName;
+        String[] MODES = {"/addliked/", "/adddisliked/", "/removeliked/", "/removedisliked/"};
+        String url = "restaurants/" + username + MODES[mode] + restaurantID;
+        if (mode < 2) url = url + "/" + restaurantName;
 
         //get data from db. upon completion update ui
-        HttpUtils.post(url, new RequestParams(), new JsonHttpResponseHandler(){
+        HttpUtils.post(url, new RequestParams(), new JsonHttpResponseHandler() {
             @Override
-            public void onFinish(){
+            public void onFinish() {
                 updateLikeButtonVisibility();
             }
+
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 //Toast.makeText(getContext(),"RESTAURANT LIKED!",Toast.LENGTH_SHORT);
                 updateLikeButtonVisibility();
             }
+
             @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse){
-                super.onFailure(statusCode,headers,throwable,errorResponse);
-                try{
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                try {
                     updateLikeButtonVisibility();
-                    Toast.makeText(getContext(),errorResponse.getString("message"), Toast.LENGTH_LONG).show();
-                }
-                catch (JSONException e){
+                    Toast.makeText(getContext(), errorResponse.getString("message"), Toast.LENGTH_LONG).show();
+                } catch (JSONException e) {
                     updateLikeButtonVisibility();
                     Toast.makeText(getContext(), "There was a network error", Toast.LENGTH_LONG).show();
                 }
@@ -189,6 +209,7 @@ public class IndividualRestaurantFragment extends Fragment {
 
     /**
      * Standard mathod to pass the information about the individual restaurant via Bundle
+     *
      * @param args
      */
     @Override
@@ -205,19 +226,20 @@ public class IndividualRestaurantFragment extends Fragment {
 
     /**
      * Helper method to switch to a mapFragment
-     * @param fragment This is the mapFragment we want to switch to
+     *
+     * @param fragment   This is the mapFragment we want to switch to
      * @param addToStack
      * @param tag
      */
-    public void switchToMapFragment(Fragment fragment, boolean addToStack, String tag){
-        FragmentManager fm = ((AppCompatActivity)getContext()).getSupportFragmentManager();
+    public void switchToMapFragment(Fragment fragment, boolean addToStack, String tag) {
+        FragmentManager fm = ((AppCompatActivity) getContext()).getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
 
-        if(addToStack) ft.addToBackStack(tag);
+        if (addToStack) ft.addToBackStack(tag);
 
         Fragment f = fm.findFragmentByTag("IRF");
-        int vgID = ((ViewGroup)getView().getParent()).getId();
-        ft.replace(R.id.frame_fragmentholder,fragment).commit();
+        int vgID = ((ViewGroup) getView().getParent()).getId();
+        ft.replace(R.id.frame_fragmentholder, fragment).commit();
 
     }
 
@@ -226,11 +248,11 @@ public class IndividualRestaurantFragment extends Fragment {
      * likes nor dislike the restaurant. Should only be after check if the user likes/dislike a
      * restaurant.
      */
-    public void updateLikeButtonVisibility(){
+    public void updateLikeButtonVisibility() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         username = prefs.getString("userID", null);
         //user is not logged in
-        if(username.equals("noAccount")){
+        if (username.equals("noAccount")) {
             likeBtnTable.setVisibility(View.GONE);
             likeDislikeRow.setVisibility(View.GONE);
             unlikeRow.setVisibility(View.GONE);
@@ -240,8 +262,8 @@ public class IndividualRestaurantFragment extends Fragment {
             unlikeButton.setVisibility(View.GONE);
             likeButton.setVisibility(View.GONE);
             undislikeButton.setVisibility(View.GONE);
-        }
-        else {
+
+        } else {
             JsonHttpResponseHandler jhrh = new JsonHttpResponseHandler();
 
             likeBtnTable.setVisibility(View.VISIBLE);
@@ -254,20 +276,34 @@ public class IndividualRestaurantFragment extends Fragment {
             undislikeButton.setVisibility(View.GONE);
             alreadyLiked(username);
             alreadyDisLiked(username);
+
+
         }
     }
 
+    public void updateRestaurantClosingVisibility() {
+
+        rclosing.setVisibility(View.GONE);
+        rclosing2.setVisibility(View.GONE);
+        notifyRestaurantclosing(restaurantID);
+
+
+    }
+
+
     /**
      * Checks if the user already likes this restaurant and updates the ui
+     *
      * @param username
      * @return true if they already like the restaurant
      */
-    public boolean alreadyLiked(String username){
-        String url = "restaurants/"+username+"/all/liked";
-        HttpUtils.get(url , new RequestParams(), new JsonHttpResponseHandler() {
+    public boolean alreadyLiked(String username) {
+        String url = "restaurants/" + username + "/all/liked";
+        HttpUtils.get(url, new RequestParams(), new JsonHttpResponseHandler() {
 
             @Override
-            public void onFinish() {}
+            public void onFinish() {
+            }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
@@ -275,9 +311,10 @@ public class IndividualRestaurantFragment extends Fragment {
                 //check if the query returned empty
                 try {
                     emptySet = response.getBoolean(0);
-                }catch (Exception e){}
-                try{
-                    if(!emptySet) {
+                } catch (Exception e) {
+                }
+                try {
+                    if (!emptySet) {
                         //search the data for the id
                         for (int i = 0; i < response.length(); i++) {
                             JSONArray array = (JSONArray) response.get(i);
@@ -297,7 +334,7 @@ public class IndividualRestaurantFragment extends Fragment {
                             }
                         }
                     }
-                } catch (Exception e){//JSONException e) {
+                } catch (Exception e) {//JSONException e) {
                     e.printStackTrace();
 
                 }
@@ -313,12 +350,13 @@ public class IndividualRestaurantFragment extends Fragment {
 
     /**
      * Method to check whether a user already dislikes this restaurant and updates ui
+     *
      * @param username
      * @return true if the user already dislikes this restaurant
      */
-    public boolean alreadyDisLiked(String username){
-        String url = "restaurants/"+username+"/all/disliked";
-        HttpUtils.get(url , new RequestParams(), new JsonHttpResponseHandler() {
+    public boolean alreadyDisLiked(String username) {
+        String url = "restaurants/" + username + "/all/disliked";
+        HttpUtils.get(url, new RequestParams(), new JsonHttpResponseHandler() {
 
             @Override
             public void onFinish() {
@@ -327,10 +365,12 @@ public class IndividualRestaurantFragment extends Fragment {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 boolean emptySet = false;
-                try{ emptySet = response.getBoolean(0); }
-                catch (Exception e){}
                 try {
-                    if(!emptySet) {
+                    emptySet = response.getBoolean(0);
+                } catch (Exception e) {
+                }
+                try {
+                    if (!emptySet) {
                         //search for the id in the data
                         for (int i = 0; i < response.length(); i++) {
                             JSONArray array = (JSONArray) response.get(i);
@@ -363,5 +403,94 @@ public class IndividualRestaurantFragment extends Fragment {
             }
         });
         return alreadyDisliked;
+    }
+
+    /**
+     * Method to check whether a user already dislikes this restaurant and updates ui
+     *
+     * @param restoID
+     * @return true if restaurant is closing soon
+     */
+
+    public boolean notifyRestaurantclosing(String restoID) {
+        String url = "search/get/closing/?id=" + restoID;
+        HttpUtils.get(url, new RequestParams(), new JsonHttpResponseHandler() {
+            @Override
+            public void onFinish() {
+
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                boolean emptySet = false;
+                //check if the query returned empty
+                try {
+                    emptySet = response.getBoolean(0);
+                } catch (Exception e) {
+                }
+                try {
+                    if (!emptySet) {
+                        // search the data for the id*/
+                        for (int i = 0; i < response.length(); i++) {
+                            JSONArray array = (JSONArray) response.get(i);
+
+                            // if we find the value, update the ui and return
+                            if (array.toString().equals(" true")) {
+                                rclosingcheck = true;
+                                rclosing.setVisibility(View.VISIBLE);
+                                rclosing2.setVisibility(View.VISIBLE);
+
+                                return;
+                            }
+
+                        }
+
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject
+                    errorResponse) {
+
+
+            }
+        });
+        return rclosingcheck;
+
+    }
+
+
+    /*
+     * Once a user selects the map, the restaurant will be added to their history
+     * @param username the user ID
+     */
+    private void addToVisited(String username, String restaurantName, String restaurantID) {
+
+        HttpUtils.post("restaurants/" + username + "/addvisited/" + restaurantID + "/" + restaurantName, new RequestParams(), new JsonHttpResponseHandler() {
+
+            @Override
+            public void onFinish() {
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                //check if the query returned empty
+
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject
+                    errorResponse) {
+
+
+            }
+        });
+
+
     }
 }

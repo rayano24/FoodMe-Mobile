@@ -140,6 +140,43 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Show Map" />
+    
+    <TableLayout
+        android:id="@+id/rclosingTable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible">
+
+        <TableRow>
+            android:id="@+id/rclosingRow"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/rclosing"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:contentDescription="closing"
+                app:srcCompat="@android:drawable/ic_lock_idle_alarm" />
+
+            <TextView
+                android:id="@+id/rclosing2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:lineSpacingExtra="10sp"
+                android:text="Closing soon!"
+                android:textAlignment="center"
+                android:textAppearance="@style/Base.TextAppearance.MaterialComponents.Button"
+                android:textColor="@color/design_default_color_secondary_variant"
+                android:textSize="14sp"
+                android:typeface="normal"/>
+        </TableRow>
+
+
+    </TableLayout>
+
 
 
 </LinearLayout>

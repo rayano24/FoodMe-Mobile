@@ -35,19 +35,48 @@ import java.math.RoundingMode;
 public class PastRestaurantActivity extends AppCompatActivity {
 
 
-    private static TextView restaurantName, restaurantRating, restaurantAddress, restaurantCuisine, restaurantRatingMessage;
+    private static TextView restaurantName, restaurantRating, restaurantAddress, restaurantCuisine, restaurantRatingMessage, restaurantPrice;
     private static Button rateButton;
     private final static String KEY_USER_ID = "userID";
     private static String restoID, restoName;
 
     private static Boolean alreadyLiked, alreadyDisliked;
+    private final static String KEY_PREFERENCE_THEME = "themePref";
+    private static int themeSelected = 0;
 
+
+    private SharedPreferences.OnSharedPreferenceChangeListener listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+        public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+            // listener implementation
+
+            if (key.equals(KEY_PREFERENCE_THEME)) {
+                themeSelected = prefs.getInt(KEY_PREFERENCE_THEME, 0);
+                recreate(); //restarts activity to apply change
+
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs.registerOnSharedPreferenceChangeListener(listener);
+        themeSelected = prefs.getInt(KEY_PREFERENCE_THEME, 0);
+
+
+        switch (themeSelected) {
+            case (0):
+                setTheme(R.style.AppTheme);
+                break;
+            case (1):
+                setTheme(R.style.AppTheme_Alternate);
+                break;
+            case (2):
+                setTheme(R.style.AppTheme_Dark);
+                break;
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_past_restaurant);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(PastRestaurantActivity.this);
 
         String username = prefs.getString(KEY_USER_ID, "noAccount");
 
@@ -57,6 +86,7 @@ public class PastRestaurantActivity extends AppCompatActivity {
         restaurantCuisine = findViewById(R.id.individualHistoryCuisine);
         restaurantRating = findViewById(R.id.individualHistoryRating);
         restaurantRatingMessage = findViewById(R.id.restaurantRatingMessage);
+        restaurantPrice = findViewById(R.id.individualHistoryPrice);
 
         rateButton = findViewById(R.id.historyRateButton);
 
@@ -107,7 +137,31 @@ public class PastRestaurantActivity extends AppCompatActivity {
                     String name = response.getString("name");
                     JSONObject locationObject = response.getJSONObject("location");
                     String address = locationObject.getString("address1") + " " + locationObject.getString("city");
-                    String cuisine = response.getString("price");
+
+
+                    String cuisine;
+
+                    JSONArray categories = response.getJSONArray("categories");
+                    JSONObject cuisineList = categories.getJSONObject(0);
+                    if(cuisineList.has("title")) {
+                        cuisine = cuisineList.getString("title");
+
+                    }
+                    else {
+                        cuisine = "n/a";
+                    }
+
+                    String price;
+
+                    if(response.has("price")) {
+                        price = response.getString("price");
+
+                    }
+                    else {
+                        price = "n/a";
+                    }
+
+
                     int rating = response.getInt("rating");
 
 
@@ -115,11 +169,13 @@ public class PastRestaurantActivity extends AppCompatActivity {
                     restaurantAddress.setText(address);
                     restaurantCuisine.setText(cuisine);
                     restaurantRating.setText(Integer.toString(rating) + "/5");
+                    restaurantPrice.setText(price);
 
                     restaurantName.setVisibility(View.VISIBLE);
                     restaurantAddress.setVisibility(View.VISIBLE);
                     restaurantCuisine.setVisibility(View.VISIBLE);
                     restaurantRating.setVisibility(View.VISIBLE);
+                    restaurantPrice.setVisibility(View.VISIBLE);
 
 
                 } catch (JSONException e) {

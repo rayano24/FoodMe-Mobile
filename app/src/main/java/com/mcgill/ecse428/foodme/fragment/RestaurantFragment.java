@@ -28,6 +28,7 @@ import com.mcgill.ecse428.foodme.model.RestaurantHistory;
 import com.mcgill.ecse428.foodme.utils.HttpUtils;
 import com.mcgill.ecse428.foodme.utils.RecyclerTouchListener;
 
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -90,6 +91,7 @@ public class RestaurantFragment extends Fragment {
         } else {
             displayPastRestaurants(username);
             historyNotice.setText(R.string.history_no_history);
+            historyNotice.setVisibility(View.VISIBLE);
         }
 
         historyRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(mActivity.getApplicationContext(), historyRecyclerView, new RecyclerTouchListener.ClickListener() {

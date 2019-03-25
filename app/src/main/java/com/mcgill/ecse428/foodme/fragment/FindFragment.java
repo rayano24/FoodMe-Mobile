@@ -15,7 +15,6 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,11 +36,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.mcgill.ecse428.foodme.R;
-import com.mcgill.ecse428.foodme.adapters.PreferenceAdapter;
 import com.mcgill.ecse428.foodme.adapters.RestaurantAdapter;
-import com.mcgill.ecse428.foodme.adapters.RestaurantHistoryAdapter;
 import com.mcgill.ecse428.foodme.model.Restaurant;
-import com.mcgill.ecse428.foodme.model.RestaurantHistory;
 import com.mcgill.ecse428.foodme.utils.HttpUtils;
 
 import org.json.JSONArray;
@@ -52,14 +48,14 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -74,7 +70,7 @@ public class FindFragment extends Fragment {
     private static final int PERMISSIONS_REQUEST_FINE_LOCATION = 811;
 
     //parameters for filtering
-    private boolean[] pricePoints = {false,false,false,false};
+    private boolean[] pricePoints = {false, false, false, false};
     private int distanceRange = 2;
     private boolean filterApplied = false;
 
@@ -83,7 +79,7 @@ public class FindFragment extends Fragment {
     private RecyclerView restaurantRecyclerView;
     private RestaurantAdapter restaurantAdapter;
     private TextView noLocation, noRestaurants, searchLocationButton;
-    private Button openFilterMenu;
+    private Button openFilterMenu, randomRestaurant;
 
     private Activity mActivity;
 
@@ -95,6 +91,7 @@ public class FindFragment extends Fragment {
     private final static String KEY_USER_ID = "userID";
     private Spinner preferenceSpinner;
     private ArrayAdapter<String> dataAdapter;
+
 
 
     @Override
@@ -132,9 +129,17 @@ public class FindFragment extends Fragment {
         preferenceSpinner.setSelection(spinnerPosition);
         preferenceSpinner.setVisibility(View.GONE);
 
-        getPreferences();
 
+        randomRestaurant = rootView.findViewById(R.id.randomRestoButton);
+        randomRestaurant.setVisibility(View.GONE);
+        searchLocationButton.setVisibility(View.GONE);
+        openFilterMenu.setVisibility(View.GONE);
+
+
+
+        getPreferences();
         updateDislikeList();
+
 
         preferenceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
@@ -142,13 +147,15 @@ public class FindFragment extends Fragment {
             public void onItemSelected(AdapterView<?> arg0, View arg1,
                                        int arg2, long arg3) {
 
-                String preference = preferenceSpinner.getSelectedItem().toString();
-                if (preference.equals("No search preference")) {
-                    displayRestaurants(storedLat, storedLng);
-                    return;
+                if (storedLat != null && storedLng != null) {
+                    String preference = preferenceSpinner.getSelectedItem().toString();
+                    if (preference.equals("No search preference")) {
+                        displayRestaurants(storedLat, storedLng);
+                        return;
+                    }
+                    String[] values = preference.split(",");
+                    searchWithPreference(values);
                 }
-                String[] values = preference.split(",");
-                searchWithPreference(values);
             }
 
             @Override
@@ -165,7 +172,7 @@ public class FindFragment extends Fragment {
                 Activity activity = getActivity();
 
                 //reset previous searches
-                for(int i = 0; i<4; i++) pricePoints[i] = false;
+                for (int i = 0; i < 4; i++) pricePoints[i] = false;
                 distanceRange = 2;
                 filterApplied = false;
 
@@ -176,7 +183,7 @@ public class FindFragment extends Fragment {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         //update data when items are clicked
-                        switch (item.getItemId()){
+                        switch (item.getItemId()) {
                             case R.id.verycheap:
                                 filterApplied = true;
                                 item.setChecked(!item.isChecked());
@@ -212,9 +219,20 @@ public class FindFragment extends Fragment {
                                 item.setChecked(!item.isChecked());
                                 distanceRange = 2;
                                 break;
-                            case R.id.submit:   //this commits the changes
+                            case R.id.submit://this commits the changes
                                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-                                displayRestaurants(prefs.getString(KEY_USER_LOCATION_LATITUDE,null),prefs.getString(KEY_USER_LOCATION_LONGITUDE, null));
+
+                                String storedLat = prefs.getString(KEY_USER_LOCATION_LATITUDE, null);
+                                String storedLng = prefs.getString(KEY_USER_LOCATION_LONGITUDE, null);
+                                String selectedPref = preferenceSpinner.getSelectedItem().toString();
+                                if(storedLat != null && storedLng != null) {
+                                    if (selectedPref.equals("No search preference")) {
+                                        displayRestaurants(storedLat, storedLng);
+                                    } else {
+                                        String[] values = selectedPref.split(",");
+                                        searchWithPreference(values);
+                                    }
+                                }
                                 return false;
                             default:
                                 return false;
@@ -240,7 +258,6 @@ public class FindFragment extends Fragment {
                 filterMenu.show();
             }
         });
-
 
 
         // note for anyone looking at this, I elected to put the location stuff here rather than the main activity so we can avoid using GSON and so we can modify the view here
@@ -271,11 +288,13 @@ public class FindFragment extends Fragment {
                                 prefs.edit().putString(KEY_USER_LOCATION_LATITUDE, Double.toString(lat)).apply();
                                 prefs.edit().putString(KEY_USER_LOCATION_LONGITUDE, Double.toString(lng)).apply();
                                 prefs.edit().remove(KEY_USER_LOCATION).apply();
-                                displayRestaurants(Double.toString(lat), Double.toString(lng));
                             }
                         }
                     });
             preferenceSpinner.setVisibility(View.VISIBLE);
+            randomRestaurant.setVisibility(View.VISIBLE);
+            searchLocationButton.setVisibility(View.VISIBLE);
+            openFilterMenu.setVisibility(View.VISIBLE);
 
             searchLocationButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -286,10 +305,23 @@ public class FindFragment extends Fragment {
 
         }
 
+
+        randomRestaurant.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openRandomRestaurant(storedLat, storedLng);
+            }
+        });
+
+
         if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && storedLocation != null && storedLat != null && storedLng != null) {
 
             displayRestaurants(storedLat, storedLng);
             noLocation.setVisibility(View.GONE);
+            randomRestaurant.setVisibility(View.VISIBLE);
+            preferenceSpinner.setVisibility(View.VISIBLE);
+            searchLocationButton.setVisibility(View.VISIBLE);
+            openFilterMenu.setVisibility(View.VISIBLE);
 
 
         }
@@ -350,6 +382,7 @@ public class FindFragment extends Fragment {
             }
 
         }
+
     }
 
 
@@ -413,7 +446,7 @@ public class FindFragment extends Fragment {
 
                         //filter disliked restos
                         String id = obj.getString("id");
-                        if(dislikedList.contains(id)) continue;
+                        if (dislikedList.contains(id)) continue;
 
                         String name = obj.getString("name");
                         String price = "n/a";
@@ -428,7 +461,6 @@ public class FindFragment extends Fragment {
                         String[] displayLocation = {locArr.getString(0), locArr.getString(1)};
 
 
-
                         JSONArray categories = obj.getJSONArray("categories");
                         JSONObject cuisineList = categories.getJSONObject(0);
                         String cuisine = cuisineList.getString("title");
@@ -439,11 +471,10 @@ public class FindFragment extends Fragment {
 
                         //apply filtering
                         Restaurant toAdd = new Restaurant(name, cuisine, price, bd.toString() + " metres", displayLocation, id);
-                        if(!filterRestaurant(toAdd) || !filterApplied) restaurantList.add(toAdd);
+                        if (!filterRestaurant(toAdd) || !filterApplied) restaurantList.add(toAdd);
 
 
                     }
-
 
 
                 } catch (JSONException e) {
@@ -458,6 +489,12 @@ public class FindFragment extends Fragment {
 
                 }
 
+                if(preferenceSpinner.getSelectedItemId() > 0){
+                    String preference = preferenceSpinner.getSelectedItem().toString();
+                    String[] values = preference.split(",");
+                    searchWithPreference(values);
+                }
+
                 restaurantAdapter.notifyDataSetChanged();
 
             }
@@ -467,17 +504,17 @@ public class FindFragment extends Fragment {
              * @param r The restaurant we want to decide about
              * @return true if the restaurant should be filtered
              */
-            public boolean filterRestaurant(Restaurant r){
+            public boolean filterRestaurant(Restaurant r) {
                 //check if the price matches the filter
-                if(r.getPrice().equals("$") && pricePoints[0]==false) return true;
-                if(r.getPrice().equals("$$") && pricePoints[1] == false) return true;
-                if(r.getPrice().equals("$$$") && pricePoints[2] == false) return true;
-                if(r.getPrice().equals("$$$$") && pricePoints[3] == false) return true;
+                if (r.getPrice().equals("$") && pricePoints[0] == false) return true;
+                if (r.getPrice().equals("$$") && pricePoints[1] == false) return true;
+                if (r.getPrice().equals("$$$") && pricePoints[2] == false) return true;
+                if (r.getPrice().equals("$$$$") && pricePoints[3] == false) return true;
 
                 //check if the distance is out of range
-                double distance = Double.parseDouble(r.getDistance().replace(" metres",""));
-                if(distance > 500.0 && distanceRange == 0) return true;
-                if(distance > 1000.0 && distanceRange == 1) return true;
+                double distance = Double.parseDouble(r.getDistance().replace(" metres", ""));
+                if (distance > 500.0 && distanceRange == 0) return true;
+                if (distance > 1000.0 && distanceRange == 1) return true;
                 return false;
             }
 
@@ -508,7 +545,7 @@ public class FindFragment extends Fragment {
         List<Address> location = null;
         try {
             location = geo.getFromLocation(Double.valueOf(storedLat), Double.valueOf(storedLong), 1);
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             e.printStackTrace();
         }
         HttpUtils.get("search/filter/?location=" + "montreal" + "&radius=" + radius + "&price=" + price + "&cuisine=" + cuisine + "&sortby=" + sortBy, new RequestParams(), new JsonHttpResponseHandler() {
@@ -660,6 +697,17 @@ public class FindFragment extends Fragment {
 
 
                     }
+                    String storedLat = prefs.getString(KEY_USER_LOCATION_LATITUDE, null);
+                    String storedLng = prefs.getString(KEY_USER_LOCATION_LONGITUDE, null);
+                    String selectedPref = preferenceSpinner.getSelectedItem().toString();
+                    if(storedLat != null && storedLng != null) {
+                        if (selectedPref.equals("No search preference")) {
+                            displayRestaurants(storedLat, storedLng);
+                        } else {
+                            String[] values = selectedPref.split(",");
+                            searchWithPreference(values);
+                        }
+                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -697,10 +745,9 @@ public class FindFragment extends Fragment {
         alert.setPositiveButton("Update", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
 
-                if(input.getAdapter()==null){
+                if (input.getAdapter() == null) {
 
-                }
-                else {
+                } else {
                     int count = input.getAdapter().getCount();
 
                     // the user is forced to select a result from the geocode api to ensure precision
@@ -723,7 +770,7 @@ public class FindFragment extends Fragment {
                                         break;
 
                                     }
-                                } catch (IOException e) {
+                                } catch (IOException | NullPointerException e) {
                                     Toast.makeText(mActivity, "There was an error setting your location, please try again", Toast.LENGTH_LONG).show();
                                     e.printStackTrace();
 
@@ -798,7 +845,7 @@ public class FindFragment extends Fragment {
 
         @Override
         public int getCount() {
-            if(resultList==null) return 0;
+            if (resultList == null) return 0;
             return resultList.size();
         }
 
@@ -837,6 +884,7 @@ public class FindFragment extends Fragment {
         }
 
     }
+
     /**
      * Performs the geocoder function to retrieve the adequate location name based on user input
      *
@@ -855,16 +903,16 @@ public class FindFragment extends Fragment {
                 //  + "--" + (lat!=null? "," + lat:"") + "--" + (lng!=null? ", " + lng:"")
                 list.add(address);
             }
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             e.printStackTrace();
         }
         return list;
     }
 
-    private void updateDislikeList(){
+    private void updateDislikeList() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String url = "restaurants/"+prefs.getString("userID", null)+"/all/disliked";
-        HttpUtils.get(url , new RequestParams(), new JsonHttpResponseHandler() {
+        String url = "restaurants/" + prefs.getString("userID", null) + "/all/disliked";
+        HttpUtils.get(url, new RequestParams(), new JsonHttpResponseHandler() {
 
             @Override
             public void onFinish() {
@@ -873,14 +921,16 @@ public class FindFragment extends Fragment {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 boolean emptySet = false;
-                try{ emptySet = response.getBoolean(0); }
-                catch (Exception e){}
                 try {
-                    if(!emptySet) {
+                    emptySet = response.getBoolean(0);
+                } catch (Exception e) {
+                }
+                try {
+                    if (!emptySet) {
                         //make a new array
                         List<String> newList = new ArrayList<String>();
 
-                        for(int i = 0; i < response.length(); i++){
+                        for (int i = 0; i < response.length(); i++) {
                             JSONArray obj = (JSONArray) response.get(i);
                             newList.add(obj.getString(0));
                         }
@@ -900,4 +950,94 @@ public class FindFragment extends Fragment {
             }
         });
     }
+
+    private void openRandomRestaurant(String lat, String lng) {
+
+    HttpUtils.get("search/distance/" + 1 + "/?longitude=" + lng + "&latitude=" + lat, new RequestParams(), new JsonHttpResponseHandler() {
+
+        @Override
+        public void onFinish() {
+        }
+
+        @Override
+        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+
+            try {
+                restaurantList.clear();
+
+                JSONArray mainArray = response.getJSONArray("businesses");
+
+
+                JSONObject obj = mainArray.getJSONObject(0);
+
+                //filter disliked restos
+                String id = obj.getString("id");
+
+
+                String name = obj.getString("name");
+                String price = "n/a";
+                if (obj.has("price")) {
+                    price = obj.getString("price");
+                }
+                String distance = obj.getString("distance");
+
+                //get the restaurant's address
+                JSONObject locObj = obj.getJSONObject("location");
+                JSONArray locArr = locObj.getJSONArray("display_address");
+
+                String cuisine;
+
+                JSONArray categories = obj.getJSONArray("categories");
+                JSONObject cuisineList = categories.getJSONObject(0);
+                if(cuisineList.has("title")) {
+                     cuisine = cuisineList.getString("title");
+
+                }
+                else {
+                    cuisine = "n/a";
+                }
+
+                BigDecimal bd = new BigDecimal(distance);
+                bd = bd.setScale(1, RoundingMode.HALF_UP);
+
+
+                IndividualRestaurantFragment irf = new IndividualRestaurantFragment();
+
+                //prepare arguments
+                Bundle bundle = new Bundle();
+                bundle.putString("NAME", name);
+                bundle.putString("PRICE", price);
+                bundle.putString("CUISINE", cuisine);
+                bundle.putString("DISTANCE", bd.toString() + "metres");
+                bundle.putString("ADDRESS1", locArr.getString(0));
+                bundle.putString("ADDRESS2", locArr.getString(1));
+                bundle.putString("id", id);
+                irf.setArguments(bundle);
+
+                //swap fragments
+                FragmentManager fm = ((AppCompatActivity) mActivity).getSupportFragmentManager();
+                fm.beginTransaction().replace(R.id.frame_fragmentholder, irf, "IRF").commit();
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+
+        @Override
+        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+            super.onFailure(statusCode, headers, responseString, throwable);
+
+            Toast.makeText(mActivity, "There was a network error, try again later.", Toast.LENGTH_LONG).show(); // generic network error
+
+        }
+
+
+    });
+}
+
+
 }

@@ -42,9 +42,6 @@
             android:name=".activity.MainActivity"
             android:label="@string/title_activity_main"></activity>
         <activity
-            android:name=".activity.RestaurantActivity"
-            android:label="@string/title_activity_restaurant"></activity>
-        <activity
             android:name=".activity.EditAccountActivity"
             android:label="@string/title_activity_account"></activity>
         <activity

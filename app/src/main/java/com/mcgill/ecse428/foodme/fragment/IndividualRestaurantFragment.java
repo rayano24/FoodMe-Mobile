@@ -1,15 +1,8 @@
 package com.mcgill.ecse428.foodme.fragment;
 
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-
-import android.app.Activity;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,23 +14,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.mcgill.ecse428.foodme.R;
-import com.mcgill.ecse428.foodme.model.Restaurant;
 import com.mcgill.ecse428.foodme.utils.HttpUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTabHost;
 import androidx.fragment.app.FragmentTransaction;
-
 import cz.msebera.android.httpclient.Header;
 
 /**
@@ -66,24 +57,24 @@ public class IndividualRestaurantFragment extends Fragment {
                 false);
 
         //find the page items
-        TextView name = (TextView) rootView.findViewById(R.id.rName);
-        TextView cuisine = (TextView) rootView.findViewById(R.id.rCuisine);
-        TextView price = (TextView) rootView.findViewById(R.id.rPrice);
-        TextView distance = (TextView) rootView.findViewById(R.id.rDistance);
-        TextView address1 = (TextView) rootView.findViewById(R.id.rAddress1);
-        TextView address2 = (TextView) rootView.findViewById(R.id.rAddress2);
-        likeButton = (Button) rootView.findViewById(R.id.LikeBtn);
-        unlikeButton = (Button) rootView.findViewById(R.id.UnlikeBtn);
-        dislikeButton = (Button) rootView.findViewById(R.id.DislikeBtn);
-        undislikeButton = (Button) rootView.findViewById(R.id.UnDislikeButton);
-        likeDislikeRow = (TableRow) rootView.findViewById(R.id.LikeDislikeRow);
-        unlikeRow = (TableRow) rootView.findViewById(R.id.UnlikeRow);
-        undislikeRow = (TableRow) rootView.findViewById(R.id.UndislikeRow);
-        likeBtnTable = (TableLayout) rootView.findViewById(R.id.LikeBtnTable);
-        rclosingTable = (TableLayout) rootView.findViewById(R.id.rclosingTable);
-        rclosing = (ImageView) rootView.findViewById(R.id.rclosing);
-        rclosing2 = (TextView) rootView.findViewById(R.id.rclosing2);
-        mapButton = (Button) rootView.findViewById(R.id.MapBtn);
+        TextView name = rootView.findViewById(R.id.rName);
+        TextView cuisine = rootView.findViewById(R.id.rCuisine);
+        TextView price = rootView.findViewById(R.id.rPrice);
+        TextView distance = rootView.findViewById(R.id.rDistance);
+        TextView address1 = rootView.findViewById(R.id.rAddress1);
+        TextView address2 = rootView.findViewById(R.id.rAddress2);
+        likeButton = rootView.findViewById(R.id.LikeBtn);
+        unlikeButton = rootView.findViewById(R.id.UnlikeBtn);
+        dislikeButton = rootView.findViewById(R.id.DislikeBtn);
+        undislikeButton = rootView.findViewById(R.id.UnDislikeButton);
+        likeDislikeRow = rootView.findViewById(R.id.LikeDislikeRow);
+        unlikeRow = rootView.findViewById(R.id.UnlikeRow);
+        undislikeRow = rootView.findViewById(R.id.UndislikeRow);
+        likeBtnTable = rootView.findViewById(R.id.LikeBtnTable);
+        rclosingTable = rootView.findViewById(R.id.rclosingTable);
+        rclosing = rootView.findViewById(R.id.rclosing);
+        rclosing2 = rootView.findViewById(R.id.rclosing2);
+        mapButton = rootView.findViewById(R.id.MapBtn);
         alreadyLiked = false;
         alreadyDisliked = false;
         rclosingcheck = false;
@@ -478,7 +469,6 @@ public class IndividualRestaurantFragment extends Fragment {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                //check if the query returned empty
 
 
             }

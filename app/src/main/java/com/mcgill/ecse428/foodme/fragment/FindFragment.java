@@ -514,8 +514,7 @@ public class FindFragment extends Fragment {
                 //check if the distance is out of range
                 double distance = Double.parseDouble(r.getDistance().replace(" metres", ""));
                 if (distance > 500.0 && distanceRange == 0) return true;
-                if (distance > 1000.0 && distanceRange == 1) return true;
-                return false;
+                return distance > 1000.0 && distanceRange == 1;
             }
 
             @Override
@@ -568,6 +567,9 @@ public class FindFragment extends Fragment {
                     for (int i = 0; i < mainArray.length(); i++) {
 
                         JSONObject obj = mainArray.getJSONObject(i);
+
+                        String id = obj.getString("id");
+
                         String name = obj.getString("name");
                         String price = "n/a";
                         if (obj.has("price")) {
@@ -589,7 +591,8 @@ public class FindFragment extends Fragment {
                         bd = bd.setScale(1, RoundingMode.HALF_UP);
 
 
-                        restaurantList.add(new Restaurant(name, cuisine, price, bd.toString() + " metres", displayLocation));
+
+                        restaurantList.add(new Restaurant(name, cuisine, price, bd.toString() + " metres", displayLocation, id));
 
 
                     }
@@ -648,7 +651,7 @@ public class FindFragment extends Fragment {
                         JSONArray preference = (JSONArray) response.get(i);
                         System.out.println(preference);
 
-                        preferenceList.add(preference.get(2) + "," + preference.get(1) + "," + preference.get(3) + "," + (String) preference.get(4));
+                        preferenceList.add(preference.get(2) + "," + preference.get(1) + "," + preference.get(3) + "," + preference.get(4));
                         pIDs.add((Integer) preference.get(0));
 
                     }

@@ -2,9 +2,7 @@ package com.mcgill.ecse428.foodme.fragment;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -20,21 +18,14 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.mcgill.ecse428.foodme.R;
 import com.mcgill.ecse428.foodme.activity.PastRestaurantActivity;
-import com.mcgill.ecse428.foodme.activity.PreferenceActivity;
 import com.mcgill.ecse428.foodme.adapters.RestaurantHistoryAdapter;
-import com.mcgill.ecse428.foodme.model.Preference;
-import com.mcgill.ecse428.foodme.model.Restaurant;
 import com.mcgill.ecse428.foodme.model.RestaurantHistory;
 import com.mcgill.ecse428.foodme.utils.HttpUtils;
 import com.mcgill.ecse428.foodme.utils.RecyclerTouchListener;
 
-
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 

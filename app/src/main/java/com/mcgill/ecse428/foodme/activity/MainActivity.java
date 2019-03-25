@@ -1,34 +1,22 @@
 package com.mcgill.ecse428.foodme.activity;
 
 
-import android.Manifest;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.mcgill.ecse428.foodme.R;
-import com.mcgill.ecse428.foodme.fragment.SettingsFragment;
 import com.mcgill.ecse428.foodme.fragment.FindFragment;
 import com.mcgill.ecse428.foodme.fragment.RestaurantFragment;
+import com.mcgill.ecse428.foodme.fragment.SettingsFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 /**

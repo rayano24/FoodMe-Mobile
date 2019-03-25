@@ -285,6 +285,7 @@ public class IndividualRestaurantFragment extends Fragment {
         notifyRestaurantclosing(restaurantID);
 
 
+
         }
 
 
@@ -411,7 +412,7 @@ public class IndividualRestaurantFragment extends Fragment {
      */
 
     public boolean notifyRestaurantclosing(String restoID) {
-        String url = "/search/get/closing/" + restoID;
+        String url = "search/get/closing/?id=" + restoID;
         HttpUtils.get(url, new RequestParams(), new JsonHttpResponseHandler() {
             @Override
             public void onFinish() {
@@ -420,29 +421,36 @@ public class IndividualRestaurantFragment extends Fragment {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                boolean emptySet = false;
-                // check if the query returned empty
+               boolean emptySet = false;
+                //check if the query returned empty
                 try {
                     emptySet = response.getBoolean(0);
                 } catch (Exception e) {
                 }
                 try {
                     if (!emptySet) {
-                        // search the data for the id
+                        // search the data for the id*/
                         for (int i = 0; i < response.length(); i++) {
                             JSONArray array = (JSONArray) response.get(i);
 
                             // if we find the value, update the ui and return
-                            if (array.get(0).toString().equals(restaurantID))
+                            if (array.toString().equals(" true")) {
+                                rclosingcheck = true;
                                 rclosing.setVisibility(View.VISIBLE);
-                            rclosing2.setVisibility(View.VISIBLE);
-                            rclosingcheck = true;
-                            return;
-                        };
+                                rclosing2.setVisibility(View.VISIBLE);
+
+                                return;
+                            }
+
+                        }
+                        ;
+
+
                     }
                 }
-             catch (Exception e) {
-                    e.printStackTrace();
+
+            catch (Exception e) {
+                   e.printStackTrace();
                 }
             }
 
